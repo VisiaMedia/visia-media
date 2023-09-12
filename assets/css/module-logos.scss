@@ -1,0 +1,63 @@
+@import './assets/css/reset/core';
+
+.logos {
+  padding:var(--offset-vertical) var(--offset-side);
+  text-align:center;
+
+  &__title {
+    margin:0 0 calc(var(--offset-block) * 2);
+    font-weight:$bold-weight;
+
+    @media only screen and (max-width: 768px) {
+      margin-bottom:var(--offset-block);
+    }
+  }
+
+  &__list {
+    display:grid;
+    margin:0;
+    padding:0;
+    list-style:none;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap:var(--offset-side) var(--offset-block);
+
+    @media only screen and (max-width: 1921px) {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+    @media only screen and (max-width: 1024px) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    @media only screen and (max-width: 600px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    &__item {
+      display:flex;
+      justify-content: center;
+      filter:var(--visual-img-filter);
+
+      &__img {
+        display:block;
+        width:100%;
+        max-width:10em;
+        height:auto;
+        max-height:2em;
+        margin:auto;
+
+        @media only screen and (max-width: 600px) {
+          max-width:6em;
+        }
+      }
+    }
+  }
+
+  &__button-wrapper {
+    margin:calc(var(--offset-block) * 2) 0 0;
+    font-size:1.2em;
+
+    @media only screen and (max-width: 768px) {
+      margin-top:var(--offset-block);
+      font-size:1em;
+    }
+  }
+}

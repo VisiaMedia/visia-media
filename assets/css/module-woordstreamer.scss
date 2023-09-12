@@ -1,0 +1,61 @@
+@import './assets/css/reset/core';
+
+.woordstreamer {
+  padding:var(--offset-vertical) 0;
+  overflow:hidden;
+  pointer-events: none;
+
+  &__inner {
+    position:relative;
+  }
+
+  &__row {
+    position:absolute;
+    display:flex;
+    justify-content: space-between;
+    align-content:center;
+    gap:.25em;
+    margin:0;
+    padding:0;
+    list-style:none;
+    font-size:5em;
+    line-height:1;
+    color:var(--plain-text-color);
+
+    &--top {
+      top:0;
+      right:0;
+      margin-bottom:var(--offset-block);
+    }
+    &--bottom {
+      bottom:0;
+      left:0;
+    }
+
+    @media only screen and (max-width: 1024px) {
+      font-size:4.5em;
+    }
+    @media only screen and (max-width: 900px) {
+      font-size:4em;
+    }
+    @media only screen and (max-width: 768px) {
+      font-size:3.5em;
+    }
+    @media only screen and (max-width: 600px) {
+      font-size:3em;
+    }
+
+    &__word {
+      flex:1 1 auto;
+      font-weight:$light-weight;
+      white-space:nowrap;
+
+      &:first-child {
+        margin-left:0;
+      }
+      &:last-child {
+        margin-right:0;
+      }
+    }
+  }
+}

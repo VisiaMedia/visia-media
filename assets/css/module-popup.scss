@@ -1,0 +1,97 @@
+@import './assets/css/reset/core';
+
+.popups {
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content: center;
+  z-index:800;
+
+  &__popup {
+    position:relative;
+    width:min(calc(100% - var(--offset-side) * 2), 42em);
+    margin:auto;
+    padding:var(--offset-side);
+    background-color:$white;
+    color:$black;
+    z-index:100;
+
+    &__close {
+      position:absolute;
+      top:var(--offset-block);
+      right:var(--offset-block);
+      width:3em;
+      height:3em;
+      margin:-1.5em -1.5em 0 0;
+
+      &__line {
+        position:absolute;
+        top:50%;
+        left:50%;
+        display:block;
+        width:1.6em;
+        height:.125em;
+        margin:-.0625em 0 0 -.8em;
+        background:$black;
+        pointer-events:none;
+
+        &--left {
+          transform:rotate(45deg);
+        }
+        &--right {
+          transform:rotate(-45deg);
+        }
+      }
+    }
+
+    &__title {
+      margin:0 0 1.25rem;
+      font-weight:$bold-weight;
+
+      &:last-child {
+        margin-bottom:0;
+      }
+    }
+
+    &__content {
+      margin:1.25em 0;
+      color:var(--popup-text-color);
+
+      &:first-child {
+        margin-top:0;
+      }
+      &:last-child {
+        margin-bottom:0;
+      }
+    }
+
+    &__form {
+      margin:var(--offset-block) 0 0;
+
+      &:first-child {
+        margin-top:0;
+      }
+    }
+
+    .css-form {
+      .css-form-input {
+        &::placeholder {
+          color:var(--popup-text-color);
+        }
+      }
+
+      .css-form-button {
+        .css-form-button-outline {
+          background:var(--popup-main-color);
+        }
+      }
+    }
+  }
+
+  &__overlay {
+    position:absolute;
+    inset:0;
+    background:rgba(#000, 50%);
+    z-index:50;
+  }
+}

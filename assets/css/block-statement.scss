@@ -1,0 +1,32 @@
+@import './assets/css/reset/core';
+
+.statement {
+  display: flex;
+  justify-content: center;
+  min-height:100vh;
+  min-height:100svh;
+
+  @media only screen and (max-width: 600px) {
+    min-height:0;
+  }
+
+  &__content {
+    width:100%;
+    padding:var(--offset-vertical) var(--offset-side);
+    margin:auto;
+
+    &__title {
+      display:block;
+      margin-bottom:.5rem;
+      font-weight:$bold-weight;
+    }
+
+    &__text {
+      margin-bottom:var(--offset-block);
+
+      &:last-child {
+        margin-bottom:0;
+      }
+    }
+  }
+}

@@ -1,0 +1,83 @@
+/*!
+ * Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License)
+ * Copyright 2023 Fonticons, Inc.
+ */
+:root, :host {
+  --fa-style-family-duotone: 'Font Awesome 6 Duotone';
+  --fa-font-duotone: normal 900 1em/1 'Font Awesome 6 Duotone'; }
+
+@font-face {
+  font-family: 'Font Awesome 6 Duotone';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("../webfonts/fa-duotone-900.woff2") format("woff2"), url("../webfonts/fa-duotone-900.ttf") format("truetype"); }
+
+.fad,
+.fa-duotone {
+  position: relative;
+  font-weight: 900;
+  letter-spacing: normal; }
+
+.fad::before,
+.fa-duotone::before {
+  position: absolute;
+  color: var(--fa-primary-color, inherit);
+  opacity: var(--fa-primary-opacity, 1); }
+
+.fad::after,
+.fa-duotone::after {
+  color: var(--fa-secondary-color, inherit);
+  opacity: var(--fa-secondary-opacity, 0.4); }
+
+.fa-swap-opacity .fad::before,
+.fa-swap-opacity .fa-duotone::before,
+.fad.fa-swap-opacity::before,
+.fa-duotone.fa-swap-opacity::before {
+  opacity: var(--fa-secondary-opacity, 0.4); }
+
+.fa-swap-opacity .fad::after,
+.fa-swap-opacity .fa-duotone::after,
+.fad.fa-swap-opacity::after,
+.fa-duotone.fa-swap-opacity::after {
+  opacity: var(--fa-primary-opacity, 1); }
+
+.fad.fa-inverse,
+.fa-duotone.fa-inverse {
+  color: var(--fa-inverse, #fff); }
+
+.fad.fa-stack-1x, .fad.fa-stack-2x,
+.fa-duotone.fa-stack-1x, .fa-duotone.fa-stack-2x {
+  position: absolute; }
+
+/* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen readers do not read off random characters that represent icons */
+.fad.fa-arrow-right::after, .fa-duotone.fa-arrow-right::after {
+  content: "\f061\f061"; }
+
+.fad.fa-arrow-up-right::after, .fa-duotone.fa-arrow-up-right::after {
+  content: "\e09f\e09f"; }
+
+.fad.fa-spinner-third::after, .fa-duotone.fa-spinner-third::after {
+  content: "\f3f4\f3f4"; }
+
+.fad.fa-arrow-left::after, .fa-duotone.fa-arrow-left::after {
+  content: "\f060\f060"; }
+
+.fad.fa-presentation-screen::after, .fa-duotone.fa-presentation-screen::after {
+  content: "\f685\f685"; }
+
+.fad.fa-presentation::after, .fa-duotone.fa-presentation::after {
+  content: "\f685\f685"; }
+
+.fad.fa-caret-down::after, .fa-duotone.fa-caret-down::after {
+  content: "\f0d7\f0d7"; }
+
+.fad.fa-file-heart::after, .fa-duotone.fa-file-heart::after {
+  content: "\e176\e176"; }
+
+.fad.fa-arrow-down::after, .fa-duotone.fa-arrow-down::after {
+  content: "\f063\f063"; }
+
+.fad.fa-notdef::after, .fa-duotone.fa-notdef::after {
+  content: "\e1fe\e1fe"; }

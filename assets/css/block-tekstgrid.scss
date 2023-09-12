@@ -1,0 +1,63 @@
+@import './assets/css/reset/core';
+
+.textgrid {
+  padding:var(--offset-vertical) var(--offset-side);
+
+  &__inner {
+    display:grid;
+    grid-template-columns: 1fr 2fr;
+    column-gap:var(--offset-side);
+
+    @media only screen and (max-width: 1024px) {
+      grid-template-columns: 1fr 3fr;
+    }
+    @media only screen and (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap:var(--offset-block);
+    }
+  }
+
+  &__title {
+    margin:0;
+    font-weight:$bold-weight;
+  }
+
+  &__grid {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:var(--offset-side);
+
+    @media only screen and (max-width: 600px) {
+      grid-template-columns: 1fr;
+      gap:var(--offset-vertical);
+    }
+
+    &__item {
+      &__title {
+        font-size:1.5em;
+        font-weight:$semibold-weight;
+
+        @media only screen and (max-width: 1024px) {
+          font-size:1.4em;
+        }
+        @media only screen and (max-width: 900px) {
+          font-size:1.3em;
+        }
+        @media only screen and (max-width: 768px) {
+          font-size:1.2em;
+        }
+        @media only screen and (max-width: 600px) {
+          font-size:1.1em;
+        }
+      }
+
+      &__text {
+        margin:1.25em 0;
+
+        @media only screen and (max-width: 600px) {
+          margin: 1em 0;
+        }
+      }
+    }
+  }
+}

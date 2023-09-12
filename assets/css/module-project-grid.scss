@@ -1,0 +1,80 @@
+@import './assets/css/reset/core';
+
+.project-grid {
+  padding:var(--offset-vertical) var(--offset-side);
+
+  &__list {
+    @extend %clearfix;
+
+    .js-grid-sizer {
+      width:calc(50% - var(--offset-side) / 2);
+
+      @media only screen and (max-width: 600px) {
+        width:100%;
+      }
+    }
+    .js-gutter-sizer {
+      width:var(--offset-side);
+
+      @media only screen and (max-width: 600px) {
+        width:0;
+      }
+    }
+
+    &__item {
+      width:calc(50% - var(--offset-side) / 2);
+      margin-top:var(--offset-side);
+
+      @media only screen and (max-width: 600px) {
+        width:100%;
+        margin-top:var(--offset-vertical);
+      }
+
+      &:nth-child(1) {
+        margin-top:0;
+      }
+
+      &__visual {
+        margin-bottom:1.25em;
+        overflow:hidden;
+
+        &__image {
+          padding-bottom:80%;
+          background-size:cover;
+          background-position:center;
+        }
+      }
+
+      &__title {
+        margin:0;
+        font-size:1.5em;
+        font-weight:$semibold-weight;
+
+        @media only screen and (max-width: 768px) {
+          font-size:1.25em;
+        }
+        @media only screen and (max-width: 600px) {
+          font-size:1.1em;
+        }
+
+        &__statement {
+          font-weight:$regular-weight;
+        }
+      }
+    }
+  }
+
+  &__extra-cases {
+    @extend %hidden;
+  }
+
+  &__button-wrapper {
+    margin:calc(var(--offset-block) * 2) 0 0;
+    font-size:1.2em;
+    text-align:center;
+
+    @media only screen and (max-width: 768px) {
+      font-size:1em;
+    }
+  }
+}

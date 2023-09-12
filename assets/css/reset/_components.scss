@@ -1,0 +1,220 @@
+::selection {
+  background: $pink;
+  color: $white;
+}
+
+.css-main-body-container {
+  z-index:1;
+
+  * {
+    z-index:3;
+  }
+}
+.css-max-text-width {
+  width:100%;
+  max-width:68em;
+  margin:auto;
+}
+
+.css-highlight {
+  display:inline-block;
+}
+
+.css-title {
+  line-height:1.25;
+
+  .css-highlight {
+    font-weight:$bold-weight;
+  }
+
+  &--small-size {
+    font-size:2em;
+
+    @media only screen and (max-width: 1024px) {
+      font-size:1.75em;
+    }
+    @media only screen and (max-width: 900px) {
+      font-size:1.5em;
+    }
+    @media only screen and (max-width: 768px) {
+      font-size:1.25em;
+    }
+    @media only screen and (max-width: 600px) {
+      font-size:1.1em;
+    }
+  }
+
+  &--normal-size {
+    font-size:2.75em;
+
+    @media only screen and (max-width: 1024px) {
+      font-size:2.5em;
+    }
+    @media only screen and (max-width: 900px) {
+      font-size:2.25em;
+    }
+    @media only screen and (max-width: 768px) {
+      font-size:2em;
+    }
+    @media only screen and (max-width: 600px) {
+      font-size:1.75em;
+    }
+    @media only screen and (max-width: 380px) {
+      font-size:1.5em;
+    }
+  }
+}
+
+.css-normal-text {
+  color:var(--plain-text-color);
+
+  p {
+    margin:1em 0;
+
+    &:first-child {
+      margin-top:0;
+    }
+    &:last-child {
+      margin-bottom:0;
+    }
+  }
+}
+
+.css-global-vertical-text-reveal-parent {
+  overflow:hidden;
+}
+
+.css-global-button {
+  position:relative;
+  display:inline-block;
+  padding:0 3.5em 0 0;
+
+  &--left {
+    padding:0 0 0 2.75em;
+  }
+
+  .css-global-button-text {
+    position:relative;
+    z-index:50;
+    display:block;
+    pointer-events: none;
+  }
+
+  .css-global-button-icon-wrapper {
+    position:absolute;
+    right:1.35em;
+    bottom:calc(50% - 1em);
+    z-index:25;
+    display:block;
+    width:2em;
+    height:2em;
+    padding:.5em;
+    font-size:.9em;
+    line-height:1;
+    text-align:center;
+    pointer-events:none;
+
+    &--left {
+      left:0;
+      right:unset;
+    }
+  }
+
+  .css-global-button-icon {
+    position:relative;
+    z-index:50;
+    pointer-events: none;
+  }
+
+  .css-global-button-fill {
+    position:absolute;
+    right:50%;
+    bottom:50%;
+    transform:translate(50%, 50%);
+    z-index:25;
+    display:block;
+    width:2em;
+    height:2em;
+    border-radius:100%;
+    border:1px solid currentColor;
+    pointer-events: none;
+  }
+}
+
+.css-form {
+  .css-form-row {
+    margin:1.25em 0;
+
+    &:first-child {
+      margin-top:0;
+    }
+
+    &:last-child {
+      margin-bottom:0;
+    }
+
+    &--footer {
+      margin-top:1.75em;
+    }
+  }
+
+  .css-form-label {
+    @extend %hidden;
+  }
+
+  .css-form-input {
+    display:block;
+    width:100%;
+    padding: 0.75em 0;
+    border-bottom:1px solid var(--plain-text-color);
+    transition: border-bottom-color .25s ease;
+
+    &::placeholder {
+      color:var(--plain-text-color);
+    }
+    &:hover {
+      border-bottom-color:currentColor;
+    }
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus {
+      -webkit-text-fill-color: currentColor;
+      -webkit-box-shadow: 0 0 0 40rem var(--current-background) inset;
+    }
+    &:focus,
+    &.css-is-valid {
+      border-bottom-color:$pink;
+
+      &:hover {
+        border-bottom-color:$pink;
+      }
+    }
+  }
+
+  .css-form-button {
+    position:relative;
+    z-index:1;
+
+    .css-form-button-outline {
+      position:absolute;
+      inset:0;
+      z-index:2;
+      background:var(--current-color);
+      opacity:.1;
+      border-radius:3em;
+      pointer-events: none;
+    }
+
+    .css-form-button-label {
+      position:relative;
+      z-index:3;
+      display:block;
+      padding: 0.75em 1.5em;
+      border-radius: 3em;
+      background-color:$pink;
+      color:$white;
+      font-weight: $semibold-weight;
+      pointer-events: none;
+    }
+  }
+}

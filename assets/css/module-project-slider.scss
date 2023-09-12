@@ -1,0 +1,52 @@
+@import './assets/css/reset/core';
+
+.project-slider {
+  padding:var(--offset-vertical) var(--offset-side);
+  overflow:hidden;
+
+  &__scroller {
+    &__list {
+      display: inline-flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap:calc(var(--offset-side) / 2);
+
+      &__item {
+        width:calc(80vh - 3.5em - (((var(--offset-vertical) * 2)) * .8));
+        max-width:33vw;
+
+        @media only screen and (max-width: 900px) {
+          max-width:calc(50vw - var(--offset-side) * 2);
+        }
+        @media only screen and (max-width: 600px) {
+          max-width:calc(100vw - var(--offset-side) * 2);
+        }
+
+        &__visual {
+          margin-bottom:1.25em;
+          overflow:hidden;
+
+          &__image {
+            padding-top:125%;
+            background-size:cover;
+            background-position:center;
+          }
+        }
+
+        &__title {
+          margin:0;
+          font-size:1.25em;
+          font-weight:$semibold-weight;
+
+          @media only screen and (max-width: 768px) {
+            font-size:1.1em;
+          }
+
+          &__statement {
+            font-weight:$regular-weight;
+          }
+        }
+      }
+    }
+  }
+}

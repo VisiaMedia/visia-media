@@ -1,0 +1,25 @@
+projectName: project
+version: 6.2.1
+icons:
+  - arrow-right:
+      - regular
+  - arrow-up-right:
+      - regular
+  - facebook-f:
+      - brands
+  - instagram:
+      - brands
+  - linkedin-in:
+      - brands
+  - arrow-left:
+      - regular
+  - file-heart:
+      - light
+  - presentation-screen:
+      - light
+  - caret-down:
+      - solid
+  - spinner-third:
+      - duotone
+  - arrow-down:
+      - regular

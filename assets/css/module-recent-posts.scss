@@ -1,0 +1,78 @@
+@import './assets/css/reset/core';
+
+.recent-posts {
+  padding:var(--offset-vertical) var(--offset-side);
+
+  &__title {
+    margin:0;
+    font-weight:$bold-weight;
+  }
+
+  &__list {
+    margin-top:var(--offset-block);
+    font-size:2.25em;
+    line-height:1;
+
+    @media only screen and (max-width: 1024px) {
+      font-size:2em;
+    }
+    @media only screen and (max-width: 900px) {
+      font-size:1.75em;
+    }
+    @media only screen and (max-width: 768px) {
+      font-size:1.5em;
+    }
+    @media only screen and (max-width: 600px) {
+      font-size:1.25em;
+    }
+    @media only screen and (max-width: 380px) {
+      font-size:1em;
+    }
+
+    &__item {
+      margin-bottom:-1px;
+      border-top:1px solid var(--plain-text-color);
+      border-bottom:1px solid transparent;
+
+      &:last-child {
+        border-bottom-color: var(--plain-text-color);
+      }
+
+      &__link {
+        position: relative;
+        display:block;
+        padding:1em 0;
+      }
+
+      &__title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &__metadata {
+        position:absolute;
+        top:1em;
+        font-size:.8rem;
+        color:var(--plain-text-color);
+
+        @media only screen and (max-width: 1024px) {
+          display:none;
+        }
+
+        &--right {
+          right:0;
+        }
+
+        li {
+          display:inline-block;
+          margin:0 1em 0 0;
+
+          &:last-child {
+            margin-right:0;
+          }
+        }
+      }
+    }
+  }
+}

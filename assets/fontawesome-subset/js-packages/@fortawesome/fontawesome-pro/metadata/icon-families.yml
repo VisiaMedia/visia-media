@@ -1,0 +1,301 @@
+arrow-down:
+  aliases:
+    unicodes:
+      composite:
+        - '2193'
+      secondary:
+        - 10f063
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.0.0-beta2
+    - 6.2.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+  label: Arrow down
+  unicode: f063
+  voted: false
+arrow-left:
+  aliases:
+    unicodes:
+      composite:
+        - '2190'
+      secondary:
+        - 10f060
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.0.0-beta2
+    - 6.2.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+  label: arrow-left
+  unicode: f060
+  voted: false
+arrow-right:
+  aliases:
+    unicodes:
+      composite:
+        - '2192'
+      secondary:
+        - 10f061
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.0.0-beta2
+    - 6.2.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+  label: arrow right
+  unicode: f061
+  voted: false
+arrow-up-right:
+  changes:
+    - 6.0.0-beta1
+    - 6.2.0
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+  label: Arrow up right
+  unicode: e09f
+  voted: false
+caret-down:
+  aliases:
+    unicodes:
+      secondary:
+        - 10f0d7
+  changes:
+    - 2.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.2.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+  label: Caret Down
+  unicode: f0d7
+  voted: false
+facebook-f:
+  changes:
+    - 5.0.0
+    - 5.8.2
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Facebook F
+  unicode: f39e
+  voted: false
+file-heart:
+  changes:
+    - 6.0.0-beta1
+    - 6.2.0
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+  label: File Heart
+  unicode: e176
+  voted: false
+instagram:
+  changes:
+    - 4.6.0
+    - 5.0.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: Instagram
+  unicode: f16d
+  voted: false
+linkedin-in:
+  changes:
+    - 2.0.0
+    - 5.0.0
+    - 5.4.1
+    - 5.8.0
+    - 5.8.1
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: brands
+    pro:
+      - family: classic
+        style: brands
+  label: LinkedIn In
+  unicode: f0e1
+  voted: false
+notdef:
+  changes:
+    - 6.0.0-beta1
+    - 6.2.0
+    - 6.2.1
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+  label: Notdef
+  unicode: e1fe
+  voted: false
+presentation-screen:
+  aliases:
+    names:
+      - presentation
+    unicodes:
+      secondary:
+        - 10f685
+  changes:
+    - 5.3.0
+    - 6.0.0-beta1
+    - 6.2.0
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+  label: Presentation screen
+  unicode: f685
+  voted: false
+spinner-third:
+  aliases:
+    unicodes:
+      secondary:
+        - 10f3f4
+  changes:
+    - 5.0.0
+    - 5.10.2
+    - 6.0.0-beta1
+    - 6.0.0
+    - 6.2.0
+  familyStylesByLicense:
+    free: []
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+  label: Spinner Third
+  unicode: f3f4
+  voted: false

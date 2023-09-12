@@ -1,0 +1,58 @@
+@import './assets/css/reset/core';
+
+.team {
+  padding:var(--offset-vertical) var(--offset-side);
+
+  &__title {
+    margin:0 0 var(--offset-block);
+    font-weight:$bold-weight;
+  }
+
+  &__list {
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap:var(--offset-block);
+
+    @media only screen and (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+
+    &__item {
+      &__photo {
+        position:relative;
+        height:0;
+
+        &__img {
+          position:absolute;
+          inset:0;
+          display:block;
+        }
+      }
+
+      &__persona {
+        padding-top:1.25rem;
+        font-size:1.5em;
+        line-height:1.25;
+
+        @media only screen and (max-width: 1024px) {
+          font-size:1.4em;
+        }
+        @media only screen and (max-width: 900px) {
+          font-size:1.3em;
+        }
+        @media only screen and (max-width: 768px) {
+          font-size:1.2em;
+        }
+
+        &__name {
+          display:block;
+          font-weight:$semibold-weight;
+        }
+        &__functie {
+          display:block;
+          font-weight:$light-weight;
+        }
+      }
+    }
+  }
+}

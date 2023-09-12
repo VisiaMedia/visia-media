@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--!
+Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com
+License - https://fontawesome.com/license (Commercial License)
+Copyright 2023 Fonticons, Inc.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="spinner-third" viewBox="0 0 512 512">
+    <path d="M256 0c-17.7 0-32 14.3-32 32s14.3 32 32 32V0zM422.3 352c-8.9 15.3-3.6 34.9 11.7 43.7s34.9 3.6 43.7-11.7L422.3 352zM256 64c106 0 192 86 192 192h64C512 114.6 397.4 0 256 0V64zM448 256c0 35-9.4 67.8-25.7 96L477.7 384c21.8-37.7 34.3-81.5 34.3-128H448z"></path>
+  </symbol>
+  <symbol id="caret-down" viewBox="0 0 320 512">
+    <path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"></path>
+  </symbol>
+  <symbol id="notdef" viewBox="0 0 384 512">
+    <path d="M64 390.3L153.5 256 64 121.7V390.3zM102.5 448H281.5L192 313.7 102.5 448zm128-192L320 390.3V121.7L230.5 256zM281.5 64H102.5L192 198.3 281.5 64zM0 48C0 21.5 21.5 0 48 0H336c26.5 0 48 21.5 48 48V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V48z"></path>
+  </symbol>
+</svg>

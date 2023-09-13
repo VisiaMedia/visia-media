@@ -91,7 +91,9 @@
 	<?php }
 
 
-	/* Shortcodes */
+	/* Shortcodes
+	 *
+	* Button  */
 	function visia_button($atts, $content = null) {
 		extract(shortcode_atts(array('link' => '#'), $atts ));
 
@@ -105,6 +107,7 @@
 		return '<a class="button'. $extraClasses .'" href="'. $link .'">'. $content .'</a>';
 	} add_shortcode('button', 'visia_button');
 
+    /* Highlight */
 	function visia_shortcode_highlight($atts, $content = null) {
 		$string = '';
 		$words = explode(' ', $content);
@@ -114,8 +117,27 @@
 		}
 
 		return rtrim($string);
-	}
-	add_shortcode('h', 'visia_shortcode_highlight');
+	} add_shortcode('h', 'visia_shortcode_highlight');
+
+    /* Free download */
+	function visia_shortcode_free_download($atts){
+		$atts = shortcode_atts(array(
+            'titel' => 'Gratis download',
+            'afbeelding_url' => '',
+            'file_url' => ''
+        ), $atts);
+
+		ob_start();
+
+		/* Shortcode HTML includen */
+		require 'template-parts/shortcodes/free-download.php';
+
+		/* HTML opschonen */
+		$output = ob_get_contents();
+		ob_end_clean();
+
+		return $output;
+	} add_shortcode('free_download', 'visia_shortcode_free_download');
 
 
 	/* Custom menu walker for main menu */

@@ -14,7 +14,7 @@ global_color_change_trigger('blue'); ?>
     <ul class="header__blog-meta js-header-blog-meta" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
         <?php if(get_the_time()) { ?>
             <li class="header__blog-meta__item js-header-blog-meta-item">
-                <span class="header__blog-meta__item__label"><?php _e('Published on', 'visia'); ?></span>
+                <span class="header__blog-meta__item__label"><?php _e('Date', 'visia'); ?></span>
 
                 <span class="header__blog-meta__item__value"><?php the_time(get_option('date_format')); ?></span>
             </li>
@@ -22,7 +22,7 @@ global_color_change_trigger('blue'); ?>
 
         if(get_the_author_meta('first_name') && get_the_author_meta('last_name')) { ?>
             <li class="header__blog-meta__item js-header-blog-meta-item">
-                <span class="header__blog-meta__item__label"><?php _e('Written by', 'visia'); ?></span>
+                <span class="header__blog-meta__item__label"><?php _e('Author', 'visia'); ?></span>
 
                 <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" class="header__blog-meta__item__value"><?php echo get_the_author_meta('first_name').' '.get_the_author_meta('last_name'); ?></a>
             </li>

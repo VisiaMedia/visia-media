@@ -41,7 +41,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
             firstSetup = false;
         })();
 
-        /* Resetup grid after resize */
+        /* Resetup blog after resize */
         callAfterResize(setupBlogSingle);
     }
 }

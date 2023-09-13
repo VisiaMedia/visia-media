@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Visia Media\n"
-"POT-Creation-Date: 2023-09-12 14:42+0200\n"
-"PO-Revision-Date: 2023-09-12 14:45+0200\n"
+"POT-Creation-Date: 2023-09-13 13:55+0200\n"
+"PO-Revision-Date: 2023-09-13 13:56+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -212,25 +212,25 @@ msgid "Discuss project"
 msgstr "Project bespreken"
 
 #: template-parts/modules/header-single_post.php:17
+msgid "Date"
+msgstr "Datum"
+
+#: template-parts/modules/header-single_post.php:25
+msgid "Author"
+msgstr "Auteur"
+
+#: template-parts/modules/header-single_post.php:33
 msgid "Category"
 msgstr "Categorie"
 
-#: template-parts/modules/header-single_post.php:25
+#: template-parts/modules/header-single_post.php:41
 msgid "Reading time"
 msgstr "Leestijd"
 
-#: template-parts/modules/header-single_post.php:27
+#: template-parts/modules/header-single_post.php:43
 #, php-format
 msgid "%s minutes"
 msgstr "%s minuten"
-
-#: template-parts/modules/header-single_post.php:32
-msgid "No time?"
-msgstr "Geen tijd?"
-
-#: template-parts/modules/header-single_post.php:34
-msgid "Read later"
-msgstr "Lees later"
 
 #: template-parts/modules/projectgrid.php:48
 msgid "Show more cases"
@@ -274,6 +274,18 @@ msgid ""
 msgstr ""
 "Officieel Visia Media WordPress thema. Ontworpen door Victor Strouken, "
 "ontwikkeld door Maarten Emmerink."
+
+#~ msgid "Published on"
+#~ msgstr "Geplaatst op"
+
+#~ msgid "Written by"
+#~ msgstr "Door"
+
+#~ msgid "No time?"
+#~ msgstr "Geen tijd?"
+
+#~ msgid "Read later"
+#~ msgstr "Lees later"
 
 #~ msgid "All"
 #~ msgstr "Alle"

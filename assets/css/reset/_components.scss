@@ -68,8 +68,93 @@
 .css-normal-text {
   color:var(--plain-text-color);
 
+  h1 {
+    font-size:2em;
+  }
+  h2 {
+    font-size:1.8em;
+  }
+  h3 {
+    font-size:1.6em;
+  }
+  h4 {
+    font-size:1.4em;
+  }
+  h5 {
+    font-size:1.2em;
+  }
+  h6 {
+    font-size:1em;
+  }
+  h1, h2, h3,
+  h4, h5, h6 {
+    margin:1em 0 .5em;
+    font-weight:$bold-weight;
+    line-height:1.25;
+
+    &:first-child {
+      margin-top:0;
+    }
+    &:last-child {
+      margin-bottom:0;
+    }
+  }
+
   p {
     margin:1em 0;
+
+    &:first-child {
+      margin-top:0;
+    }
+    &:last-child {
+      margin-bottom:0;
+    }
+  }
+
+  a {
+    text-decoration: underline;
+    text-decoration-color: $pink;
+  }
+  strong, b {
+    font-weight:$bold-weight;
+  }
+  em, i {
+    font-style:italic;
+  }
+  del {
+    text-decoration:line-through;
+    text-decoration-color: $pink;
+  }
+
+  img {
+    display:block;
+    width:auto;
+    height:auto;
+    margin:2.5em 0;
+
+    &.aligncenter {
+      margin-left:auto;
+      margin-right:auto;
+    }
+  }
+
+  ul {
+    list-style:disc;
+    margin:1.2em 0;
+    padding-left:1em;
+
+    &:first-child {
+      margin-top:0;
+    }
+    &:last-child {
+      margin-bottom:0;
+    }
+  }
+
+  ol {
+    list-style:decimal;
+    margin:1.2em 0;
+    padding-left:1em;
 
     &:first-child {
       margin-top:0;

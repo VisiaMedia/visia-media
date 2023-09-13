@@ -159,4 +159,8 @@
 
 <div class="js-swap-container">
 
-<?php get_template_part('template-parts/modules/header'); ?>
+<?php if(is_singular('post')) {
+	get_template_part('template-parts/modules/header', 'single_post');
+} else {
+    get_template_part('template-parts/modules/header');
+} ?>

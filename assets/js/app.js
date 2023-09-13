@@ -59,6 +59,7 @@ let blobity = new Blobity({
 
 /* Importing helper functions */
 import overscroll from './helpers/overscroll.mjs';
+import imageLoader from './helpers/imageloader.mjs';
 import {callAfterResize, tlTextReveal, tlFadeIn, getSiblings, getNextSibling, getPreviousSibling, disableScroll, enableScroll} from './helpers/functions.mjs';
 
 /* Importing global / side-wide modules */
@@ -93,6 +94,7 @@ import contactform from './modules/contactform.mjs';
 
 /* Blog */
 import blogOverview from './blog/overview.mjs';
+import blogSingle from './blog/single.mjs';
 
 /* CTA's */
 import ctapresentation from './template-parts/ctapresentation.mjs';
@@ -203,6 +205,7 @@ const swup = new Swup({
 function swupInit() {
     /* Helpers */
     overscroll.stopOverscroll(gsap);
+    imageLoader.loadImages(ScrollTrigger);
 
     ScrollTrigger.clearScrollMemory();
 
@@ -241,6 +244,7 @@ function swupInit() {
 
     /* Blog */
     blogOverview.init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn, dayjs, InfiniteScroll, Isotope, imagesLoaded);
+    blogSingle.init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn, dayjs, InfiniteScroll, Isotope, imagesLoaded);
 
     /* Bounce blobity and refresh ScrollTrigger on resize */
     let resetScrolltrigger;

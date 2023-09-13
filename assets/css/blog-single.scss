@@ -1,0 +1,11 @@
+@import './assets/css/reset/core';
+
+.blog-single {
+  padding:var(--offset-vertical) var(--offset-side);
+
+  &__content {
+    max-width:42em;
+    margin:auto;
+    color:inherit;
+  }
+}

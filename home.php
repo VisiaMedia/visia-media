@@ -17,6 +17,10 @@ if(have_posts()) {
 
                                     the_post_thumbnail('blog-thumb-use', array('class' => 'blog-home__items__item__thumb__img js-blog-home-thumb-img'));
 
+                                    if($readingTime = get_post_meta(get_the_ID(), '_yoast_wpseo_estimated-reading-time-minutes', true)) {
+                                        echo '<span class="blog-home__items__item__thumb__reading-time">'.sprintf(__('Reading time: %s minutes', 'visia' ), $readingTime).'</span>';
+                                    }
+
                                     echo '</div>';
                                 } ?>
 

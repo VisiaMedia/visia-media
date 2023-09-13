@@ -59,7 +59,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
                 /* Add animation for USPs reveal */
                 if(header.querySelector('.js-header-usps')) {
                     const headerUsps = header.querySelector('.js-header-usps'),
-                        headerUspsUsps = gsap.utils.toArray(header.querySelectorAll('.js-header-usps-usp'));
+                        headerUspsUsps = header.querySelectorAll('.js-header-usps-usp');
 
                     headerUspsUsps.forEach(headerUspsUsp => {
                         gsap.set(headerUspsUsp, {
@@ -95,6 +95,36 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
                             invalidateOnRefresh: true,
                             scrub: 1,
                             refreshPriority: headerUsps.dataset.stCount
+                        },
+                        autoAlpha: 0
+                    });
+                }
+
+                /* Add animation for blog-meta reveal */
+                if(header.querySelector('.js-header-blog-meta')) {
+                    const blogMeta = header.querySelector('.js-header-blog-meta'),
+                        blogMetaItems = header.querySelectorAll('.js-header-blog-meta-item');
+
+                    blogMetaItems.forEach(blogMetaItem => {
+                        gsap.set(blogMetaItem, {
+                            autoAlpha: 0
+                        });
+
+                        headerTl.to(blogMetaItem, {
+                            autoAlpha: 1
+                        }, ">-0.065");
+                    });
+
+
+                    /* Setup timeline for fading out USPs */
+                    gsap.to(blogMeta, {
+                        scrollTrigger: {
+                            trigger: header,
+                            start: "top top",
+                            end: '+=50%',
+                            invalidateOnRefresh: true,
+                            scrub: 1,
+                            refreshPriority: blogMeta.dataset.stCount
                         },
                         autoAlpha: 0
                     });

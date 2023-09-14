@@ -129,12 +129,45 @@
   img {
     display:block;
     width:auto;
+    max-width:100%;
     height:auto;
-    margin:2.5em 0;
+    margin:var(--offset-block) 0;
 
     &.aligncenter {
       margin-left:auto;
       margin-right:auto;
+    }
+
+    &:first-child {
+      margin-top:0;
+    }
+    &:last-child {
+      margin-bottom:0;
+    }
+  }
+
+  .wp-caption {
+    display:block;
+    width:auto;
+    max-width:100%;
+    height:auto;
+    margin:var(--offset-block) 0;
+
+    &.aligncenter {
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    &:first-child {
+      margin-top:0;
+    }
+    &:last-child {
+      margin-bottom:0;
+    }
+
+    p {
+      font-size:.8em;
+      color:var(--plain-text-color);
     }
   }
 

@@ -140,7 +140,30 @@
 	} add_shortcode('free_download', 'visia_shortcode_free_download');
 
 
-	/* Custom menu walker for main menu */
+	/* Filter for the archive title */
+	add_filter('get_the_archive_title', function ($title) {
+		if (is_category()) {
+			$title = single_cat_title('', false);
+		} elseif (is_tag()) {
+			$title = single_tag_title('', false);
+		} elseif (is_author()) {
+			$title = get_the_author_meta('first_name').' '.get_the_author_meta('last_name');
+		} elseif (is_post_type_archive()) {
+			$title = post_type_archive_title('', false);
+		}
+		return $title;
+	});
+
+
+
+    /* Filter to remove <p>'s around <img>-tags */
+	function filter_ptags_on_images($content) {
+		return preg_replace('/<p>(\s*)(<img .* \/>)(\s*)<\/p>/iU', '\2', $content);
+	} add_filter('the_content', 'filter_ptags_on_images');
+
+
+
+    /* Custom menu walker for main menu */
 	class visia_main_menu_walker extends Walker_Nav_Menu {
 		function start_el(&$output, $item, $depth=0, $args=[], $id=0) {
 			$output .= "<li class='main-menu__container__menu__item js-main-menu-item'>";
@@ -550,4 +573,26 @@ function adjust_inline_limits($value) {
 function remove_content_editor() {
 	remove_post_type_support('page', 'editor');
 } add_action('admin_head', 'remove_content_editor');
+
+
+
+
+
+
+
+
+
+
+/* Function for outputting device */
+function get_device_image($imageID, $type, $class) {
+	$device = '';
+
+    $device .= '<div class="phone"><div class="inner"><div class="notch"></div>'.wp_get_attachment_image($imageID, 'large').'</div></div>';
+
+    return $device;
+}
+
+
+
+
 ?>

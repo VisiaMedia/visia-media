@@ -1,0 +1,23 @@
+@import './assets/css/reset/core';
+
+.parallax-image {
+  &__background {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    &--small {
+      min-height: 50vh;
+      min-height: 50svh;
+    }
+    &--medium {
+      min-height: 75vh;
+      min-height: 75svh;
+    }
+    &--large {
+      min-height: 100vh;
+      min-height: 100svh;
+    }
+  }
+}

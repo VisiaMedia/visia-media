@@ -5,10 +5,17 @@
   min-height: 75vh;
   min-height: 75 svh;
 
-  &--frontpage,
+  &--frontpage {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
   &--single-post {
     min-height: 100vh;
-    min-height: 100 svh;
+    min-height: 100svh;
+
+    @media only screen and (max-width: 600px) {
+
+    }
   }
 
   &__content {

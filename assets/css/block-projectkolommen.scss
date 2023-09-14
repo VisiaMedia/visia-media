@@ -1,0 +1,31 @@
+@import './assets/css/reset/core';
+
+.project-columns {
+  padding:var(--offset-vertical) var(--offset-side);
+
+  &__inner {
+    display:flex;
+    gap:var(--offset-vertical) var(--offset-side);
+    justify-content: space-between;
+    align-items:center;
+  }
+
+  &__images {
+    flex:1;
+  }
+  &__content {
+    flex: 1;
+
+    &__title {
+      font-weight:$bold-weight;
+      margin-bottom:var(--offset-block);
+    }
+    &__text {
+      margin-bottom:var(--offset-block);
+
+      &:last-child {
+        margin-bottom:0;
+      }
+    }
+  }
+}

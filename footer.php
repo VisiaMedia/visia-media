@@ -127,7 +127,15 @@ global_color_change_trigger('blue'); ?>
     </div>
 </footer>
 
-<div class="js-page-title" data-page-title="<?php esc_attr_e(($transitionTitle = get_field('transitietitel', get_queried_object_id())) ? $transitionTitle : get_the_title(get_queried_object_id())); ?>"></div>
+<?php if(is_archive()) {
+    $title = get_the_archive_title();
+} elseif(get_field('transitietitel', get_queried_object_id())) {
+    $title = get_field('transitietitel', get_queried_object_id());
+} else {
+    $title = get_the_title(get_queried_object_id());
+} ?>
+
+<div class="js-page-title" data-page-title="<?php esc_attr_e($title); ?>"></div>
 
 </div>
 </div>

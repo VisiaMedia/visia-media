@@ -81,6 +81,7 @@ import textcarousel from './template-parts/textcarousel.mjs';
 import tabbedcontent from './template-parts/tabbedcontent.mjs';
 import dienstenscroller from './template-parts/dienstenscroller.mjs';
 import procescarousel from './template-parts/procescarousel.mjs';
+import parallaximage from './template-parts/parallaximage.mjs';
 
 /* Modules */
 import reviewslider from './modules/reviewslider.mjs';
@@ -231,6 +232,7 @@ function swupInit() {
     procescarousel.init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn);
     tabbedcontent.init(gsap, ScrollTrigger, callAfterResize, blobity, tlTextReveal, tlFadeIn);
     dienstenscroller.init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn);
+    parallaximage.init(gsap);
 
     /* Modules */
     reviewslider.init(gsap, ScrollTrigger, blobity, callAfterResize, tlTextReveal, tlFadeIn);

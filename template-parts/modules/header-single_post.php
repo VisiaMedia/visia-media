@@ -32,7 +32,7 @@ global_color_change_trigger('blue'); ?>
             <li class="header__blog-meta__item js-header-blog-meta-item">
                 <span class="header__blog-meta__item__label"><?php _e('Category', 'visia'); ?></span>
 
-                <span class="header__blog-meta__item__value"><?php echo $postCategories[0]->name; ?></span>
+                <a class="header__blog-meta__item__value" href="<?php echo get_category_link($postCategories[0]); ?>"><?php echo $postCategories[0]->name; ?></a>
             </li>
         <?php }
 

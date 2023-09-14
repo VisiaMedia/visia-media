@@ -3,9 +3,33 @@
 .blog-single {
   padding:var(--offset-vertical) var(--offset-side);
 
-  &__content {
+  &__content,
+  &__tag-list {
     max-width:42em;
     margin:auto;
     color:inherit;
+  }
+  &__tag-list {
+    margin-top:var(--offset-block);
+    text-align:center;
+    line-height:1;
+
+    &__item {
+      display:inline-block;
+      margin:.5em;
+
+      a {
+        display: block;
+        padding: .5em;
+        border: 1px solid;
+        font-size: .8em;
+        text-transform: uppercase;
+        color: var(--plain-text-color);
+
+        &:hover {
+          color:inherit;
+        }
+      }
+    }
   }
 }

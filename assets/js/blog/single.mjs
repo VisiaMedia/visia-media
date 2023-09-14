@@ -15,7 +15,8 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
                     start: "top center",
                     once: true,
                     invalidateOnRefresh: true,
-                    refreshPriority: blogSingle.dataset.stCount
+                    refreshPriority: blogSingle.dataset.stCount,
+                    markers: true
                 },
                 onComplete: () => {
                     blogSingleTl.clear();

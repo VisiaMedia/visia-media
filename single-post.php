@@ -7,13 +7,15 @@ if(have_posts()) {
 	global_color_change_trigger('white');
 
 	while(have_posts()) { the_post(); ?>
-
 		<section class="blog-single js-blog-single" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
             <div class="css-max-text-width">
                 <div class="blog-single__content css-normal-text js-blog-single-content"><?php the_content(); ?></div>
+
+                <?php if(get_the_tag_list()) {
+                    echo get_the_tag_list('<ul class="blog-single__tag-list"><li class="blog-single__tag-list__item">','</li><li class="blog-single__tag-list__item">','</li></ul>');
+                } ?>
             </div>
 		</section>
-
 	<?php }
 
 	echo '</main>';

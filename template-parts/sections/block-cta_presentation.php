@@ -1,7 +1,7 @@
 <?php if(get_field('optie_paginalink_online_presentatie', 'option')) {
     global $scrollTriggerCount;
 
-    global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
+	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
 
     <section class="cta-presentation js-cta-presentation" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
         <div class="css-max-text-width">

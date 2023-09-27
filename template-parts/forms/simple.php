@@ -25,10 +25,10 @@
             </p>
 
             <p class="css-form-row--simple css-form-row--footer css-form-row">
-                <button class="css-form-button--simple css-form-button js-form-submit-button js-form-submit-button-simple" type="submit">
-                    <span class="css-form-button-outline--simple css-form-button-outline js-form-submit-button-simple-outline"></span>
+                <button class="css-rounded-button js-rounded-button" type="submit">
+                    <span class="css-rounded-button-outline js-rounded-button-outline"></span>
 
-                    <span class="css-form-button-label--label css-form-button-label"><?php echo $button; ?></span>
+                    <span class="css-rounded-button-label"><?php echo $button; ?></span>
                 </button>
             </p>
         </form>

@@ -23,10 +23,6 @@
     <link rel="icon" type="image/png" sizes="16x16" href="<?php bloginfo('template_directory');?>/assets/favicon/favicon-16x16.png">
     <link rel="manifest" href="<?php bloginfo('template_directory');?>/assets/favicon/site.webmanifest">
     <link rel="mask-icon" href="<?php bloginfo('template_directory');?>/assets/favicon/safari-pinned-tab.svg" color="#ea2c76">
-    <link rel="preconnect" href="https://use.typekit.net" crossorigin>
-    <link rel="preconnect" href="https://p.typekit.net" crossorigin>
-    <link rel="preload" href="https://use.typekit.net/gfx2twb.css" as="style"/>
-    <link rel="stylesheet" href="https://use.typekit.net/gfx2twb.css" media="print" onload="this.media='all'"/>
 </head>
 
 <body <?php body_class(); ?>>

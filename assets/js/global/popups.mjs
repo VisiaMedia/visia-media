@@ -14,6 +14,10 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
             autoAlpha:0
         });
 
+        gsap.set(singlePopups, {
+            display: "none"
+        });
+
 
 
         function closeAllPopups() {
@@ -47,6 +51,10 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                             autoAlpha:0
                         });
 
+                        gsap.set(singlePopups, {
+                            display: "none"
+                        });
+
                         /* Remove active class from container */
                         popupContainer.classList.remove('js-active');
                     }
@@ -69,12 +77,13 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                         targetPopupCloseElem = targetPopupElem.querySelector('.js-popups-single-close');
 
                     /* Set blobity radius on popup close button */
-                    let setBlobityRadius;
-                    (setBlobityRadius = function(){
-                        targetPopupCloseElem.setAttribute("data-blobity-offset-x", 0);
-                        targetPopupCloseElem.setAttribute("data-blobity-offset-y", 0);
-                        targetPopupCloseElem.setAttribute("data-blobity-radius", targetPopupCloseElem.offsetWidth / 2);
-                    })();
+                    function setBlobityRadius() {
+                        if(targetPopupElem.offsetParent !== null) {
+                            targetPopupCloseElem.setAttribute("data-blobity-offset-x", 0);
+                            targetPopupCloseElem.setAttribute("data-blobity-offset-y", 0);
+                            targetPopupCloseElem.setAttribute("data-blobity-radius", targetPopupCloseElem.offsetWidth / 2);
+                        }
+                    };
 
                     callAfterResize(setBlobityRadius);
 
@@ -103,6 +112,8 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                             });
 
                             blobity.reset();
+
+                            setBlobityRadius();
                         }
                     });
 
@@ -118,7 +129,8 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
 
                     /* Fade in popup */
                     popupTL.to(targetPopupElem, {
-                        autoAlpha:1
+                        autoAlpha:1,
+                        display: "block"
                     });
 
                     /* Create event listener */

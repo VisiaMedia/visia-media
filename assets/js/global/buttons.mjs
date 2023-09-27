@@ -72,19 +72,53 @@ export function init(gsap, blobity, callAfterResize){
                 if(window.matchMedia("(pointer: coarse)").matches) {
                     globalButtonTl.play(0).then(function() {
                         setTimeout(function(){
-                            blobity.reset();
-
                             globalButtonTl.reverse(0);
                         }, 125);
                     });
                 }
-
-                blobity.reset();
             });
 
             /* Invalidate timeline after resize */
             callAfterResize(function() {
                 globalButtonTl.seek(0).invalidate();
+            });
+        });
+    }
+
+
+    /* Rounded buttons */
+    if(document.querySelector('.js-rounded-button')) {
+        const roundedButtons = document.querySelectorAll('.js-rounded-button');
+
+        roundedButtons.forEach(roundedButton => {
+            const roundedButtonOutline = roundedButton.querySelector('.js-rounded-button-outline');
+
+            /* Add event listeners */
+            roundedButton.addEventListener("mouseenter", function() {
+                if(window.matchMedia("(pointer: fine)").matches) {
+                    blobity.updateOptions({
+                        opacity: 0
+                    });
+
+                    /* Show outline */
+                    gsap.to(roundedButtonOutline, {
+                        duration:.225,
+                        inset: '-8px'
+                    });
+                }
+            });
+            roundedButton.addEventListener("mouseleave", function() {
+                if(window.matchMedia("(pointer: fine)").matches) {
+                    blobity.updateOptions({
+                        opacity:0.1
+                    });
+
+                    /* Hide outline */
+                    gsap.to(roundedButtonOutline, {
+                        duration:.225,
+                        inset: '0px'
+                    });
+                }
             });
         });
     }

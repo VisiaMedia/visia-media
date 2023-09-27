@@ -2,22 +2,34 @@
   --offset-vertical:7.5rem;
   --offset-side:4rem;
   --offset-block:2rem;
-  --plain-text-color:#757374;
-  --popup-text-color:#757374;
-  --popup-main-color:#000;
+  --offset-boxed:4rem;
+
+  --plain-text-color:#6e6e6e;
+  --boxed-text-color:#6e6e6e;
+  --boxed-main-color:#000;
+
+  --light-border-color:#2121210F;
+  --dropshadow-color:#0000000D;
+
   --menu-text-color:#acb0ba;
+
   --visual-img-filter:invert(0);
+
+  --font-stack: 'Visia Media', Helvetica, Arial, sans-serif;
 
   @media only screen and (max-width: 1024px) {
     --offset-vertical:6rem;
     --offset-side:3.5rem;
+    --offset-boxed:3.5rem;
   }
   @media only screen and (max-width: 900px) {
     --offset-vertical:5rem;
     --offset-side:3rem;
+    --offset-boxed:3rem;
   }
   @media only screen and (max-width: 768px) {
     --offset-side:2.5rem;
+    --offset-boxed:2.5rem;
   }
   @media only screen and (max-width: 600px) {
     --offset-vertical:4rem;
@@ -70,7 +82,7 @@ html {
 }
 
 body {
-  font-family: proxima-nova, sans-serif;
+  font-family: var(--font-stack);
   font-weight:$regular-weight;
   letter-spacing:.025em;
 }
@@ -331,6 +343,10 @@ body {
 
 main[tabindex="-1"] {
   outline: none;
+}
+
+.js-item-object {
+  @extend %hidden;
 }
 
 .js-page-transition {

@@ -22,7 +22,6 @@ export function init(gsap, ScrollTrigger, Draggable){
                     trigger: projectSlider,
                     start: "top center",
                     once: true,
-                    invalidateOnRefresh: true,
                     refreshPriority: projectSlider.dataset.stCount
                 },
                 autoAlpha: 1,

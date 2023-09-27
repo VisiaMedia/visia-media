@@ -30,7 +30,7 @@ export function init(gsap, ScrollTrigger, blobity, Masonry){
                 /* Initially hide element */
                 gsap.set(projectGridItem, {
                     autoAlpha:0,
-                    y: "1.5rem"
+                    y: "1.5rem",
                 });
 
                 /* Show element */
@@ -39,7 +39,6 @@ export function init(gsap, ScrollTrigger, blobity, Masonry){
                         trigger: projectGridItem,
                         start: "top center",
                         once: true,
-                        invalidateOnRefresh: true,
                         refreshPriority: projectGrid.dataset.stCount
                     },
                     autoAlpha: 1,
@@ -90,7 +89,6 @@ export function init(gsap, ScrollTrigger, blobity, Masonry){
                         trigger: projectGridButtonWrapper,
                         start: "top center",
                         once: true,
-                        invalidateOnRefresh: true,
                         refreshPriority: projectGrid.dataset.stCount
                     },
                     autoAlpha: 1,

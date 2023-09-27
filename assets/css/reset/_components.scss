@@ -133,6 +133,7 @@
     height:auto;
     margin:var(--offset-block) 0;
 
+    &.alignnone,
     &.aligncenter {
       margin-left:auto;
       margin-right:auto;
@@ -259,6 +260,33 @@
   }
 }
 
+.css-rounded-button {
+  position:relative;
+  z-index:1;
+
+  .css-rounded-button-outline {
+    position:absolute;
+    inset:0;
+    z-index:2;
+    background:var(--current-color);
+    opacity:.1;
+    border-radius:3em;
+    pointer-events: none;
+  }
+
+  .css-rounded-button-label {
+    position:relative;
+    z-index:3;
+    display:block;
+    padding: .75em 1.5em;
+    border-radius: 3em;
+    background-color:$pink;
+    color:$white;
+    font-weight: $semibold-weight;
+    pointer-events: none;
+  }
+}
+
 .css-form {
   .css-form-row {
     margin:1.25em 0;
@@ -308,31 +336,15 @@
       }
     }
   }
+}
 
-  .css-form-button {
-    position:relative;
-    z-index:1;
+.css-boxed-content {
+  background:$white;
+  color:var(--boxed-main-color);
+  border: 1px solid var(--light-border-color);
+  box-shadow: 0 .3em .4em var(--dropshadow-color);
 
-    .css-form-button-outline {
-      position:absolute;
-      inset:0;
-      z-index:2;
-      background:var(--current-color);
-      opacity:.1;
-      border-radius:3em;
-      pointer-events: none;
-    }
-
-    .css-form-button-label {
-      position:relative;
-      z-index:3;
-      display:block;
-      padding: 0.75em 1.5em;
-      border-radius: 3em;
-      background-color:$pink;
-      color:$white;
-      font-weight: $semibold-weight;
-      pointer-events: none;
-    }
+  .css-rounded-button-outline {
+    background:var(--boxed-main-color);
   }
 }

@@ -12,7 +12,7 @@
 					echo '<ul class="project-columns__images js-project-columns-images js-project-columns-images-'.$type.'-'.$count.'">';
 
 					foreach($images as $image) {
-						echo '<li class="project-columns__images__image">'.get_device_image($image, $type, 'js-project-columns-images-image').'</li>';
+						echo '<li class="project-columns__images__image"></li>';
 					}
 
 					echo '</ul>';

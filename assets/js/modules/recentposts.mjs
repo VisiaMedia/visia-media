@@ -10,7 +10,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, dayjs, 
             /* Get all recent posts instances as array */
             const recentPostsSections = gsap.utils.toArray('.js-recent-posts');
 
-            /* Loop over textgrid instances */
+            /* Loop over posts instances */
             recentPostsSections.forEach(recentPostsSection => {
 
                 /* Setup timeline for various animations */
@@ -56,6 +56,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, dayjs, 
                     stagger: .2
                 });
 
+                /* Set relative date via dayjs */
                 recentPostItems.forEach(recentPostItem => {
                     let postDateElem = recentPostItem.querySelector('.js-recent-posts-item-from-now'),
                         postDate = postDateElem.getAttribute('datetime'),

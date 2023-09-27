@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn){
+export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn, createValidHtmlId){
     if(document.querySelector('.js-service-scroller')) {
         /* Get all instances as array */
         const serviceScrollers = gsap.utils.toArray('.js-service-scroller');
@@ -73,6 +73,29 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
 
             /* Resetup section after resize */
             callAfterResize(setupSections);
+
+
+
+            /* Add IDs to specific sections and items */
+            sections.forEach(function(section, i) {
+                if(section.querySelector('.js-service-scroller-title')) {
+                    /* Section */
+                    let sectionTitle = section.querySelector('.js-service-scroller-title'),
+                        sectionTitleText = sectionTitle.textContent,
+                        itemID = createValidHtmlId(sectionTitleText);
+
+                    /* Set section ID */
+                    section.setAttribute('id', itemID);
+
+
+                    /* Navigation */
+                    const navItems = serviceScroller.querySelectorAll('.js-service-scroller-nav-list-item-link');
+
+                    /* Set item attributes */
+                    navItems.item(i).setAttribute('data-service-scroller-item', itemID);
+                    navItems.item(i).href = '#'+itemID;
+                }
+            });
 
 
 

@@ -12,7 +12,7 @@ export function loadImages(ScrollTrigger) {
         } else {
             image.addEventListener('load', loaded)
             image.addEventListener('error', function() {
-                alert('error')
+                console.log('imageloader.mjs error')
             })
         }
     });

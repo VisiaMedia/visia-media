@@ -21,7 +21,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
                         trigger: item,
                         start: "top 75%",
                         once: true,
-                        invalidateOnRefresh: true,
                         refreshPriority: blogHome.dataset.stCount
                     }
                 });
@@ -73,7 +72,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
                 path: '.js-blog-home-nav-next',
                 append: '.js-blog-home-item',
                 history: false,
-                scrollThreshold: 0,
                 status: '.js-blog-home-status'
             });
 

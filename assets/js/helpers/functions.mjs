@@ -117,6 +117,28 @@ const getPreviousSibling = function (elem, selector) {
 
 
 
+/* Create a valid HTML ID from value */
+function createValidHtmlId(value) {
+    value = value.replace(/[^a-zA-Z ]/g, "");
+    let id = value ? value.replace(/\W/g, '_') : '_';
+    id = id.charAt(0).match(/[\d_]/g)?.length ? `id_${id}` : id;
+    id = id.toLowerCase();
+
+    if(document.getElementById(id)) {
+        let postFix = '_1';
+
+        for(let i = 1; document.getElementById(id+'_'+i); i++) {
+            postFix = '_'+(i+1);
+        }
+
+        id = id + postFix;
+    }
+
+    return id;
+}
+
+
+
 /* Add support for disabling scroll */
 const scrollKeys = {37: 1, 38: 1, 39: 1, 40: 1, 32: 1, 33: 1, 34: 1, 35: 1, 36: 1};
 
@@ -157,4 +179,4 @@ function enableScroll() {
     window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
 }
 
-export {callAfterResize, tlTextReveal, tlFadeIn, getSiblings, getNextSibling, getPreviousSibling, disableScroll, enableScroll};
+export {callAfterResize, tlTextReveal, tlFadeIn, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll};

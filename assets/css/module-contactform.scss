@@ -135,31 +135,7 @@
       }
 
       &__button {
-        position:relative;
-        z-index:1;
         margin-top:var(--offset-block);
-
-        &__outline {
-          position:absolute;
-          inset:0;
-          z-index:2;
-          background:var(--current-color);
-          opacity:.1;
-          border-radius:3em;
-          pointer-events: none;
-        }
-
-        &__label {
-          position:relative;
-          z-index:3;
-          display:block;
-          padding: 0.75em 1.5em;
-          border-radius: 3em;
-          background-color:$pink;
-          color:$white;
-          font-weight: $semibold-weight;
-          pointer-events: none;
-        }
       }
     }
 

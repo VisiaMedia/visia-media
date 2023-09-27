@@ -11,9 +11,7 @@
     position:relative;
     width:min(calc(100% - var(--offset-side) * 2), 42em);
     margin:auto;
-    padding:var(--offset-side);
-    background-color:$white;
-    color:$black;
+    padding:var(--offset-boxed) var(--offset-side);
     z-index:100;
 
     &__close {
@@ -55,7 +53,7 @@
 
     &__content {
       margin:1.25em 0;
-      color:var(--popup-text-color);
+      color:var(--boxed-text-color);
 
       &:first-child {
         margin-top:0;
@@ -76,13 +74,7 @@
     .css-form {
       .css-form-input {
         &::placeholder {
-          color:var(--popup-text-color);
-        }
-      }
-
-      .css-form-button {
-        .css-form-button-outline {
-          background:var(--popup-main-color);
+          color:var(--boxed-text-color);
         }
       }
     }

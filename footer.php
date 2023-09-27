@@ -127,21 +127,35 @@ global_color_change_trigger('blue'); ?>
     </div>
 </footer>
 
-<?php if(is_archive()) {
-    $title = get_the_archive_title();
+<?php /* Determine transition title */
+if(is_archive()) {
+	$itemTitle = get_the_archive_title();
 } elseif(get_field('transitietitel', get_queried_object_id())) {
-    $title = get_field('transitietitel', get_queried_object_id());
+	$itemTitle = get_field('transitietitel', get_queried_object_id());
 } else {
-    $title = get_the_title(get_queried_object_id());
+	$itemTitle = get_the_title(get_queried_object_id());
+}
+
+/* Determine active menu item */
+if(is_home() || is_archive() || is_singular('post')) {
+	$activeItemID = get_option('page_for_posts');
+} elseif(is_singular('landingpage') && get_field('optie_paginalink_expertises', 'option')) {
+	$activeItemID = get_field('optie_paginalink_expertises', 'option');
+} elseif(is_singular('case') && get_field('optie_paginalink_cases', 'option')) {
+	$activeItemID = get_field('optie_paginalink_cases', 'option');
+} elseif($postAncestors = get_post_ancestors(get_queried_object_id())) {
+	$activeItemID = array_pop($postAncestors);
+} else {
+	$activeItemID = get_queried_object_id();
 } ?>
 
-<div class="js-page-title" data-page-title="<?php esc_attr_e($title); ?>"></div>
+<div class="js-item-object"<?php echo ($itemTitle) ? ' data-item-title="'.esc_attr($itemTitle).'"' : ''; echo ($activeItemID) ? ' data-active-menu-item="'.$activeItemID.'"' : '' ?>></div>
 
 </div>
 </div>
 
 <div class="popups js-popups">
-    <div class="popups__popup js-popups-single" data-popup="presentation-download" aria-hidden="true" role="dialog">
+    <div class="popups__popup css-boxed-content js-popups-single" data-popup="presentation-download" aria-hidden="true" role="dialog">
         <div role="document">
             <button class="popups__popup__close js-popups-single-close" title="<?php esc_attr_e(__('Close popup', 'visia')); ?>">
                 <span class="popups__popup__close__line--left popups__popup__close__line"></span>
@@ -169,6 +183,38 @@ global_color_change_trigger('blue'); ?>
             } ?>
         </div>
     </div>
+
+    <?php if($blogDownloads = get_posts(array(
+        'post_type'	=> 'blog_downloads',
+        'posts_per_page' => -1,
+    ))) {
+        foreach($blogDownloads as $post) { setup_postdata($post); ?>
+            <div class="popups__popup css-boxed-content js-popups-single" data-popup="blog-download-<?php echo $post->post_name; ?>" aria-hidden="true" role="dialog">
+                <div role="document">
+                    <button class="popups__popup__close js-popups-single-close" title="<?php esc_attr_e(__('Close popup', 'visia')); ?>">
+                        <span class="popups__popup__close__line--left popups__popup__close__line"></span>
+
+                        <span class="popups__popup__close__line--right popups__popup__close__line"></span>
+                    </button>
+
+			        <?php if($popupTitle = get_the_title()) {
+				        echo '<h1 class="popups__popup__title css-title--small-size css-title">'.$popupTitle.'</h1>';
+			        }
+
+			        if($thankyouPage = get_field('bedanktpagina_formulier')) {
+				        $thankyouPage = substr(get_permalink($thankyouPage), strlen(home_url()));
+
+				        get_template_part('template-parts/forms/simple', null, array(
+					        'wrapper_class' => 'popups__popup__form',
+					        'form_name' => 'blog-download-'.$post->post_name,
+					        'thankyou_page' => $thankyouPage,
+					        'button' => get_field('knop_label')
+				        ));
+			        } ?>
+                </div>
+            </div>
+        <?php } wp_reset_postdata();
+    } ?>
 
     <div class="popups__overlay js-popups-overlay" tabindex="-1"></div>
 </div>

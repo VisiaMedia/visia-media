@@ -3,11 +3,10 @@
 
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
     <div class="service-scroller js-service-scroller" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
-        <?php $serviceCount = 0; foreach($services as $service) { $serviceCount++;
-            if($service['titel'] || $service['content']) {
-	            $idSlug = sanitize_title($service['titel']); ?>
+        <?php foreach($services as $service) {
+            if($service['titel'] || $service['content']) { ?>
 
-                <section class="service-scroller__section js-service-scroller-section" id="<?php echo $serviceCount.$scrollTriggerCount.'-'.$idSlug; ?>">
+                <section class="service-scroller__section js-service-scroller-section">
                     <div class="css-max-text-width">
                         <div class="service-scroller__section__inner js-service-scroller-inner">
                             <div class="service-scroller__section__content">
@@ -57,14 +56,12 @@
                 </div>
 
                 <ul class="service-scroller__nav__list">
-		            <?php $serviceCount = 0; foreach($services as $service) { $serviceCount++;
-			            if($title = $service['titel']) {
-				            $idSlug = sanitize_title($title); ?>
-
+		            <?php foreach($services as $service) {
+			            if($title = $service['titel']) { ?>
                             <li class="service-scroller__nav__list__item">
-                                <a class="js-service-scroller-nav-list-item-link" data-service-scroller-item="<?php echo $serviceCount.$scrollTriggerCount.'-'.$idSlug; ?>" href="#<?php echo $serviceCount.$scrollTriggerCount.'-'.$idSlug; ?>"><?php echo $title; ?></a>
+                                <a class="js-service-scroller-nav-list-item-link" href="#<?php echo ($idSlug != $previousID) ? $idSlug : $idSlug.$serviceCount ?>"><?php echo do_shortcode($title); ?></a>
                             </li>
-			            <?php }
+                        <?php }
 		            } ?>
                 </ul>
             </div>

@@ -5,12 +5,16 @@ export function init(gsap, blobity, ScrollTrigger){
             oldColor,
             oldBackground,
             oldPlainColor,
+            oldLightBorderColor,
+            oldDropShadowColor,
             oldVisualFilter;
 
         gsap.utils.toArray(".js-global-color-change-trigger").forEach(function (globalColorChangeTrigger, i) {
             let colorReverse = oldColor,
                 backgroundReverse = oldBackground,
                 plainColorReverse = oldPlainColor,
+                lightBorderColorReverse = oldLightBorderColor,
+                dropShadowColorReverse = oldDropShadowColor,
                 visualFilterReverse = oldVisualFilter;
 
             gsap.to(".js-main-body-container", {
@@ -27,6 +31,8 @@ export function init(gsap, blobity, ScrollTrigger){
                         documentRoot.style.setProperty('--current-color', globalColorChangeTrigger.dataset.text);
                         documentRoot.style.setProperty('--current-background', globalColorChangeTrigger.dataset.background);
                         documentRoot.style.setProperty('--plain-text-color', globalColorChangeTrigger.dataset.plaintext);
+                        documentRoot.style.setProperty('--light-border-color', globalColorChangeTrigger.dataset.lightBorder);
+                        documentRoot.style.setProperty('--dropshadow-color', globalColorChangeTrigger.dataset.dropShadow);
                         documentRoot.style.setProperty('--visual-img-filter', globalColorChangeTrigger.dataset.visualFilter);
                     },
                     onLeaveBack:() => {
@@ -34,6 +40,8 @@ export function init(gsap, blobity, ScrollTrigger){
                             documentRoot.style.setProperty('--current-color', colorReverse);
                             documentRoot.style.setProperty('--current-background', backgroundReverse);
                             documentRoot.style.setProperty('--plain-text-color', plainColorReverse);
+                            documentRoot.style.setProperty('--light-border-color', lightBorderColorReverse);
+                            documentRoot.style.setProperty('--dropshadow-color', dropShadowColorReverse);
                             documentRoot.style.setProperty('--visual-img-filter', visualFilterReverse);
                         }
                     }
@@ -53,6 +61,8 @@ export function init(gsap, blobity, ScrollTrigger){
                     documentRoot.style.setProperty('--plain-text-color', globalColorChangeTrigger.dataset.plaintext);
                     documentRoot.style.setProperty('--visual-img-filter', globalColorChangeTrigger.dataset.visualFilter);
                     documentRoot.style.setProperty('--current-color', globalColorChangeTrigger.dataset.text);
+                    documentRoot.style.setProperty('--light-border-color', globalColorChangeTrigger.dataset.lightBorder);
+                    documentRoot.style.setProperty('--dropshadow-color', globalColorChangeTrigger.dataset.dropShadow);
                     documentRoot.style.setProperty('--current-background', globalColorChangeTrigger.dataset.background);
                 },
                 onReverseComplete: () => {
@@ -69,6 +79,9 @@ export function init(gsap, blobity, ScrollTrigger){
                             documentRoot.style.setProperty('--plain-text-color', plainColorReverse);
                             documentRoot.style.setProperty('--visual-img-filter', visualFilterReverse);
                             documentRoot.style.setProperty('--current-color', colorReverse);
+                            documentRoot.style.setProperty('--light-border-color', lightBorderColorReverse);
+                            documentRoot.style.setProperty('--dropshadow-color', dropShadowColorReverse);
+
                             documentRoot.style.setProperty('--current-background', backgroundReverse);
                         }
                     }
@@ -79,6 +92,8 @@ export function init(gsap, blobity, ScrollTrigger){
             oldBackground = globalColorChangeTrigger.dataset.background;
             oldPlainColor = globalColorChangeTrigger.dataset.plaintext;
             oldVisualFilter = globalColorChangeTrigger.dataset.visualFilter;
+            oldLightBorderColor = globalColorChangeTrigger.dataset.lightBorder;
+            oldDropShadowColor = globalColorChangeTrigger.dataset.dropShadow;
         });
     }
 }

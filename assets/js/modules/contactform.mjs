@@ -189,40 +189,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
                     });
                 });
             }
-
-            /* Add event listeners for button */
-            if(contactForm.querySelector('.js-contact-form-button')) {
-                const formSubmitButton = contactForm.querySelector('.js-contact-form-button'),
-                    formSubmitButtonOutline = contactForm.querySelector('.js-contact-form-button-outline');
-
-                formSubmitButton.addEventListener("mouseenter", function() {
-                    if(window.matchMedia("(pointer: fine)").matches) {
-                        blobity.updateOptions({
-                            opacity: 0
-                        });
-
-                        /* Show outline */
-                        gsap.to(formSubmitButtonOutline, {
-                            duration:.225,
-                            inset: '-8px'
-                        });
-                    }
-                });
-
-                formSubmitButton.addEventListener("mouseleave", function() {
-                    if(window.matchMedia("(pointer: fine)").matches) {
-                        blobity.updateOptions({
-                            opacity:0.1
-                        });
-
-                        /* Hide outline */
-                        gsap.to(formSubmitButtonOutline, {
-                            duration:.225,
-                            inset: '0px'
-                        });
-                    }
-                });
-            }
         });
     }
 }

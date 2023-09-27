@@ -53,10 +53,10 @@
 
                         <span class="contact-form__content__form__border js-contact-form-border"></span>
 
-                        <button class="contact-form__content__form__button js-contact-form-button" type="submit">
-                            <span class="contact-form__content__form__button__outline js-contact-form-button-outline"></span>
+                        <button class="contact-form__content__form__button css-rounded-button js-rounded-button" type="submit">
+                            <span class="css-rounded-button-outline js-rounded-button-outline"></span>
 
-                            <span class="contact-form__content__form__button__label"><?php _e('Discuss project', 'visia'); ?></span>
+                            <span class="css-rounded-button-label"><?php _e('Discuss project', 'visia'); ?></span>
                         </button>
                     </form>
 

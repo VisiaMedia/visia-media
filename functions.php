@@ -119,25 +119,26 @@
 		return rtrim($string);
 	} add_shortcode('h', 'visia_shortcode_highlight');
 
-    /* Free download */
-	function visia_shortcode_free_download($atts){
-		$atts = shortcode_atts(array(
-            'titel' => 'Gratis download',
-            'afbeelding_url' => '',
-            'file_url' => ''
+    /* Blog download */
+	function visia_shortcode_blog_download($atts) {
+        $atts = shortcode_atts(array(
+            'id' => '',
         ), $atts);
 
 		ob_start();
 
-		/* Shortcode HTML includen */
-		require 'template-parts/shortcodes/free-download.php';
+		require 'template-parts/shortcodes/blog-download.php';
 
-		/* HTML opschonen */
 		$output = ob_get_contents();
 		ob_end_clean();
 
 		return $output;
-	} add_shortcode('free_download', 'visia_shortcode_free_download');
+	} add_shortcode('blog_download', 'visia_shortcode_blog_download');
+
+	/* Inhoudsopgave */
+	function visia_shortcode_inhoudsopgave() {
+		return '<nav class="table-of-contents js-table-of-contents"><h3 class="table-of-contents__title">'.__('Table of contents', 'visia').'</h3><ol class="table-of-contents__list js-table-of-contents-list"></ol></nav>';
+	} add_shortcode('inhoudsopgave', 'visia_shortcode_inhoudsopgave');
 
 
 	/* Filter for the archive title */
@@ -170,7 +171,7 @@
 
 			$output .= "<div class='js-main-menu-item-wrapper'>";
 
-			$output .= '<a id="'.$item->ID.'" class="main-menu__container__menu__item__link js-main-menu-item-link'.(($item->current) ? ' js-main-menu-item-link-active' : '').'" href="'.$item->url.'" data-no-blobity>';
+			$output .= '<a id="menuItem'.$item->object_id.'" class="main-menu__container__menu__item__link js-main-menu-item-link'.(($item->current) ? ' js-main-menu-item-link-active' : '').'" href="'.$item->url.'" data-no-blobity>';
 
 			$output .= $item->title;
 
@@ -208,7 +209,7 @@
 			'public'                => true,
 			'show_ui'               => true,
 			'show_in_menu'          => true,
-			'menu_position'         => 5,
+			'menu_position'         => 22,
 			'menu_icon'             => 'dashicons-thumbs-up',
 			'show_in_admin_bar'     => true,
 			'show_in_nav_menus'     => true,
@@ -243,7 +244,7 @@
 			'public'                => true,
 			'show_ui'               => true,
 			'show_in_menu'          => true,
-			'menu_position'         => 5,
+			'menu_position'         => 21,
 			'menu_icon'             => 'dashicons-thumbs-up',
 			'show_in_admin_bar'     => true,
 			'show_in_nav_menus'     => true,
@@ -296,7 +297,38 @@
 
 
 
-	/* Custom post types - Projecten */
+	/* Custom post types - Reviews */
+	function custom_post_type_visia_blog_downloads() {
+		register_post_type('blog_downloads', array(
+			'label'                 => __('Blog downloads', 'visia'),
+			'description'           => __('All blog downloads', 'visia'),
+			'labels'                => array(
+				'name'                  => __('Blog downloads', 'visia'),
+				'singular_name'         => __('Blog download', 'visia'),
+				'menu_name'             => __('Blog downloads', 'visia'),
+				'name_admin_bar'        => __('Blod downloads', 'visia'),
+				'archives'              => __('Blog downloads', 'visia')
+			),
+			'supports'              => array('title'),
+			'hierarchical'          => false,
+			'public'                => true,
+			'show_ui'               => true,
+			'show_in_menu'          => true,
+			'menu_position'         => 6,
+			'menu_icon'             => 'dashicons-open-folder',
+			'show_in_admin_bar'     => true,
+			'show_in_nav_menus'     => false,
+			'can_export'            => true,
+			'has_archive'           => false,
+			'exclude_from_search'   => false,
+			'publicly_queryable'    => false,
+			'capability_type'       => 'post'
+		));
+	} add_action('init', 'custom_post_type_visia_blog_downloads', 0 );
+
+
+
+    /* Custom post types - Projecten */
 	function custom_post_type_visia_cases() {
 		register_post_type('case', array(
 			'label'                 => __('Cases', 'visia'),
@@ -313,7 +345,7 @@
 			'public'                => true,
 			'show_ui'               => true,
 			'show_in_menu'          => true,
-			'menu_position'         => 5,
+			'menu_position'         => 7,
 			'menu_icon'             => 'dashicons-align-wide',
 			'show_in_admin_bar'     => true,
 			'show_in_nav_menus'     => true,
@@ -348,10 +380,10 @@
 			'public'                => true,
 			'show_ui'               => true,
 			'show_in_menu'          => true,
-			'menu_position'         => 5,
+			'menu_position'         => 8,
 			'menu_icon'             => 'dashicons-format-status',
 			'show_in_admin_bar'     => true,
-			'show_in_nav_menus'     => true,
+			'show_in_nav_menus'     => false,
 			'can_export'            => true,
 			'has_archive'           => false,
 			'exclude_from_search'   => false,
@@ -504,8 +536,6 @@ class Sasser {
 
 
 
-
-
 /* Function for outputting the color change trigger */
 function global_color_change_trigger($colorScheme, $background = null, $text = null) {
 	global $currBackground, $currText, $scrollTriggerCount;
@@ -515,13 +545,17 @@ function global_color_change_trigger($colorScheme, $background = null, $text = n
 		$text = '#ffffff';
 		$plainText = '#acb0ba';
 		$visualFilter = 'invert(1)';
+        $lightBorderColor = '#ffffff0F';
+        $dropShadowColor = '#ffffff0D';
 	} elseif($colorScheme == 'white') {
 		$background = '#ffffff';
-		$text = '#231F20';
-		$plainText = '#757374';
+		$text = '#212121';
+		$plainText = '#6e6e6e';
 		$visualFilter = 'invert(0)';
+		$lightBorderColor = '#2121210F';
+		$dropShadowColor = '#2121210D';
 	} else {
-		$plainText = $text;
+		$plainText = $text.'A6';
 
 		/* Access class */
 		$sasser = new Sasser();
@@ -536,12 +570,15 @@ function global_color_change_trigger($colorScheme, $background = null, $text = n
 		} else {
 			$visualFilter = 'invert(1)';
 		}
+
+		$lightBorderColor = $text.'0F';
+		$dropShadowColor = $text.'0D';
 	}
 
 	if($currBackground != $background || $currText != $text) {
 		$scrollTriggerCount--;
 
-		echo '<div class="js-global-color-change-trigger" data-background="'.$background.'" data-text="'.$text.'" data-plaintext="'.$plainText.'" data-st-count="'.$scrollTriggerCount.'" data-visual-filter="'.$visualFilter.'"></div>';
+		echo '<div class="js-global-color-change-trigger" data-background="'.$background.'" data-text="'.$text.'" data-plaintext="'.$plainText.'" data-st-count="'.$scrollTriggerCount.'" data-light-border="'.$lightBorderColor.'" data-drop-shadow="'.$dropShadowColor.'" data-visual-filter="'.$visualFilter.'"></div>';
 	}
 
 	$currBackground = $background;
@@ -575,22 +612,6 @@ function remove_content_editor() {
 } add_action('admin_head', 'remove_content_editor');
 
 
-
-
-
-
-
-
-
-
-/* Function for outputting device */
-function get_device_image($imageID, $type, $class) {
-	$device = '';
-
-    $device .= '<div class="phone"><div class="inner"><div class="notch"></div>'.wp_get_attachment_image($imageID, 'large').'</div></div>';
-
-    return $device;
-}
 
 
 

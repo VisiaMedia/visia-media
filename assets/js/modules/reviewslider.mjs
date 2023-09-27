@@ -1,5 +1,7 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, blobity, callAfterResize, tlTextReveal, tlFadeIn){
+import {getSiblings} from "../helpers/functions.mjs";
+
+export function init(gsap, ScrollTrigger, blobity, callAfterResize, tlTextReveal, tlFadeIn, getSiblings){
     if(document.querySelector('.js-review-slider')) {
         const reviewSliders = gsap.utils.toArray('.js-review-slider');
 
@@ -80,11 +82,13 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, tlTextReveal
                             /* Fade in slide */
                             gsap.to(reviewSliderListItem, {
                                 delay:.25,
-                                autoAlpha: 1
+                                autoAlpha: 1,
+                                overwrite: true
                             });
                         } else {
                             gsap.to(reviewSliderListItem, {
-                                autoAlpha: 0
+                                autoAlpha: 0,
+                                overwrite: true
                             });
                         }
                     }

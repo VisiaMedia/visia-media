@@ -25,39 +25,6 @@ export function init(gsap, blobity){
                     }
                 });
             });
-
-            /* Add event listeners for simple buttons */
-            if(form.querySelector('.js-form-submit-button-simple')) {
-                const formSubmitButtonSimple = form.querySelector('.js-form-submit-button-simple'),
-                    formSubmitButtonOutline = formSubmitButtonSimple.querySelector('.js-form-submit-button-simple-outline');
-
-                formSubmitButtonSimple.addEventListener("mouseenter", function() {
-                    if(window.matchMedia("(pointer: fine)").matches) {
-                        blobity.updateOptions({
-                            opacity: 0
-                        });
-
-                        /* Show outline */
-                        gsap.to(formSubmitButtonOutline, {
-                            duration:.225,
-                            inset: '-8px'
-                        });
-                    }
-                });
-                formSubmitButtonSimple.addEventListener("mouseleave", function() {
-                    if(window.matchMedia("(pointer: fine)").matches) {
-                        blobity.updateOptions({
-                            opacity:0.1
-                        });
-
-                        /* Hide outline */
-                        gsap.to(formSubmitButtonOutline, {
-                            duration:.225,
-                            inset: '0px'
-                        });
-                    }
-                });
-            }
         });
     }
 }

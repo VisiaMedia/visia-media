@@ -8,7 +8,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlSetup, tlTextReveal
 
 
         /* Build timeline */
-        function buildTimeline() {
+        let buildTimeline = function() {
             /* Add animation for headline reveal */
             if (blogSingle.querySelector('.js-blog-single-header-headline')) {
                 tlTextReveal(blogSingle.querySelector('.js-blog-single-header-headline'), timeline);
@@ -96,7 +96,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlSetup, tlTextReveal
 
 
         /* Build timeline */
-        function buildTimeline() {
+        let buildTimeline = function() {
             /* Add animation for headline reveal */
             if(relatedPostsSection.querySelector('.js-related-posts-title')) {
                 tlTextReveal(relatedPostsSection.querySelector('.js-related-posts-title'), timeline);

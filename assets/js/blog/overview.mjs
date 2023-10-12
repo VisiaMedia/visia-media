@@ -1,29 +1,69 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn, dayjs, InfiniteScroll){
+export function init(gsap, ScrollTrigger, callAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, InfiniteScroll){
     if(document.querySelector('.js-blog-home')) {
         const blogHomes = gsap.utils.toArray('.js-blog-home');
 
+        /* Loop over instances */
         blogHomes.forEach(blogHome => {
+            /* Setup timeline */
+            let timeline = tlSetup(blogHome, blogHome.dataset.stCount);
+
+
+            /* Build timeline */
+            function buildTimeline() {
+                /* Add animation for title reveal */
+                if(blogHome.querySelector('.js-blog-home-title')) {
+                    tlFadeIn(blogHome.querySelector('.js-blog-home-title'), timeline)
+                }
+
+                /* Add animation for headline reveal */
+                if(blogHome.querySelector('.js-blog-home-headline')) {
+                    tlTextReveal(blogHome.querySelector('.js-blog-home-headline'), timeline);
+                }
+
+                /* Add animation for posts reveal */
+                if(blogHome.querySelector('.js-blog-home-list')) {
+                    tlFadeIn(blogHome.querySelector('.js-blog-home-list'), timeline)
+                }
+            }
+
+            /* Execute once */
+            buildTimeline();
+
+
+            /* Clear and rebuild timeline on resize */
+            callAfterResize(function() {
+                timeline.clear();
+
+                buildTimeline();
+            });
+
+
+
+
+            /* Animate individual items */
             const blogHomeItems = blogHome.querySelectorAll('.js-blog-home-item');
 
             /* Setup function for individual items */
-            function setupHomeItems(item) {
-                /* Add reveal animation */
-                gsap.set(item, {
-                    autoAlpha:0,
-                    y: "1.5rem"
-                });
+            function setupHomeItems(item, isnew) {
+                /* Add reveal animation for new items*/
+                if(isnew) {
+                    gsap.set(item, {
+                        autoAlpha:0,
+                        y: "1.5rem"
+                    });
 
-                gsap.to(item, {
-                    autoAlpha: 1,
-                    y: "0rem",
-                    scrollTrigger: {
-                        trigger: item,
-                        start: "top 75%",
-                        once: true,
-                        refreshPriority: blogHome.dataset.stCount
-                    }
-                });
+                    gsap.to(item, {
+                        autoAlpha: 1,
+                        y: "0rem",
+                        scrollTrigger: {
+                            trigger: item,
+                            start: "top 75%",
+                            once: true,
+                            refreshPriority: blogHome.dataset.stCount
+                        }
+                    });
+                }
 
 
                 /* Set "from-now" date */
@@ -39,7 +79,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
 
                 /* Set pointer events for thumbnail */
                 if(window.matchMedia("(pointer: fine)").matches) {
-                    if(item.querySelector('.js-blog-home-thumb-img') && item.querySelector('.js-blog-home-thumb')) {
+                    if(item.querySelector('.js-blog-home-thumb-img')) {
                         let blogItemLink = item.querySelector('.js-blog-home-link'),
                             blogItemThumbImg = item.querySelector('.js-blog-home-thumb-img');
 
@@ -61,28 +101,30 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
 
             /* Setup initial items */
             blogHomeItems.forEach(blogHomeItem => {
-                setupHomeItems(blogHomeItem);
+                setupHomeItems(blogHomeItem, false);
             });
 
 
 
             /* Setup Infinite Scroll */
-            const blogHomeList = blogHome.querySelector('.js-blog-home-list');
-            const infScroll = new InfiniteScroll(blogHomeList, {
-                path: '.js-blog-home-nav-next',
-                append: '.js-blog-home-item',
-                history: false,
-                status: '.js-blog-home-status'
-            });
-
-            /* Init items after appending */
-            infScroll.on('append', function(body, path, items) {
-                items.forEach(item => {
-                    setupHomeItems(item);
+            if(blogHome.querySelector('.js-infinite-scroll-container')) {
+                const infiniteScrollContainer = blogHome.querySelector('.js-infinite-scroll-container');
+                const infScroll = new InfiniteScroll(infiniteScrollContainer, {
+                    path: '.js-blog-home-nav-next',
+                    append: '.js-blog-home-item',
+                    history: false,
+                    status: '.js-blog-home-status'
                 });
 
-                ScrollTrigger.refresh();
-            });
+                /* Init items after appending */
+                infScroll.on('append', function(body, path, items) {
+                    items.forEach(item => {
+                        setupHomeItems(item, true);
+                    });
+
+                    ScrollTrigger.refresh();
+                });
+            }
         });
     }
 }

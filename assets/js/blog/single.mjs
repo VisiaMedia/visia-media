@@ -1,159 +1,182 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn, dayjs, getSiblings){
+export function init(gsap, ScrollTrigger, callAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings){
     if(document.querySelector('.js-blog-single')) {
         const blogSingle = document.querySelector('.js-blog-single');
 
-        /* Wrap setup in self starting function */
-        let firstSetup = true,
-            setupBlogSingle;
+        /* Setup timeline */
+        let timeline = tlSetup(blogSingle, blogSingle.dataset.stCount);
 
-        (setupBlogSingle = function(){
-            /* Setup timeline for various animations */
-            let blogSingleTl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: blogSingle,
-                    start: "top center",
-                    once: true,
-                    invalidateOnRefresh: true,
-                    refreshPriority: blogSingle.dataset.stCount
-                },
-                onComplete: () => {
-                    blogSingleTl.clear();
-                }
-            });
 
-            /* Clear timeline on resize */
-            callAfterResize(function() {
-                blogSingleTl.clear();
-            });
-
-            /* Disable timeline and wait for initial reveal animation to enable */
-            if(firstSetup === true) {
-                blogSingleTl.scrollTrigger.disable();
+        /* Build timeline */
+        function buildTimeline() {
+            /* Add animation for headline reveal */
+            if (blogSingle.querySelector('.js-blog-single-header-headline')) {
+                tlTextReveal(blogSingle.querySelector('.js-blog-single-header-headline'), timeline);
             }
 
+            /* Add animation for blog-meta reveal */
+            if (blogSingle.querySelector('.js-blog-single-header-blog-meta')) {
+                tlFadeIn(blogSingle.querySelector('.js-blog-single-header-blog-meta'), timeline);
+            }
 
             /* Add animation for text reveal */
-            if(blogSingle.querySelector('.js-blog-single-content')) {
-                tlFadeIn(blogSingle.querySelector('.js-blog-single-content'), blogSingleTl);
+            if (blogSingle.querySelector('.js-blog-single-content')) {
+                tlFadeIn(blogSingle.querySelector('.js-blog-single-content'), timeline);
+            }
+        }
+
+        /* Execute once */
+        buildTimeline();
+
+
+        /* Clear and rebuild timeline on resize */
+        callAfterResize(function () {
+            timeline.clear();
+
+            buildTimeline();
+        });
+    }
+
+
+
+
+    /* Post tags */
+    if(document.querySelector('.js-tag-list')) {
+        const tagList = document.querySelector('.js-tag-list');
+
+        gsap.set(tagList, {
+            autoAlpha:0,
+            y: "1.5rem"
+        });
+
+        gsap.to(tagList, {
+            scrollTrigger: {
+                trigger: tagList,
+                start: "top center",
+                once: true,
+                invalidateOnRefresh: true
+            },
+            autoAlpha: 1,
+            y: "0rem"
+        });
+    }
+
+
+
+    /* External items */
+    if(document.querySelector('.js-external-items')) {
+        const externalItems = document.querySelector('.js-external-items');
+
+        gsap.set(externalItems, {
+            autoAlpha:0,
+            y: "1.5rem"
+        });
+
+        gsap.to(externalItems, {
+            scrollTrigger: {
+                trigger: externalItems,
+                start: "top center",
+                once: true,
+                invalidateOnRefresh: true
+            },
+            autoAlpha: 1,
+            y: "0rem"
+        });
+    }
+
+
+
+    /* Setup related posts section */
+    if(document.querySelector('.js-related-posts')) {
+        let relatedPostsSection = document.querySelector('.js-related-posts'),
+            relatedPostItems = relatedPostsSection.querySelectorAll('.js-related-posts-item');
+
+        /* Setup timeline */
+        let timeline = tlSetup(relatedPostsSection, relatedPostsSection.dataset.stCount);
+
+
+        /* Build timeline */
+        function buildTimeline() {
+            /* Add animation for headline reveal */
+            if(relatedPostsSection.querySelector('.js-related-posts-title')) {
+                tlTextReveal(relatedPostsSection.querySelector('.js-related-posts-title'), timeline);
             }
 
-            firstSetup = false;
-        })();
+            /* Add animation for showing items */
+            timeline.fromTo(relatedPostItems, {
+                autoAlpha:0,
+                y: "1.5rem",
+            }, {
+                autoAlpha: 1,
+                y: "0rem",
+                stagger: .2
+            });
+        }
 
-        /* Resetup blog after resize */
-        callAfterResize(setupBlogSingle);
+        /* Execute once */
+        buildTimeline();
+
+
+        /* Clear and rebuild timeline on resize */
+        callAfterResize(function () {
+            timeline.clear();
+
+            buildTimeline();
+        });
 
 
 
-        /* Setup related posts section */
-        if(document.querySelector('.js-related-posts')) {
-            let firstSetup = true,
-                setupRelatedPosts;
+        /* Set relative date via dayjs */
+        relatedPostItems.forEach(relatedPostItem => {
+            let postDateElem = relatedPostItem.querySelector('.js-related-posts-item-from-now'),
+                postDate = postDateElem.getAttribute('datetime'),
+                postFromNow = dayjs(postDate).fromNow();
 
-            (setupRelatedPosts = function(){
-                /* Get all related posts instances as array */
-                const relatedPostsSections = gsap.utils.toArray('.js-related-posts');
+            /* Set text for date element */
+            postDateElem.textContent = postFromNow;
+        });
 
-                /* Loop over posts instances */
-                relatedPostsSections.forEach(relatedPostsSection => {
 
-                    /* Setup timeline for various animations */
-                    let relatedPostsSectionTL = gsap.timeline({
-                        scrollTrigger: {
-                            trigger: relatedPostsSection,
-                            start: "top center",
-                            once: true,
-                            invalidateOnRefresh: true,
-                            refreshPriority: relatedPostsSection.dataset.stCount
-                        },
-                        onComplete: () => {
-                            relatedPostsSectionTL.clear();
+
+
+        /* Setup event listeners */
+        if(window.matchMedia("(pointer: fine)").matches) {
+            relatedPostItems.forEach(relatedPostItem => {
+                const relatedPostItemTitle = relatedPostItem.querySelector('.js-related-posts-item-title'),
+                    relatedPostItemSiblings = getSiblings(relatedPostItem);
+
+                /* Prepare element for hover state */
+                gsap.set(relatedPostItemTitle, {
+                    paddingRight: '0.5em'
+                });
+
+                /* Event listeners */
+                relatedPostItem.addEventListener("mouseenter", function() {
+                    gsap.to(relatedPostItem, {
+                        borderBottomColor: () => {
+                            return getComputedStyle(document.documentElement).getPropertyValue('--plain-text-color');
                         }
+                    })
+
+                    gsap.to(relatedPostItemTitle, {
+                        x: "0.5em"
                     });
 
-                    /* Clear timeline on resize */
-                    callAfterResize(function() {
-                        relatedPostsSectionTL.clear();
-                    });
-
-                    /* Disable timeline and wait for initial reveal animation to enable */
-                    if(firstSetup === true) {
-                        relatedPostsSectionTL.scrollTrigger.disable();
-                    }
-
-                    /* Loop over and show posts */
-                    let relatedPostItems = relatedPostsSection.querySelectorAll('.js-related-posts-item');
-
-                    gsap.set(relatedPostItems, {
-                        autoAlpha:0,
-                        y: "1.5rem"
-                    });
-
-                    relatedPostsSectionTL.to(relatedPostItems, {
-                        autoAlpha: 1,
-                        y: "0rem",
-                        stagger: .2
-                    });
-
-                    /* Set relative date via dayjs */
-                    relatedPostItems.forEach(relatedPostItem => {
-                        let postDateElem = relatedPostItem.querySelector('.js-related-posts-item-from-now'),
-                            postDate = postDateElem.getAttribute('datetime'),
-                            postFromNow = dayjs(postDate).fromNow();
-
-                        /* Set text for date element */
-                        postDateElem.textContent = postFromNow;
+                    gsap.to(relatedPostItemSiblings, {
+                        autoAlpha: .25
                     });
                 });
 
-                firstSetup = false;
-            })();
-
-            /* Resetup statements after resize */
-            callAfterResize(setupRelatedPosts);
-
-
-
-            /* Setup event listeners */
-            if(window.matchMedia("(pointer: fine)").matches) {
-                gsap.utils.toArray('.js-related-posts-item').forEach(relatedPostItem => {
-                    const relatedPostItemTitle = relatedPostItem.querySelector('.js-related-posts-item-title'),
-                        relatedPostItemSiblings = getSiblings(relatedPostItem);
-
-                    /* Prepare element for hover state */
-                    gsap.set(relatedPostItemTitle, {
-                        paddingRight: '0.5em'
+                relatedPostItem.addEventListener("mouseleave", function() {
+                    gsap.to(relatedPostItemTitle, {
+                        x: "0"
                     });
 
-                    /* Event listeners */
-                    relatedPostItem.addEventListener("mouseenter", function() {
-                        gsap.to(relatedPostItem, {
-                            borderBottomColor: () => {
-                                return getComputedStyle(document.documentElement).getPropertyValue('--plain-text-color');
-                            }
-                        })
-
-                        gsap.to(relatedPostItemTitle, {
-                            x: "0.5em"
-                        });
-
-                        gsap.to(relatedPostItemSiblings, {
-                            autoAlpha: .25
-                        });
-                    });
-
-                    relatedPostItem.addEventListener("mouseleave", function() {
-                        gsap.to(relatedPostItemTitle, {
-                            x: "0"
-                        });
-
-                        gsap.to(relatedPostItemSiblings, {
-                            autoAlpha: 1
-                        });
+                    gsap.to(relatedPostItemSiblings, {
+                        autoAlpha: 1
                     });
                 });
-            }
+            });
         }
     }
 }

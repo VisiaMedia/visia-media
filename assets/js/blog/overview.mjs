@@ -10,7 +10,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlSetup, tlTextReveal
 
 
             /* Build timeline */
-            function buildTimeline() {
+            let buildTimeline = function() {
                 /* Add animation for title reveal */
                 if(blogHome.querySelector('.js-blog-home-title')) {
                     tlFadeIn(blogHome.querySelector('.js-blog-home-title'), timeline)

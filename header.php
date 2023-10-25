@@ -27,7 +27,11 @@
 
 <body <?php body_class(); ?>>
 
-<div class="js-main-body-container css-main-body-container" aria-hidden="false">
+<div class="loader js-loader">
+    <i class="loader__spinner fa-duotone fa-spinner-third fa-spin" style="--fa-secondary-opacity: 0.25;"></i>
+</div>
+
+<div class="css-main-body-container js-main-body-container" aria-hidden="false">
 
 <nav class="top-bar js-top-bar">
     <a class="top-bar__logo js-top-bar-logo" href="<?php echo get_home_url(); ?>">
@@ -155,8 +159,4 @@
 
 <div class="js-swap-container">
 
-<?php if(is_singular('post')) {
-	get_template_part('template-parts/modules/header', 'single_post');
-} else {
-    get_template_part('template-parts/modules/header');
-} ?>
+<?php get_template_part('template-parts/modules/header', get_post_type(get_queried_object_id())); ?>

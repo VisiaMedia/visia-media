@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Visia Media\n"
-"POT-Creation-Date: 2023-09-13 13:55+0200\n"
+"POT-Creation-Date: 2023-10-24 17:47+0200\n"
 "PO-Revision-Date: 2023-01-27 15:41+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -20,6 +20,67 @@ msgstr ""
 "_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: archive.php:20 single-post.php:35
+msgid "Category"
+msgstr ""
+
+#: archive.php:22
+msgid "Tag"
+msgstr ""
+
+#: archive.php:24 single-post.php:27
+msgid "Author"
+msgstr ""
+
+#: archive.php:50 home.php:27
+#, php-format
+msgid "Reading time: %s minutes"
+msgstr ""
+
+#: archive.php:72 home.php:49
+msgid "Previous page"
+msgstr ""
+
+#: archive.php:74 home.php:51
+msgid "Next page"
+msgstr ""
+
+#: dist/gsap-ec852548.js:1
+msgid "paddingLeft"
+msgstr ""
+
+#: dist/gsap-ec852548.js:1
+msgid "borderBottomWidth"
+msgstr ""
+
+#: dist/gsap-ec852548.js:1
+msgid "borderTopWidth"
+msgstr ""
+
+#: dist/gsap-ec852548.js:1
+msgid "borderLeftWidth"
+msgstr ""
+
+#: dist/gsap-ec852548.js:1
+msgid "borderRightWidth"
+msgstr ""
+
+#: dist/gsap-ec852548.js:1
+msgid "paddingTop"
+msgstr ""
+
+#: dist/gsap-ec852548.js:1
+msgid "paddingBottom"
+msgstr ""
+
+#: dist/gsap-ec852548.js:1
+msgid "paddingRight"
+msgstr ""
+
+#: dist/gsap-ec852548.js:1
+msgid "fontSize"
+msgstr ""
 
 #: footer.php:9
 msgid "What we do"
@@ -53,99 +114,116 @@ msgstr ""
 msgid "Knowledge base"
 msgstr ""
 
-#: footer.php:138
+#: footer.php:160 footer.php:194
 msgid "Close popup"
 msgstr ""
 
-#: footer.php:159
+#: footer.php:181
 msgid "Request presentation"
 msgstr ""
 
-#: functions.php:29 header.php:54
+#: functions.php:30 header.php:54
 msgid "Main menu"
 msgstr ""
 
-#: functions.php:30
+#: functions.php:31
 msgid "Footer menu 1"
 msgstr ""
 
-#: functions.php:31
+#: functions.php:32
 msgid "Footer menu 2"
 msgstr ""
 
-#: functions.php:32
+#: functions.php:33
 msgid "Legal menu"
 msgstr ""
 
-#: functions.php:39
+#: functions.php:40
 msgid "General theme options"
 msgstr ""
 
-#: functions.php:40
+#: functions.php:41
 msgid "Theme options"
 msgstr ""
 
-#: functions.php:46 functions.php:47
+#: functions.php:47 functions.php:48
 msgid "Logo's"
 msgstr ""
 
-#: functions.php:53 functions.php:54
+#: functions.php:54 functions.php:55
 msgid "Team"
 msgstr ""
 
-#: functions.php:60 functions.php:61
+#: functions.php:61 functions.php:62
 msgid "CTA's"
 msgstr ""
 
-#: functions.php:152 functions.php:155 functions.php:157 functions.php:158
-#: functions.php:159
+#: functions.php:145
+msgid "Table of contents"
+msgstr ""
+
+#: functions.php:219 functions.php:222 functions.php:224 functions.php:225
+#: functions.php:226
 msgid "Thank you pages"
 msgstr ""
 
-#: functions.php:153
+#: functions.php:220
 msgid "All thank you pages"
 msgstr ""
 
-#: functions.php:156
+#: functions.php:223
 msgid "Thank you page"
 msgstr ""
 
-#: functions.php:187 functions.php:190 functions.php:192 functions.php:193
-#: functions.php:194
+#: functions.php:254 functions.php:257 functions.php:259 functions.php:260
+#: functions.php:261
 msgid "Landing pages"
 msgstr ""
 
-#: functions.php:188
+#: functions.php:255
 msgid "All landing pages"
 msgstr ""
 
-#: functions.php:191
+#: functions.php:258
 msgid "Landing page"
 msgstr ""
 
-#: functions.php:257 functions.php:260 functions.php:262 functions.php:263
-#: functions.php:264
+#: functions.php:324 functions.php:327 functions.php:329 functions.php:330
+#: functions.php:331
+msgid "Blog downloads"
+msgstr ""
+
+#: functions.php:325
+msgid "All blog downloads"
+msgstr ""
+
+#: functions.php:328
+msgid "Blog download"
+msgstr ""
+
+#: functions.php:355 functions.php:358 functions.php:360 functions.php:361
+#: functions.php:362
 msgid "Cases"
 msgstr ""
 
-#: functions.php:258
+#: functions.php:356
 msgid "All cases"
 msgstr ""
 
-#: functions.php:261
+#: functions.php:359 template-parts/modules/header-case.php:8
 msgid "Case"
 msgstr ""
 
-#: functions.php:292 functions.php:295 functions.php:297 functions.php:298
-#: functions.php:299
+#: functions.php:390 functions.php:393 functions.php:395 functions.php:396
+#: functions.php:397
 msgid "Reviews"
 msgstr ""
 
-#: functions.php:293
+#: functions.php:391
 msgid "All reviews"
 msgstr ""
 
-#: functions.php:296
+#: functions.php:394
 msgid "Review"
 msgstr ""
 
@@ -157,17 +235,30 @@ msgstr ""
 msgid "Follow us"
 msgstr ""
 
-#: home.php:21
+#: single-post.php:19
+msgid "Date"
+msgstr ""
+
+#: single-post.php:43
+msgid "Reading time"
+msgstr ""
+
+#: single-post.php:45
 #, php-format
-msgid "Reading time: %s minutes"
+msgid "%s minutes"
 msgstr ""
 
-#: home.php:42
-msgid "Previous page"
+#: single-post.php:65
+msgid "Other interesting articles:"
 msgstr ""
 
-#: home.php:44
-msgid "Next page"
+#: single-post.php:117
+msgid "Related posts"
+msgstr ""
+
+#: single-post.php:135 template-parts/modules/recent_posts.php:32
+#, php-format
+msgid "%s minutes reading time"
 msgstr ""
 
 #: template-parts/forms/simple.php:11 template-parts/forms/simple.php:15
@@ -211,34 +302,20 @@ msgstr ""
 msgid "Discuss project"
 msgstr ""
 
-#: template-parts/modules/header-single_post.php:17
-msgid "Date"
+#: template-parts/modules/header-case.php:15
+msgid "Client"
 msgstr ""
 
-#: template-parts/modules/header-single_post.php:25
-msgid "Author"
+#: template-parts/modules/header-case.php:24
+msgid "Deliverables"
 msgstr ""
 
-#: template-parts/modules/header-single_post.php:33
-msgid "Category"
-msgstr ""
-
-#: template-parts/modules/header-single_post.php:41
-msgid "Reading time"
-msgstr ""
-
-#: template-parts/modules/header-single_post.php:43
-#, php-format
-msgid "%s minutes"
+#: template-parts/modules/header-case.php:32
+msgid "Year"
 msgstr ""
 
 #: template-parts/modules/projectgrid.php:48
 msgid "Show more cases"
-msgstr ""
-
-#: template-parts/modules/recent_posts.php:32
-#, php-format
-msgid "%s minutes reading time"
 msgstr ""
 
 #: template-parts/sections/block-cta_presentation.php:13

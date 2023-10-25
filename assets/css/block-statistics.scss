@@ -1,0 +1,58 @@
+@import './assets/css/reset/core';
+
+.statistics {
+  padding:var(--offset-vertical) var(--offset-side);
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--offset-vertical);
+    align-content: center;
+    align-items: center;
+    justify-content: space-around;
+    text-align: center;
+
+    @media only screen and (max-width: 600px) {
+      gap:var(--offset-vertical) var(--offset-side);
+    }
+
+    &__item {
+      flex:1 1 calc(50% - var(--offset-vertical) / 2);
+
+      @media only screen and (max-width: 600px) {
+        flex-basis: 100%;
+      }
+
+      &__waarde {
+        display: block;
+        margin-bottom: .25rem;
+        line-height: 1.2;
+        font-weight: $semibold-weight;
+        font-size:2.75em;
+
+        @media only screen and (max-width: 1080px) {
+          font-size:2.5em;
+        }
+        @media only screen and (max-width: 900px) {
+          font-size:2.25em;
+        }
+        @media only screen and (max-width: 810px) {
+          font-size:2em;
+        }
+        @media only screen and (max-width: 600px) {
+          font-size:1.75em;
+        }
+        @media only screen and (max-width: 380px) {
+          font-size:1.5em;
+        }
+      }
+
+      &__subtext {
+        display: block;
+        color: var(--plain-text-color);
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+    }
+  }
+}

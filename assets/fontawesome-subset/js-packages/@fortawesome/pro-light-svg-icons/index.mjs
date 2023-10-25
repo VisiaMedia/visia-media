@@ -40,6 +40,11 @@ var faArrowDown = {
   iconName: 'arrow-down',
   icon: [384, 512, [8595], "f063", "M378.8 309.8l-176 165.9C199.7 478.6 195.9 480 192 480s-7.719-1.426-10.77-4.31l-176-165.9C-1.297 303.6-1.781 293.1 4.156 286.3c5.953-6.838 16.09-7.259 22.61-1.134L176 425.9V48.59c0-9.171 7.156-16.59 15.1-16.59S208 39.42 208 48.59v377.3l149.2-140.7c6.516-6.125 16.66-5.704 22.61 1.134C385.8 293.1 385.3 303.6 378.8 309.8z"]
 };
+var faCheck = {
+  prefix: 'fal',
+  iconName: 'check',
+  icon: [448, 512, [10003, 10004], "f00c", "M443.3 100.7C449.6 106.9 449.6 117.1 443.3 123.3L171.3 395.3C165.1 401.6 154.9 401.6 148.7 395.3L4.686 251.3C-1.562 245.1-1.562 234.9 4.686 228.7C10.93 222.4 21.06 222.4 27.31 228.7L160 361.4L420.7 100.7C426.9 94.44 437.1 94.44 443.3 100.7H443.3z"]
+};
 var faNotdef = {
   prefix: 'fal',
   iconName: 'notdef',
@@ -55,7 +60,8 @@ var icons = {
   faCaretDown: faCaretDown,
   faFileHeart: faFileHeart,
   faArrowDown: faArrowDown,
+  faCheck: faCheck,
   faNotdef: faNotdef
 };
 
-export { icons as fal, prefix, faArrowRight, faArrowUpRight, faSpinnerThird, faArrowLeft, faPresentationScreen, faPresentation, faCaretDown, faFileHeart, faArrowDown, faNotdef };
+export { icons as fal, prefix, faArrowRight, faArrowUpRight, faSpinnerThird, faArrowLeft, faPresentationScreen, faPresentation, faCaretDown, faFileHeart, faArrowDown, faCheck, faNotdef };

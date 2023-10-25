@@ -149,6 +149,40 @@ caret-down:
   label: Caret Down
   unicode: f0d7
   voted: false
+check:
+  aliases:
+    unicodes:
+      composite:
+        - '2713'
+        - '2714'
+      secondary:
+        - 10f00c
+  changes:
+    - 1.0.0
+    - 5.0.0
+    - 6.0.0-beta1
+    - 6.0.0
+    - 6.2.0
+  familyStylesByLicense:
+    free:
+      - family: classic
+        style: solid
+    pro:
+      - family: classic
+        style: solid
+      - family: classic
+        style: regular
+      - family: classic
+        style: light
+      - family: classic
+        style: thin
+      - family: duotone
+        style: solid
+      - family: sharp
+        style: solid
+  label: Check
+  unicode: f00c
+  voted: false
 facebook-f:
   changes:
     - 5.0.0

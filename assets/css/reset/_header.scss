@@ -3,25 +3,24 @@
   display: flex;
   justify-content: center;
   min-height: 75vh;
-  min-height: 75 svh;
+  min-height: 75svh;
 
   &--frontpage {
     min-height: 100vh;
     min-height: 100svh;
   }
-  &--single-post {
-    min-height: 100vh;
-    min-height: 100svh;
-
-    @media only screen and (max-width: 600px) {
-
-    }
+  &--small {
+    min-height:unset;
   }
 
   &__content {
     width: 100%;
-    padding: var(--offset-vertical) var(--offset-side);
+    padding:calc(var(--offset-vertical) * 2) var(--offset-side);
     margin: auto;
+
+    &--small {
+      padding:calc(var(--offset-vertical) * 2) var(--offset-side) var(--offset-vertical);
+    }
 
     &__title {
       display: block;
@@ -38,6 +37,36 @@
 
       &:last-child {
         margin-bottom: 0;
+      }
+    }
+
+    &__case-meta {
+      display: flex;
+      gap: 1.5em var(--offset-side);
+      flex-wrap:wrap;
+
+      &__item {
+        flex: 0 1 auto;
+
+        @media only screen and (max-width: 600px) {
+          flex:0 1 calc(50% - var(--offset-block) / 2);
+        }
+
+        &__label {
+          display: block;
+          margin-bottom: 1em;
+          font-weight: $semibold-weight;
+          line-height: 1.2;
+          white-space:nowrap;
+        }
+
+        &__value {
+          display: block;
+          color: var(--plain-text-color);
+          font-size: .9em;
+          line-height: 1.2;
+          white-space:nowrap;
+        }
       }
     }
   }
@@ -69,44 +98,6 @@
         color: var(--plain-text-color);
         font-size: .9em;
         line-height: 1.2;
-      }
-    }
-  }
-
-  &__blog-meta {
-    position: absolute;
-    bottom: var(--offset-block);
-    left: var(--offset-block);
-    display: flex;
-    gap: var(--offset-block);
-
-    @media only screen and (max-width: 600px) {
-      display: none;
-    }
-
-    &__item {
-      flex: 1 0 auto;
-
-      &__label {
-        display: block;
-        margin-bottom: 1em;
-        font-weight: $semibold-weight;
-        line-height: 1.2;
-      }
-
-      &__value {
-        display: block;
-        color: var(--plain-text-color);
-        font-size: .9em;
-        line-height: 1.2;
-
-        &--link {
-          text-decoration: underline;
-
-          &:hover {
-            color: inherit;
-          }
-        }
       }
     }
   }

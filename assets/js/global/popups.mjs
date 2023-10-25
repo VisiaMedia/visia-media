@@ -37,7 +37,7 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                         /* Update blobity */
                         blobity.updateOptions({
                             zIndex:50,
-                            color:gsap.getProperty(document.querySelector('.js-main-body-container'), 'color')
+                            color:gsap.getProperty(document.querySelector('body'), 'color')
                         });
 
                         blobity.bounce();

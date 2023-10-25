@@ -10,7 +10,7 @@
         <div class="css-max-text-width">
             <div class="review-slider__inner">
                 <ul class="review-slider__list js-review-slider-list">
-					<?php $slideCounter = 0; foreach($reviews as $post) { setup_postdata($post); $slideCounter++; ?>
+					<?php $slideCounter = 0; foreach($reviews as $post) { setup_postdata($post); ?>
                         <li class="review-slider__list__item js-review-slider-list-item" data-slide-count="<?php echo $slideCounter; ?>">
 							<?php if(has_post_thumbnail()) { ?>
                                 <div class="review-slider__list__item__thumbnail js-review-slider-list-item-thumbnail">
@@ -34,7 +34,7 @@
                                 <div class="review-slider__list__item__review css-normal-text js-review-slider-list-item-review"><?php echo $review; ?></div>
 							<?php } ?>
                         </li>
-					<?php } wp_reset_postdata();  ?>
+					<?php $slideCounter++; } wp_reset_postdata();  ?>
                 </ul>
 
                 <ul class="review-slider__nav js-review-slider-nav">

@@ -1,99 +1,102 @@
 /* Initialize */
 export function init(gsap, blobity, ScrollTrigger){
-    if(document.querySelector('.js-global-color-change-trigger') && document.querySelector('.js-main-body-container')) {
-        let documentRoot = document.querySelector(':root'),
-            oldColor,
+    if(document.querySelector('.js-global-color-change-trigger')) {
+        ScrollTrigger.clearScrollMemory("manual");
+
+        let oldColor,
             oldBackground,
-            oldPlainColor,
-            oldLightBorderColor,
-            oldDropShadowColor,
-            oldVisualFilter;
+            oldPlainText,
+            oldLightBorder,
+            oldDarkBorder,
+            oldDropshadow,
+            oldImgFilter;
 
         gsap.utils.toArray(".js-global-color-change-trigger").forEach(function (globalColorChangeTrigger, i) {
             let colorReverse = oldColor,
                 backgroundReverse = oldBackground,
-                plainColorReverse = oldPlainColor,
-                lightBorderColorReverse = oldLightBorderColor,
-                dropShadowColorReverse = oldDropShadowColor,
-                visualFilterReverse = oldVisualFilter;
+                plainTextReverse = oldPlainText,
+                lightBorderReverse = oldLightBorder,
+                darkBorderReverse = oldDarkBorder,
+                dropShadowReverse = oldDropshadow,
+                imgFilterReverse = oldImgFilter;
 
-            gsap.to(".js-main-body-container", {
-                scrollTrigger: {
-                    trigger: globalColorChangeTrigger,
-                    start: () => {
-                        return 'top center'
-                    },
-                    invalidateOnRefresh: false,
-                    toggleActions: "play none none reverse",
-                    refreshPriority: globalColorChangeTrigger.dataset.stCount,
-                    preventOverlaps: 'color-change-trigger',
-                    onEnter:() => {
-                        documentRoot.style.setProperty('--current-color', globalColorChangeTrigger.dataset.text);
-                        documentRoot.style.setProperty('--current-background', globalColorChangeTrigger.dataset.background);
-                        documentRoot.style.setProperty('--plain-text-color', globalColorChangeTrigger.dataset.plaintext);
-                        documentRoot.style.setProperty('--light-border-color', globalColorChangeTrigger.dataset.lightBorder);
-                        documentRoot.style.setProperty('--dropshadow-color', globalColorChangeTrigger.dataset.dropShadow);
-                        documentRoot.style.setProperty('--visual-img-filter', globalColorChangeTrigger.dataset.visualFilter);
-                    },
-                    onLeaveBack:() => {
-                        if(plainColorReverse) {
-                            documentRoot.style.setProperty('--current-color', colorReverse);
-                            documentRoot.style.setProperty('--current-background', backgroundReverse);
-                            documentRoot.style.setProperty('--plain-text-color', plainColorReverse);
-                            documentRoot.style.setProperty('--light-border-color', lightBorderColorReverse);
-                            documentRoot.style.setProperty('--dropshadow-color', dropShadowColorReverse);
-                            documentRoot.style.setProperty('--visual-img-filter', visualFilterReverse);
-                        }
-                    }
-                },
-                immediateRender: false,
-                background: globalColorChangeTrigger.dataset.background,
-                color: globalColorChangeTrigger.dataset.text,
-                onComplete: () => {
-                    blobity.updateOptions({
-                        color: globalColorChangeTrigger.dataset.text
-                    });
-
-                    /* Bounce blobity */
-                    blobity.bounce();
-
-                    /* Update main color variable */
-                    documentRoot.style.setProperty('--plain-text-color', globalColorChangeTrigger.dataset.plaintext);
-                    documentRoot.style.setProperty('--visual-img-filter', globalColorChangeTrigger.dataset.visualFilter);
-                    documentRoot.style.setProperty('--current-color', globalColorChangeTrigger.dataset.text);
-                    documentRoot.style.setProperty('--light-border-color', globalColorChangeTrigger.dataset.lightBorder);
-                    documentRoot.style.setProperty('--dropshadow-color', globalColorChangeTrigger.dataset.dropShadow);
-                    documentRoot.style.setProperty('--current-background', globalColorChangeTrigger.dataset.background);
-                },
-                onReverseComplete: () => {
-                    if(colorReverse) {
+            /* Set initial values for first iteration */
+            if(i === 0) {
+                gsap.set("html", {
+                    "--current-color": globalColorChangeTrigger.dataset.text,
+                    "--current-background": globalColorChangeTrigger.dataset.background,
+                    "--plain-text-color": globalColorChangeTrigger.dataset.plaintext,
+                    "--light-border-color": globalColorChangeTrigger.dataset.lightBorder,
+                    "--dark-border-color": globalColorChangeTrigger.dataset.darkBorder,
+                    "--dropshadow-color": globalColorChangeTrigger.dataset.dropShadow,
+                    "--visual-img-filter": globalColorChangeTrigger.dataset.visualFilter,
+                    onComplete:() => {
                         blobity.updateOptions({
-                            color: colorReverse,
+                            color: globalColorChangeTrigger.dataset.text
                         });
 
                         /* Bounce blobity */
                         blobity.bounce();
+                    },
+                });
+            } else {
+                ScrollTrigger.create({
+                    trigger: globalColorChangeTrigger,
+                    start: "top center",
+                    invalidateOnRefresh: true,
+                    refreshPriority: globalColorChangeTrigger.dataset.stCount,
+                    markers:false,
+                    preventOverlaps: "global-color-change-trigger",
+                    onEnter:() => {
+                        gsap.to("html", {
+                            "--current-color": globalColorChangeTrigger.dataset.text,
+                            "--current-background": globalColorChangeTrigger.dataset.background,
+                            "--plain-text-color": globalColorChangeTrigger.dataset.plaintext,
+                            "--light-border-color": globalColorChangeTrigger.dataset.lightBorder,
+                            "--dark-border-color": globalColorChangeTrigger.dataset.darkBorder,
+                            "--dropshadow-color": globalColorChangeTrigger.dataset.dropShadow,
+                            "--visual-img-filter": globalColorChangeTrigger.dataset.visualFilter,
+                            overwrite: true,
+                            onComplete:() => {
+                                blobity.updateOptions({
+                                    color: globalColorChangeTrigger.dataset.text
+                                });
 
-                        /* Update main color variable */
-                        if(plainColorReverse) {
-                            documentRoot.style.setProperty('--plain-text-color', plainColorReverse);
-                            documentRoot.style.setProperty('--visual-img-filter', visualFilterReverse);
-                            documentRoot.style.setProperty('--current-color', colorReverse);
-                            documentRoot.style.setProperty('--light-border-color', lightBorderColorReverse);
-                            documentRoot.style.setProperty('--dropshadow-color', dropShadowColorReverse);
+                                /* Bounce blobity */
+                                blobity.bounce();
+                            }
+                        });
+                    },
+                    onLeaveBack:() => {
+                        gsap.to("html", {
+                            "--current-color": colorReverse,
+                            "--current-background": backgroundReverse,
+                            "--plain-text-color": plainTextReverse,
+                            "--light-border-color": lightBorderReverse,
+                            "--dark-border-color": darkBorderReverse,
+                            "--dropshadow-color": dropShadowReverse,
+                            "--visual-img-filter": imgFilterReverse,
+                            overwrite: true,
+                            onComplete:() => {
+                                blobity.updateOptions({
+                                    color: colorReverse,
+                                });
 
-                            documentRoot.style.setProperty('--current-background', backgroundReverse);
-                        }
+                                /* Bounce blobity */
+                                blobity.bounce();
+                            }
+                        });
                     }
-                }
-            });
+                });
+            }
 
             oldColor = globalColorChangeTrigger.dataset.text;
             oldBackground = globalColorChangeTrigger.dataset.background;
-            oldPlainColor = globalColorChangeTrigger.dataset.plaintext;
-            oldVisualFilter = globalColorChangeTrigger.dataset.visualFilter;
-            oldLightBorderColor = globalColorChangeTrigger.dataset.lightBorder;
-            oldDropShadowColor = globalColorChangeTrigger.dataset.dropShadow;
+            oldPlainText = globalColorChangeTrigger.dataset.plaintext;
+            oldLightBorder = globalColorChangeTrigger.dataset.lightBorder;
+            oldDarkBorder = globalColorChangeTrigger.dataset.darkBorder;
+            oldDropshadow = globalColorChangeTrigger.dataset.dropShadow;
+            oldImgFilter = globalColorChangeTrigger.dataset.visualFilter;
         });
     }
 }

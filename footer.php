@@ -219,10 +219,6 @@ if(is_home() || is_archive() || is_singular('post')) {
     <div class="popups__overlay js-popups-overlay" tabindex="-1"></div>
 </div>
 
-<div class="loader js-loader">
-    <i class="loader__spinner fa-duotone fa-spinner-third fa-spin" style="--fa-secondary-opacity: 0.25;"></i>
-</div>
-
 <?php wp_footer(); ?>
 
 </body>

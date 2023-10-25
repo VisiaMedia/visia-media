@@ -1,67 +1,42 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
     if(document.querySelector('.js-statement')) {
+        const statements = gsap.utils.toArray('.js-statement');
 
-        /* Wrap setup in self starting function */
-        let firstSetup = true,
-            setupStatements;
-
-        (setupStatements = function(){
-            /* Get all statement instances as array */
-            const statements = gsap.utils.toArray('.js-statement');
-
-            /* Loop over statement instances */
-            statements.forEach(statement => {
-
-                /* Setup timeline for various animations */
-                let statementTl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: statement,
-                        start: "top center",
-                        once: true,
-                        invalidateOnRefresh: true,
-                        refreshPriority: statement.dataset.stCount
-                    },
-                    onComplete: () => {
-                        statementTl.clear();
-                    }
-                });
-
-                /* Clear timeline on resize */
-                callAfterResize(function() {
-                    statementTl.clear();
-                });
-
-                /* Disable timeline and wait for initial reveal animation to enable */
-                if(firstSetup === true) {
-                    statementTl.scrollTrigger.disable();
-                }
+        /* Loop over instances */
+        statements.forEach(statement => {
+            let timeline = tlSetup(statement, statement.dataset.stCount);
 
 
-
+            /* Build timeline */
+            let buildTimeline = function() {
                 /* Add animation for title reveal */
                 if(statement.querySelector('.js-statement-title')) {
-                    tlFadeIn(statement.querySelector('.js-statement-title'), statementTl);
+                    tlFadeIn(statement.querySelector('.js-statement-title'), timeline);
                 }
 
 
                 /* Add animation for headline reveal */
                 if(statement.querySelector('.js-statement-vertical-text-reveal')) {
-                    tlTextReveal(statement.querySelector('.js-statement-vertical-text-reveal'), statementTl);
+                    tlTextReveal(statement.querySelector('.js-statement-vertical-text-reveal'), timeline);
                 }
 
 
                 /* Add animation for button reveal */
                 if (statement.querySelector('.js-statement-button-wrapper')) {
-                    tlFadeIn(statement.querySelector('.js-statement-button-wrapper'), statementTl);
+                    tlFadeIn(statement.querySelector('.js-statement-button-wrapper'), timeline);
                 }
+            }
+
+            /* Execute once */
+            buildTimeline();
+
+
+            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+            callAfterResize(function() {
+                buildTlAfterResize(timeline, buildTimeline);
             });
-
-            firstSetup = false;
-        })();
-
-        /* Resetup statements after resize */
-        callAfterResize(setupStatements);
+        });
     }
 }
 

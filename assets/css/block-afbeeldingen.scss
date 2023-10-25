@@ -1,0 +1,29 @@
+@import './assets/css/reset/core';
+
+.block-images {
+  padding:var(--offset-vertical) var(--offset-side);
+
+  &__list {
+    display:flex;
+    flex-wrap: wrap;
+    align-items:center;
+    gap:var(--offset-vertical) var(--offset-side);
+
+    &__item {
+      flex:1;
+      max-width:max-content;
+
+      &__img {
+        display:block;
+        margin:auto;
+        width:auto;
+        max-width:100%;
+        height:auto;
+
+        @media only screen and (max-width: 600px) {
+          min-width:calc(100vw - var(--offset-side) * 2);
+        }
+      }
+    }
+  }
+}

@@ -20,6 +20,41 @@ function callAfterResize(func, delay) {
 
 
 
+/* Registering function for clearing + building timeline after resize */
+function buildTlAfterResize(timeline, buildTimeline) {
+    if(timeline.totalDuration() > 0) {
+        if(timeline.time() < timeline.totalDuration()) {
+            timeline.clear();
+
+            buildTimeline();
+        } else {
+            timeline.clear();
+        }
+    }
+}
+
+
+
+/* Registering "setup basic timeline" function */
+function tlSetup(element, stCount) {
+    let timeline = gsap.timeline({
+        scrollTrigger: {
+            trigger: element,
+            start: "top center",
+            invalidateOnRefresh: true,
+            refreshPriority: stCount
+        }
+    });
+
+    /* Instantly disable ScrollTrigger */
+    timeline.scrollTrigger.disable();
+
+    /* Return timeline element */
+    return timeline;
+}
+
+
+
 /* Registering "text reveal in timeline" function */
 function tlTextReveal(element, timeline) {
     if(element.querySelectorAll('.css-global-vertical-text-reveal-parent')) {
@@ -44,7 +79,8 @@ function tlTextReveal(element, timeline) {
     });
 
     gsap.set(splitChild.lines, {
-        y: '100%'
+        y: '100%',
+        immediateRender: true
     });
 
     timeline.to(splitChild.lines, {
@@ -64,12 +100,19 @@ function tlTextReveal(element, timeline) {
 function tlFadeIn(element, timeline) {
     gsap.set(element, {
         autoAlpha: 0,
-        y: "1.5rem"
+        y: "1.5rem",
+        immediateRender: true,
+        onComplete:() => {
+            element.style.willChange = 'transform, opacity';
+        }
     });
 
     timeline.to(element, {
         y: "0rem",
-        autoAlpha: 1
+        autoAlpha: 1,
+        onComplete:() => {
+            element.style.willChange = 'auto';
+        }
     });
 }
 
@@ -139,6 +182,15 @@ function createValidHtmlId(value) {
 
 
 
+/* Getcookie */
+function getCookie(name) {
+    let value = `; ${document.cookie}`;
+    let parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+
+
 /* Add support for disabling scroll */
 const scrollKeys = {37: 1, 38: 1, 39: 1, 40: 1, 32: 1, 33: 1, 34: 1, 35: 1, 36: 1};
 
@@ -179,4 +231,4 @@ function enableScroll() {
     window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
 }
 
-export {callAfterResize, tlTextReveal, tlFadeIn, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll};
+export {callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, getCookie, disableScroll, enableScroll};

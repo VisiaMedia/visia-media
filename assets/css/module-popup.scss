@@ -76,6 +76,12 @@
         &::placeholder {
           color:var(--boxed-text-color);
         }
+        &:-webkit-autofill,
+        &:-webkit-autofill:hover,
+        &:-webkit-autofill:focus {
+          -webkit-text-fill-color: currentColor;
+          -webkit-box-shadow: 0 0 0 40rem $white inset;
+        }
       }
     }
   }

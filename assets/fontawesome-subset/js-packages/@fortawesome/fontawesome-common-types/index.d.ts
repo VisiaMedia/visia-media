@@ -36,6 +36,7 @@ export type IconName = 'linkedin-in' |
   'caret-down' | 
   'file-heart' | 
   'arrow-down' | 
+  'check' | 
   'notdef' | 
   'arrow-right' | 
   'arrow-up-right' | 
@@ -46,6 +47,7 @@ export type IconName = 'linkedin-in' |
   'caret-down' | 
   'file-heart' | 
   'arrow-down' | 
+  'check' | 
   'notdef' | 
   'arrow-right' | 
   'arrow-up-right' | 
@@ -56,6 +58,7 @@ export type IconName = 'linkedin-in' |
   'caret-down' | 
   'file-heart' | 
   'arrow-down' | 
+  'check' | 
   'notdef' | 
   'arrow-right' | 
   'arrow-up-right' | 
@@ -66,4 +69,5 @@ export type IconName = 'linkedin-in' |
   'caret-down' | 
   'file-heart' | 
   'arrow-down' | 
+  'check' | 
   'notdef';

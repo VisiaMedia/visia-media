@@ -1,90 +1,66 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn, getNextSibling, getPreviousSibling, blobity){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, getNextSibling, getPreviousSibling){
     if(document.querySelector('.js-contact-form')) {
         const contactForms = gsap.utils.toArray('.js-contact-form');
 
-        let firstSetup = true,
-            setupContactForm;
+        /* Loop over instances */
+        contactForms.forEach(contactForm => {
 
-        (setupContactForm = function(){
-            /* Loop over contact form instances */
-            contactForms.forEach(contactForm => {
+            /* Intro animations */
+            if(contactForm.querySelector('.js-contact-form-intro')) {
+                const contactFormIntro = contactForm.querySelector('.js-contact-form-intro');
 
-                /* Add intro animation */
-                if(contactForm.querySelector('.js-contact-form-intro')) {
-                    const contactFormIntro = contactForm.querySelector('.js-contact-form-intro');
+                /* Setup timeline */
+                let timeline = tlSetup(contactFormIntro, contactForm.dataset.stCount);
 
-                    /* Setup timeline for intro animation */
-                    let contactFormIntroTl = gsap.timeline({
-                        scrollTrigger: {
-                            trigger: contactFormIntro,
-                            start: "top center",
-                            once: true,
-                            invalidateOnRefresh: true,
-                            refreshPriority: contactForm.dataset.stCount
-                        },
-                        onComplete: () => {
-                            contactFormIntroTl.clear();
-                        }
-                    });
 
-                    /* Clear timeline on resize */
-                    callAfterResize(function() {
-                        contactFormIntroTl.clear();
-                    });
-
-                    /* Disable scrolltrigger and wait for initial reveal animation to enable */
-                    if(firstSetup === true) {
-                        contactFormIntroTl.scrollTrigger.disable();
-                    }
-
+                /* Build timeline */
+                let buildTimeline = function() {
                     /* Add animation for title reveal */
                     if(contactForm.querySelector('.js-contact-form-vertical-text-reveal')) {
-                        tlTextReveal(contactForm.querySelector('.js-contact-form-vertical-text-reveal'), contactFormIntroTl);
+                        tlTextReveal(contactForm.querySelector('.js-contact-form-vertical-text-reveal'), timeline);
                     }
                 }
 
+                /* Execute once */
+                buildTimeline();
 
-                /* Add content animation */
-                if(contactForm.querySelector('.js-contact-form-content')) {
-                    const contactFormContent = contactForm.querySelector('.js-contact-form-content');
 
-                    /* Setup timeline for animation */
-                    let contactFormContentTl = gsap.timeline({
-                        scrollTrigger: {
-                            trigger: contactFormContent,
-                            start: "top center",
-                            once: true,
-                            invalidateOnRefresh: true,
-                            refreshPriority: contactForm.dataset.stCount
-                        },
-                        onComplete: () => {
-                            contactFormContentTl.clear();
-                        }
-                    });
+                /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+                callAfterResize(function() {
+                    buildTlAfterResize(timeline, buildTimeline);
+                });
+            }
 
-                    /* Clear timeline on resize */
-                    callAfterResize(function() {
-                        contactFormContentTl.clear();
-                    });
 
-                    /* Disable scrolltrigger and wait for initial reveal animation to enable */
-                    if(firstSetup === true) {
-                        contactFormContentTl.scrollTrigger.disable();
-                    }
 
+            /* Content animations */
+            if(contactForm.querySelector('.js-contact-form-content')) {
+                const contactFormContent = contactForm.querySelector('.js-contact-form-content');
+
+                /* Setup timeline */
+                let timeline = tlSetup(contactFormContent, contactForm.dataset.stCount);
+
+
+                /* Build timeline */
+                let buildTimeline = function() {
                     /* Add animation for form reveal */
                     if(contactFormContent.querySelector('.js-contact-form-self')) {
-                        tlFadeIn(contactFormContent.querySelector('.js-contact-form-self'), contactFormContentTl);
+                        tlFadeIn(contactFormContent.querySelector('.js-contact-form-self'), timeline);
                     }
 
                     /* Add animation for sidebar reveal */
                     if(contactFormContent.querySelector('.js-contact-form-sidebar')) {
-                        tlFadeIn(contactFormContent.querySelector('.js-contact-form-sidebar'), contactFormContentTl);
+                        tlFadeIn(contactFormContent.querySelector('.js-contact-form-sidebar'), timeline);
                     }
+                }
+
+                /* Execute once */
+                buildTimeline();
 
 
-                    /* Set blobity radius for hovering icon links */
+                /* Set blobity-radius for icons */
+                let setBlobityRadius = function() {
                     if(contactFormContent.querySelector('.js-contact-form-icon-link')) {
                         const iconLinks = contactFormContent.querySelectorAll('.js-contact-form-icon-link');
 
@@ -93,13 +69,20 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
                         });
                     }
                 }
-            });
 
-            firstSetup = false;
-        })();
+                /* Execute once */
+                setBlobityRadius();
 
-        /* Resetup section after resize */
-        callAfterResize(setupContactForm);
+
+                /* Clear and rebuild timeline on resize */
+                callAfterResize(function() {
+                    buildTlAfterResize(timeline, buildTimeline);
+
+                    setBlobityRadius();
+                });
+
+            }
+        });
 
 
 

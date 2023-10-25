@@ -1,46 +1,18 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal){
     if(document.querySelector('.js-process-carousel')) {
-        /* Get all instances as array */
         const procesCarousels = gsap.utils.toArray('.js-process-carousel');
 
-        /* Reveal items in timeline */
-        let firstSetup = true,
-            setupProcesCarousels;
-
-        (setupProcesCarousels = function(){
-            /* Loop over carousel instances */
-            procesCarousels.forEach(procesCarousel => {
-
-                /* Setup timeline for various animations */
-                let procesCarouselTl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: procesCarousel,
-                        start: "top center",
-                        once: true,
-                        invalidateOnRefresh: true,
-                        refreshPriority: procesCarousel.dataset.stCount
-                    },
-                    onComplete: () => {
-                        procesCarouselTl.clear();
-                    }
-                });
-
-                /* Clear timeline on resize */
-                callAfterResize(function() {
-                    procesCarouselTl.clear();
-                });
-
-                /* Disable timeline and wait for initial reveal animation to enable */
-                if(firstSetup === true) {
-                    procesCarouselTl.scrollTrigger.disable();
-                }
+        /* Loop over instances */
+        procesCarousels.forEach(procesCarousel => {
+            let timeline = tlSetup(procesCarousel, procesCarousel.dataset.stCount);
 
 
-
+            /* Build timeline */
+            let buildTimeline = function() {
                 /* Add animation for headline reveal */
                 if(procesCarousel.querySelector('.js-process-carousel-vertical-text-reveal')) {
-                    tlTextReveal(procesCarousel.querySelector('.js-process-carousel-vertical-text-reveal'), procesCarouselTl);
+                    tlTextReveal(procesCarousel.querySelector('.js-process-carousel-vertical-text-reveal'), timeline);
                 }
 
 
@@ -50,24 +22,28 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal){
 
                     gsap.set(procesCarouselContainer, {
                         autoAlpha:0,
+                        immediateRender: true
                     });
 
-                    procesCarouselTl.to(procesCarouselContainer, {
+                    timeline.to(procesCarouselContainer, {
                         autoAlpha: 1
                     })
                 }
+            }
+
+            /* Execute once */
+            buildTimeline();
+
+
+            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+            callAfterResize(function() {
+                buildTlAfterResize(timeline, buildTimeline);
             });
 
-            firstSetup = false;
-        })();
-
-        /* Resetup section after resize */
-        callAfterResize(setupProcesCarousels);
 
 
 
-        /* Loop over carousel instances */
-        procesCarousels.forEach(procesCarousel => {
+            /* Animate scrolling */
             const procesCarouselContainer = procesCarousel.querySelector('.js-process-carousel-container');
             const procesCarouselLabels = procesCarousel.querySelector('.js-process-carousel-labels');
             const procesCarouselLabelsList = procesCarousel.querySelector('.js-process-carousel-labels-list');
@@ -108,7 +84,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal){
                     scrollTrigger: {
                         trigger: procesCarouselItem,
                         start:() => {
-                            if (window.outerWidth > 768) {
+                            if (window.outerWidth > 810) {
                                 return "top center";
                             } else {
                                 return "top 66.666666%";

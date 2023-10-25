@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings){
     if(document.querySelector('.js-blog-single')) {
         const blogSingle = document.querySelector('.js-blog-single');
 
@@ -29,11 +29,9 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlSetup, tlTextReveal
         buildTimeline();
 
 
-        /* Clear and rebuild timeline on resize */
-        callAfterResize(function () {
-            timeline.clear();
-
-            buildTimeline();
+        /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+        callAfterResize(function() {
+            buildTlAfterResize(timeline, buildTimeline);
         });
     }
 
@@ -103,10 +101,13 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlSetup, tlTextReveal
             }
 
             /* Add animation for showing items */
-            timeline.fromTo(relatedPostItems, {
+            gsap.set(relatedPostItems, {
                 autoAlpha:0,
                 y: "1.5rem",
-            }, {
+                immediateRender: true
+            });
+
+            timeline.to(relatedPostItems, {
                 autoAlpha: 1,
                 y: "0rem",
                 stagger: .2
@@ -117,11 +118,9 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlSetup, tlTextReveal
         buildTimeline();
 
 
-        /* Clear and rebuild timeline on resize */
-        callAfterResize(function () {
-            timeline.clear();
-
-            buildTimeline();
+        /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+        callAfterResize(function() {
+            buildTlAfterResize(timeline, buildTimeline);
         });
 
 

@@ -39,9 +39,9 @@
         overflow:hidden;
 
         &__image {
-          padding-bottom:80%;
-          background-size:cover;
-          background-position:center;
+          display:block;
+          width:100%;
+          height:auto;
         }
       }
 
@@ -50,7 +50,7 @@
         font-size:1.5em;
         font-weight:$semibold-weight;
 
-        @media only screen and (max-width: 768px) {
+        @media only screen and (max-width: 810px) {
           font-size:1.25em;
         }
         @media only screen and (max-width: 600px) {
@@ -73,7 +73,7 @@
     font-size:1.2em;
     text-align:center;
 
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 810px) {
       font-size:1em;
     }
   }

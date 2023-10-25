@@ -18,10 +18,11 @@
 	set_post_thumbnail_size( 150, 150, true );
 	add_image_size('full-width-use', 2560, 99999 );
 	add_image_size('half-width-use', 1280, 99999 );
-	add_image_size('logo-width-use', 450, 99999 );
 	add_image_size('team-width-use', 750, 1000, true );
 	add_image_size('blog-thumb-use', 820, 550, true );
 	add_image_size('review-portrait-use', 150, 150, true);
+	add_image_size('project-grid-use', 1280, 1024, true);
+	add_image_size('project-slider-use', 1280, 1600, true);
 
 
 	/* Menus */
@@ -91,6 +92,7 @@
 	<?php }
 
 
+
 	/* Shortcodes
 	 *
 	* Button  */
@@ -107,6 +109,7 @@
 		return '<a class="button'. $extraClasses .'" href="'. $link .'">'. $content .'</a>';
 	} add_shortcode('button', 'visia_button');
 
+
     /* Highlight */
 	function visia_shortcode_highlight($atts, $content = null) {
 		$string = '';
@@ -118,6 +121,7 @@
 
 		return rtrim($string);
 	} add_shortcode('h', 'visia_shortcode_highlight');
+
 
     /* Blog download */
 	function visia_shortcode_blog_download($atts) {
@@ -135,10 +139,27 @@
 		return $output;
 	} add_shortcode('blog_download', 'visia_shortcode_blog_download');
 
+
 	/* Inhoudsopgave */
 	function visia_shortcode_inhoudsopgave() {
-		return '<nav class="table-of-contents js-table-of-contents"><h3 class="table-of-contents__title">'.__('Table of contents', 'visia').'</h3><ol class="table-of-contents__list js-table-of-contents-list"></ol></nav>';
+		return '<nav class="table-of-contents js-table-of-contents"><h3 class="table-of-contents__title css-title">'.__('Table of contents', 'visia').'</h3><ol class="table-of-contents__list js-table-of-contents-list"></ol></nav>';
 	} add_shortcode('inhoudsopgave', 'visia_shortcode_inhoudsopgave');
+
+	/* Blockquote shortcode */
+	function visia_shortcode_blockquote($atts) {
+		$atts = shortcode_atts(array(
+            'text' => null,
+        ), $atts);
+
+        if($text = $atts['text']) {
+			return '<blockquote class="blockquote js-blockquote">'.$text.'</blockquote>';
+        }
+	} add_shortcode('blockquote', 'visia_shortcode_blockquote');
+
+
+	function visia_shortcode_checklist($atts, $content = null) {
+		return '<div class="checklist js-checklist">'.$content.'</div>';
+	} add_shortcode('checklist', 'visia_shortcode_checklist');
 
 
 	/* Filter for the archive title */
@@ -278,7 +299,7 @@
 			return;
 		}
 
-		$query->set('post_type', array('post', 'page', 'landingspagina'));
+		$query->set('post_type', array('post', 'page', 'landingpage'));
 
 	} add_action('pre_get_posts', 'visia_add_cpt_post_names_to_main_query');
 
@@ -306,7 +327,7 @@
 				'name'                  => __('Blog downloads', 'visia'),
 				'singular_name'         => __('Blog download', 'visia'),
 				'menu_name'             => __('Blog downloads', 'visia'),
-				'name_admin_bar'        => __('Blod downloads', 'visia'),
+				'name_admin_bar'        => __('Blog downloads', 'visia'),
 				'archives'              => __('Blog downloads', 'visia')
 			),
 			'supports'              => array('title'),
@@ -395,29 +416,82 @@
 } add_action('after_setup_theme', 'visia_basis_setup');
 
 
-/* Enqueue scripts and styles */
-function visia_scripts_and_styles() {
-	/* Delete unnecessary files and scripts */
-	wp_dequeue_style('wp-block-library');
-	wp_dequeue_style('global-styles');
 
-	/* Add real styles and scripts */
-	wp_enqueue_script('app', get_template_directory_uri() .'/dist/app.js', null, null, true);
 
+
+
+
+
+/* Register and enqueue all scripts */
+function visia_scripts(){
+    $distFiles = glob(get_template_directory(). '/dist/*.js');
+    $appDeps = array();
+    $gsapCount = $swupCount = $vendorCount = 0;
+
+    foreach($distFiles as $file) {
+        $filename = basename($file);
+        $handle = null;
+
+        /* Determine script type */
+	    if(str_starts_with($filename, 'gsap')) {
+		    $gsapCount++;
+
+		    if($gsapCount == 1) {
+                $handle = 'gsap';
+            } else {
+	            $handle = 'gsap-'.$gsapCount;
+            }
+	    } elseif(str_starts_with($filename, 'swup')) {
+		    $swupCount++;
+
+		    if($swupCount == 1) {
+			    $handle = 'swup';
+		    } else {
+			    $handle = 'swup-'.$swupCount;
+		    }
+	    } elseif(str_starts_with($filename, 'vendor')) {
+		    $vendorCount++;
+
+		    if($vendorCount == 1) {
+			    $handle = 'vendor';
+		    } else {
+			    $handle = 'vendor-'.$vendorCount;
+		    }
+	    } elseif(str_starts_with($filename, 'app')) {
+		    continue;
+        }
+
+        /* Register script */
+	    wp_register_script($handle, get_template_directory_uri() .'/dist/'.$filename, null, null, array('defer', true));
+
+        /* Push handle as dependency */
+        if($handle) {
+	        $appDeps[] = $handle;
+        }
+    }
+
+    /* Enqueue app.js with all dependencies */
+	wp_enqueue_script('app', get_template_directory_uri() .'/dist/app.js', $appDeps, null, true);
+} add_action('wp_enqueue_scripts', 'visia_scripts');
+
+
+
+/* Enqueue styles */
+function visia_styles() {
 	wp_enqueue_style('reset', get_template_directory_uri() . '/dist/reset.min.css');
 	wp_enqueue_style('bundle', get_template_directory_uri() . '/dist/bundle.min.css');
 
 	wp_enqueue_style('font-awesome', get_template_directory_uri() . '/assets/fontawesome-subset/css/fontawesome.min.css');
 	wp_enqueue_style('font-awesome-icons', get_template_directory_uri() . '/assets/fontawesome-subset/css/all.min.css');
-} add_action('wp_enqueue_scripts', 'visia_scripts_and_styles');
+} add_action('wp_enqueue_scripts', 'visia_styles');
 
 
 
-
-
-
-
-
+/* Filter for Simply Static */
+add_filter('ss_origin_url', function($url) {
+    $url = 'https://www.visia-ontwikkeling.nl/visia-media/staging/';
+    return $url;
+});
 
 
 
@@ -546,6 +620,7 @@ function global_color_change_trigger($colorScheme, $background = null, $text = n
 		$plainText = '#acb0ba';
 		$visualFilter = 'invert(1)';
         $lightBorderColor = '#ffffff0F';
+		$darkBorderColor = '#ffffff40';
         $dropShadowColor = '#ffffff0D';
 	} elseif($colorScheme == 'white') {
 		$background = '#ffffff';
@@ -553,6 +628,7 @@ function global_color_change_trigger($colorScheme, $background = null, $text = n
 		$plainText = '#6e6e6e';
 		$visualFilter = 'invert(0)';
 		$lightBorderColor = '#2121210F';
+		$darkBorderColor = '#21212140';
 		$dropShadowColor = '#2121210D';
 	} else {
 		$plainText = $text.'A6';
@@ -572,13 +648,14 @@ function global_color_change_trigger($colorScheme, $background = null, $text = n
 		}
 
 		$lightBorderColor = $text.'0F';
+		$darkBorderColor = $text.'40';
 		$dropShadowColor = $text.'0D';
 	}
 
 	if($currBackground != $background || $currText != $text) {
 		$scrollTriggerCount--;
 
-		echo '<div class="js-global-color-change-trigger" data-background="'.$background.'" data-text="'.$text.'" data-plaintext="'.$plainText.'" data-st-count="'.$scrollTriggerCount.'" data-light-border="'.$lightBorderColor.'" data-drop-shadow="'.$dropShadowColor.'" data-visual-filter="'.$visualFilter.'"></div>';
+		echo '<div class="js-global-color-change-trigger" data-background="'.$background.'" data-text="'.$text.'" data-plaintext="'.$plainText.'" data-st-count="'.$scrollTriggerCount.'" data-light-border="'.$lightBorderColor.'" data-dark-border="'.$darkBorderColor.'" data-drop-shadow="'.$dropShadowColor.'" data-visual-filter="'.$visualFilter.'"></div>';
 	}
 
 	$currBackground = $background;
@@ -611,6 +688,10 @@ function remove_content_editor() {
 	remove_post_type_support('page', 'editor');
 } add_action('admin_head', 'remove_content_editor');
 
+
+
+/* Disabling WordPress lazy-load */
+add_filter( 'wp_lazy_loading_enabled', '__return_false' );
 
 
 

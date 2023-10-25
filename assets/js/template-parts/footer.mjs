@@ -1,84 +1,32 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlFadeIn, blobity){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn, blobity){
     if(document.querySelector('.js-footer')) {
+        const footer = document.querySelector('.js-footer');
 
-        /* Wrap setup in self starting function */
-        let firstSetup = true,
-            setupFooters;
+        /* Setup timeline */
+        let timeline = tlSetup(footer, footer.dataset.stCount);
 
-        (setupFooters = function(){
-            /* Get all statement instances as array */
-            const footers = gsap.utils.toArray('.js-footer');
 
-            /* Loop over footer instances */
-            footers.forEach(footer => {
-                let footerRows = footer.querySelectorAll('.js-footer-row');
-
-                /* Setup timeline for various animations */
-                let footerTL = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: footer,
-                        start: "top center",
-                        once: true,
-                        invalidateOnRefresh: true,
-                        refreshPriority: footer.dataset.stCount
-                    },
-                    onComplete: () => {
-                        footerTL.clear();
-                    }
+        /* Build timeline */
+        let buildTimeline = function() {
+            /* Animate footer rows */
+            if(footer.querySelectorAll('.js-footer-row')) {
+                footer.querySelectorAll('.js-footer-row').forEach(footerRow => {
+                    tlFadeIn(footerRow, timeline);
                 });
+            }
+        }
 
-                /* Clear timeline on resize */
-                callAfterResize(function() {
-                    footerTL.clear();
-                });
-
-                /* Disable timeline and wait for initial reveal animation to enable */
-                if(firstSetup === true) {
-                    footerTL.scrollTrigger.disable();
-                }
-
-                /* Fade in rows one by one */
-                footerRows.forEach(footerRow => {
-                    tlFadeIn(footerRow, footerTL);
-                });
+        /* Execute once */
+        buildTimeline();
 
 
+        /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+        callAfterResize(function() {
+            buildTlAfterResize(timeline, buildTimeline);
+        });
 
-                /* Check if footer has knowledgebase */
-                if(footer.querySelector('.js-footer-kb-list')) {
-                    let knowledgeBaseList = footer.querySelector('.js-footer-kb-list'),
-                        knowledgeBaseToggleIcon = footer.querySelector('.js-footer-kb-toggle-icon');
 
-                    if(window.outerWidth <= 600) {
-                        gsap.set(knowledgeBaseToggleIcon, {
-                            rotate:0
-                        });
-
-                        gsap.set(knowledgeBaseList, {
-                            height:0,
-                            onComplete:() => {
-                                knowledgeBaseList.classList.remove('js-is-visible');
-                                knowledgeBaseList.classList.add('js-is-hidden');
-                            }
-                        });
-                    } else {
-                        gsap.set(knowledgeBaseList, {
-                            height:'auto',
-                            onComplete:() => {
-                                knowledgeBaseList.classList.remove('js-is-visible');
-                                knowledgeBaseList.classList.remove('js-is-hidden');
-                            }
-                        });
-                    }
-                }
-            });
-
-            firstSetup = false;
-        })();
-
-        /* Resetup headers after resize */
-        callAfterResize(setupFooters);
 
 
 
@@ -101,46 +49,71 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlFadeIn, blobity){
 
 
 
-        /* Add event listener for knowledge base toggle */
-        const footers = gsap.utils.toArray('.js-footer');
+        /* Functionality for Knowledge Base */
+        if(footer.querySelector('.js-footer-kb-list')) {
+            let knowledgeBaseList = footer.querySelector('.js-footer-kb-list'),
+                knowledgeBaseToggle = footer.querySelector('.js-footer-kb-toggle'),
+                knowledgeBaseToggleIcon = footer.querySelector('.js-footer-kb-toggle-icon');
 
-        footers.forEach(footer => {
-            if(footer.querySelector('.js-footer-kb-list')) {
-                let knowledgeBaseList = footer.querySelector('.js-footer-kb-list'),
-                    knowledgeBaseToggle = footer.querySelector('.js-footer-kb-toggle'),
-                    knowledgeBaseToggleIcon = footer.querySelector('.js-footer-kb-toggle-icon');
+            /* Set initial styles */
+            if(window.outerWidth <= 600) {
+                gsap.set(knowledgeBaseToggleIcon, {
+                    rotate:0
+                });
 
-                knowledgeBaseToggle.addEventListener("click", function(event) {
-                    if(window.outerWidth <= 600) {
-                        if(knowledgeBaseList.classList.contains('js-is-visible')) {
-                            gsap.set(knowledgeBaseToggleIcon, {
-                                rotate: 0
-                            });
-
-                            gsap.to(knowledgeBaseList, {
-                                height:0,
-                                onComplete:() => {
-                                    knowledgeBaseList.classList.remove('js-is-visible');
-                                    knowledgeBaseList.classList.add('js-is-hidden');
-                                }
-                            });
-                        } else {
-                            gsap.set(knowledgeBaseToggleIcon, {
-                                rotate: 180
-                            });
-
-                            gsap.to(knowledgeBaseList, {
-                                height:'auto',
-                                onComplete:() => {
-                                    knowledgeBaseList.classList.remove('js-is-hidden');
-                                    knowledgeBaseList.classList.add('js-is-visible');
-                                }
-                            });
-                        }
+                gsap.set(knowledgeBaseList, {
+                    height:0,
+                    onComplete:() => {
+                        knowledgeBaseList.classList.remove('js-is-visible');
+                        knowledgeBaseList.classList.add('js-is-hidden');
+                    }
+                });
+            } else {
+                gsap.set(knowledgeBaseList, {
+                    height:'auto',
+                    onComplete:() => {
+                        knowledgeBaseList.classList.remove('js-is-visible');
+                        knowledgeBaseList.classList.remove('js-is-hidden');
                     }
                 });
             }
-        });
+
+
+            /* Add event listeners */
+            knowledgeBaseToggle.addEventListener("click", function(event) {
+                if(window.outerWidth <= 600) {
+                    if(knowledgeBaseList.classList.contains('js-is-visible')) {
+                        gsap.set(knowledgeBaseToggleIcon, {
+                            rotate: 0
+                        });
+
+                        gsap.to(knowledgeBaseList, {
+                            height:0,
+                            onComplete:() => {
+                                knowledgeBaseList.classList.remove('js-is-visible');
+                                knowledgeBaseList.classList.add('js-is-hidden');
+
+                                ScrollTrigger.refresh(true);
+                            }
+                        });
+                    } else {
+                        gsap.set(knowledgeBaseToggleIcon, {
+                            rotate: 180
+                        });
+
+                        gsap.to(knowledgeBaseList, {
+                            height:'auto',
+                            onComplete:() => {
+                                knowledgeBaseList.classList.remove('js-is-hidden');
+                                knowledgeBaseList.classList.add('js-is-visible');
+
+                                ScrollTrigger.refresh(true);
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
 }
 

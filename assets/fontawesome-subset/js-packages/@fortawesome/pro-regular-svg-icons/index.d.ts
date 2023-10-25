@@ -7,6 +7,7 @@ export const faPresentation: IconDefinition;
 export const faCaretDown: IconDefinition;
 export const faFileHeart: IconDefinition;
 export const faArrowDown: IconDefinition;
+export const faCheck: IconDefinition;
 export const faNotdef: IconDefinition;
 import { IconDefinition, IconLookup, IconName, IconPrefix, IconPack } from '@fortawesome/fontawesome-common-types';
 export { IconDefinition, IconLookup, IconName, IconPrefix, IconPack } from '@fortawesome/fontawesome-common-types';

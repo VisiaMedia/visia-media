@@ -1,0 +1,30 @@
+@import './assets/css/reset/core';
+
+.textblock {
+  padding:var(--offset-vertical) var(--offset-side);
+
+  &__content {
+    display:flex;
+    gap:var(--offset-block) var(--offset-side);
+
+    &--vertical {
+      flex-direction: column;
+    }
+    &--horizontal {
+      flex-direction: row;
+
+      @media only screen and (max-width: 810px) {
+        flex-direction: column;
+      }
+    }
+
+    &__title {
+      flex:1 1 50%;
+      margin:0;
+      font-weight:$bold-weight;
+    }
+    &__text {
+      flex:1 1 50%;
+    }
+  }
+}

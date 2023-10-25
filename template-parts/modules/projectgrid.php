@@ -18,7 +18,7 @@
 							<a class="project-grid__list__item__link js-project-grid-item-link" href="<?php the_permalink(); ?>" rel="bookmark" data-no-blobity>
 								<div class="project-grid__list__item__visual">
 									<?php if(has_post_thumbnail()) {
-										echo '<div class="project-grid__list__item__visual__image js-project-grid-item-visual" style="background-image:url('.wp_get_attachment_image_url(get_post_thumbnail_id(), 'half-width-use').');"></div>';
+                                        echo wp_get_attachment_image(get_post_thumbnail_id(), 'project-grid-use', null, array('class' => 'project-grid__list__item__visual__image js-project-grid-item-visual'));
 									} ?>
 								</div>
 

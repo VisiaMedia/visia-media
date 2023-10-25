@@ -68,7 +68,8 @@ disaster:
   icons: []
   label: Disaster + Crisis
 editing:
-  icons: []
+  icons:
+    - check
   label: Editing
 education:
   icons: []
@@ -156,7 +157,8 @@ political:
   icons: []
   label: Political
 punctuation-symbols:
-  icons: []
+  icons:
+    - check
   label: Punctuation + Symbols
 religion:
   icons: []
@@ -187,7 +189,8 @@ sports-fitness:
   icons: []
   label: Sports + Fitness
 text-formatting:
-  icons: []
+  icons:
+    - check
   label: Text Formatting
 time:
   icons: []

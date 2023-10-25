@@ -23,3 +23,5 @@ icons:
       - duotone
   - arrow-down:
       - regular
+  - check:
+      - regular

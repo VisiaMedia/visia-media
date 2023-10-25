@@ -193,7 +193,7 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
         .to(".js-main-menu-bg-reveal", {
             duration: .625,
             fontSize: () => {
-                return (Math.max(window.innerWidth, window.innerHeight) * 2.15) + 'px';
+                return (Math.max(window.innerWidth, window.innerHeight) * 2.25) + 'px';
             },
             onStart: () => {
                 blobity.updateOptions({
@@ -204,14 +204,12 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                 disableScroll();
             },
             onReverseComplete: () => {
-                if(document.querySelector('.js-main-body-container')) {
-                    blobity.updateOptions({
-                        color: document.querySelector('.js-main-body-container').style.color,
-                        zIndex: 50
-                    });
+                blobity.updateOptions({
+                    color: gsap.getProperty("body", "color"),
+                    zIndex: 50
+                });
 
-                    blobity.bounce();
-                }
+                blobity.bounce();
 
                 enableScroll();
             }

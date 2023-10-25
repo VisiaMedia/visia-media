@@ -13,12 +13,21 @@ export function init(gsap, ScrollTrigger, blobity, Masonry){
                 itemSelector: '.js-project-grid-item',
                 columnWidth: '.js-grid-sizer',
                 gutter: '.js-gutter-sizer',
-                percentPosition: true
+                percentPosition: true,
+                initLayout: false
             });
 
+            /* Add event listener */
             masonry.on('layoutComplete', function() {
-                setTimeout(function() { ScrollTrigger.refresh() }, 400);
+                ScrollTrigger.refresh(true);
             });
+
+            function newImageLoaded() {
+                masonry.layout();
+            }
+
+            /* Init Masonry */
+            masonry.layout();
 
 
 
@@ -135,9 +144,12 @@ export function init(gsap, ScrollTrigger, blobity, Masonry){
                         extraCaseElemVisual.className = 'project-grid__list__item__visual';
 
                         /* Create the image */
-                        let extraCaseElemVisualImg = document.createElement('div');
+                        let extraCaseElemVisualImg = document.createElement('img');
                         extraCaseElemVisualImg.className = 'project-grid__list__item__visual__image';
-                        extraCaseElemVisualImg.style.backgroundImage = 'url("'+elemThumbnail+'")';
+                        extraCaseElemVisualImg.src = elemThumbnail;
+
+                        /* Set up loading event listener for image to recalculate ScrollTrigger and Masonry */
+                        extraCaseElemVisualImg.addEventListener('load', newImageLoaded);
 
 
                         /* Create the heading */

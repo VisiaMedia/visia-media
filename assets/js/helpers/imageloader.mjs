@@ -3,17 +3,14 @@ export function loadImages(ScrollTrigger) {
     const images = document.querySelectorAll('img');
 
     function loaded() {
-        ScrollTrigger.refresh();
+        ScrollTrigger.refresh(true);
     }
 
     images.forEach(image => {
-        if (image.complete) {
-            loaded()
+        if (image.complete && image.naturalWidth !== 0) {
+            loaded();
         } else {
-            image.addEventListener('load', loaded)
-            image.addEventListener('error', function() {
-                console.log('imageloader.mjs error')
-            })
+            image.addEventListener('load', loaded);
         }
     });
 }

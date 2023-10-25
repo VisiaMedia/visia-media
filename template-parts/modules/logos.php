@@ -12,7 +12,7 @@
 
 			foreach($logos as $item) {
 				if($logo = $item['logo']) {
-					echo '<li class="logos__list__item">'.wp_get_attachment_image($logo, 'logo-width-use', null, array('class' => 'logos__list__item__img')).'</li>';
+					echo '<li class="logos__list__item">'.wp_get_attachment_image($logo, 'full', null, array('class' => 'logos__list__item__img')).'</li>';
 				}
 			}
 

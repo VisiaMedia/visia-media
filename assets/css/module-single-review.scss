@@ -1,0 +1,54 @@
+@import './assets/css/reset/core';
+
+.single-review {
+  padding:var(--offset-vertical) var(--offset-side);
+
+  &__author {
+    margin-bottom:var(--offset-block);
+    display:flex;
+    gap:1em;
+    align-items:center;
+
+    &__thumbnail {
+      flex:0 0 3em;
+
+      &__img {
+        display:block;
+        width:100%;
+        height:auto;
+        border-radius:100%;
+      }
+    }
+
+    &__details {
+      flex:1 1 auto;
+      line-height:1.4;
+
+      &__name {
+        display:block;
+      }
+      &__business {
+        display:block;
+        font-weight:$bold-weight;
+      }
+    }
+  }
+
+  &__text {
+    font-size:1.5em;
+    color:inherit;
+
+    @media only screen and (max-width: 1080px) {
+      font-size:1.4em;
+    }
+    @media only screen and (max-width: 900px) {
+      font-size:1.3em;
+    }
+    @media only screen and (max-width: 810px) {
+      font-size:1.2em;
+    }
+    @media only screen and (max-width: 600px) {
+      font-size:1.1em;
+    }
+  }
+}

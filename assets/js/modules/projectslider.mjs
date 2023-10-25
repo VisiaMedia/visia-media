@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, Draggable){
+export function init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal){
     if(document.querySelector('.js-project-slider')) {
         /* Get all project grid slider as array */
         const projectSliders = gsap.utils.toArray('.js-project-slider');
@@ -10,24 +10,43 @@ export function init(gsap, ScrollTrigger, Draggable){
                 projectSliderList = projectSlider.querySelector('.js-project-slider-list'),
                 projectSliderListItems = projectSliderList.querySelectorAll('.js-project-slider-list-item');
 
-            /* Initially hide and offset all slides */
-            gsap.set(projectSliderListItems, {
-                autoAlpha:0,
-                y: "1.5rem"
+
+            /* Setup timeline */
+            let timeline = tlSetup(projectSlider, projectSlider.dataset.stCount);
+
+
+            /* Build timeline */
+            let buildTimeline = function() {
+                /* Add animation for headline reveal */
+                if(projectSlider.querySelector('.js-project-slider-title')) {
+                    tlTextReveal(projectSlider.querySelector('.js-project-slider-title'), timeline);
+                }
+
+
+                /* Initially hide and offset all slides */
+                gsap.set(projectSliderListItems, {
+                    autoAlpha:0,
+                    y: "1.5rem"
+                });
+
+                /* Show items one by one */
+                timeline.to(projectSliderListItems, {
+                    autoAlpha: 1,
+                    y: "0rem",
+                    stagger: .2
+                });
+            }
+
+            /* Execute once */
+            buildTimeline();
+
+
+            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+            callAfterResize(function() {
+                buildTlAfterResize(timeline, buildTimeline);
             });
 
-            /* Reveal slides one-by-one on viewport scroll */
-            gsap.to(projectSliderListItems, {
-                scrollTrigger: {
-                    trigger: projectSlider,
-                    start: "top center",
-                    once: true,
-                    refreshPriority: projectSlider.dataset.stCount
-                },
-                autoAlpha: 1,
-                y: "0rem",
-                stagger: .2
-            })
+
 
             /* Setup draggable slider */
             Draggable.create(projectSliderList, {
@@ -36,14 +55,14 @@ export function init(gsap, ScrollTrigger, Draggable){
                 type: "x",
                 inertia: true,
                 dragResistance: () => {
-                    if(window.outerWidth > 768) {
+                    if(window.outerWidth > 810) {
                         return .25;
                     } else {
                         return .125;
                     }
                 },
                 edgeResistance: () => {
-                    if(window.outerWidth > 768) {
+                    if(window.outerWidth > 810) {
                         return .25;
                     } else {
                         return .125;

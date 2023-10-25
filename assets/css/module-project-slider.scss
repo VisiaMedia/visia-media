@@ -5,6 +5,11 @@
   overflow:hidden;
 
   &__scroller {
+    &__title {
+      margin-bottom:var(--offset-block);
+      font-weight:$bold-weight;
+    }
+
     &__list {
       display: inline-flex;
       justify-content: flex-start;
@@ -27,9 +32,9 @@
           overflow:hidden;
 
           &__image {
-            padding-top:125%;
-            background-size:cover;
-            background-position:center;
+            display:block;
+            width:100%;
+            height:auto;
           }
         }
 
@@ -38,7 +43,7 @@
           font-size:1.25em;
           font-weight:$semibold-weight;
 
-          @media only screen and (max-width: 768px) {
+          @media only screen and (max-width: 810px) {
             font-size:1.1em;
           }
 

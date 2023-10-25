@@ -1,46 +1,18 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal){
     if(document.querySelector('.js-textcarousel')) {
-        /* Get all instances as array */
         const textCarousels = gsap.utils.toArray('.js-textcarousel');
 
-        /* Reveal items in timeline */
-        let firstSetup = true,
-            setupTextCarousels;
-
-        (setupTextCarousels = function(){
-            /* Loop over carousel instances */
-            textCarousels.forEach(textCarousel => {
-
-                /* Setup timeline for various animations */
-                let textCarouselTl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: textCarousel,
-                        start: "top center",
-                        once: true,
-                        invalidateOnRefresh: true,
-                        refreshPriority: textCarousel.dataset.stCount
-                    },
-                    onComplete: () => {
-                        textCarouselTl.clear();
-                    }
-                });
-
-                /* Clear timeline on resize */
-                callAfterResize(function() {
-                    textCarouselTl.clear();
-                });
-
-                /* Disable timeline and wait for initial reveal animation to enable */
-                if(firstSetup === true) {
-                    textCarouselTl.scrollTrigger.disable();
-                }
+        /* Loop over instances */
+        textCarousels.forEach(textCarousel => {
+            let timeline = tlSetup(textCarousel, textCarousel.dataset.stCount);
 
 
-
+            /* Build timeline */
+            let buildTimeline = function() {
                 /* Add animation for headline reveal */
                 if(textCarousel.querySelector('.js-textcarousel-vertical-text-reveal')) {
-                    tlTextReveal(textCarousel.querySelector('.js-textcarousel-vertical-text-reveal'), textCarouselTl);
+                    tlTextReveal(textCarousel.querySelector('.js-textcarousel-vertical-text-reveal'), timeline);
                 }
 
 
@@ -50,33 +22,37 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal){
 
                     gsap.set(textCarouselContainer, {
                         autoAlpha:0,
+                        immediateRender: true
                     });
 
-                    textCarouselTl.to(textCarouselContainer, {
+                    timeline.to(textCarouselContainer, {
                         autoAlpha: 1
-                    })
+                    });
                 }
+            }
+
+            /* Execute once */
+            buildTimeline();
+
+
+            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+            callAfterResize(function() {
+                buildTlAfterResize(timeline, buildTimeline);
             });
 
-            firstSetup = false;
-        })();
-
-        /* Resetup section after resize */
-        callAfterResize(setupTextCarousels);
 
 
 
-        /* Loop over textcarousel instances */
-        textCarousels.forEach(textCarousel => {
+            /* Animate scrolling */
             const textCarouselContainer = textCarousel.querySelector('.js-textcarousel-container');
             const textCarouselCounter = textCarousel.querySelector('.js-textcarousel-counter');
 
             /* Set counter initial position */
             const textCarouselFirstItem = textCarousel.querySelector('.js-textcarousel-item');
             gsap.set(textCarouselCounter, {
-               y:() => {
-                   return (textCarouselFirstItem.offsetHeight / 2) - (textCarouselCounter.offsetHeight / 2)
-               }
+                y:() => {
+                    return (textCarouselFirstItem.offsetHeight / 2) - (textCarouselCounter.offsetHeight / 2)
+                }
             });
 
             /* Pin counter element */
@@ -104,7 +80,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal){
                     scrollTrigger: {
                         trigger: textCarouselItem,
                         start:() => {
-                            if (window.outerWidth > 768) {
+                            if (window.outerWidth > 810) {
                                 return "top center";
                             } else {
                                 return "top 66.666666%";

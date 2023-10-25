@@ -1,176 +1,146 @@
 /* Initialize */
-import {getSiblings} from "../helpers/functions.mjs";
-
-export function init(gsap, ScrollTrigger, blobity, callAfterResize, tlTextReveal, tlFadeIn, getSiblings){
+export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
     if(document.querySelector('.js-review-slider')) {
         const reviewSliders = gsap.utils.toArray('.js-review-slider');
 
-        /* Loop over slider instances */
+        /* Loop over instances */
         reviewSliders.forEach(reviewSlider => {
-            let currentSlide = 1,
+            let currentSlide = 0,
                 reviewSliderList = reviewSlider.querySelector('.js-review-slider-list'),
-                reviewSliderListItems = reviewSlider.querySelectorAll('.js-review-slider-list-item'),
-                reviewSliderNavItems = reviewSlider.querySelectorAll('.js-review-slider-nav-item');
+                reviewSliderItems = reviewSlider.querySelectorAll('.js-review-slider-list-item'),
+                reviewSliderNavItems = reviewSlider.querySelectorAll('.js-review-slider-nav-item'),
+                timeline = tlSetup(reviewSlider, reviewSlider.dataset.stCount);
 
-            /* (Re-)set current slide and wrapper height */
-            let firstSetup = true,
-                setCurrentSlide,
-                reviewSliderListItemTl;
+            /* Build timeline */
+            let buildTimeline = function() {
+                /* Set stage for each slide */
+                reviewSliderItems.forEach(function(reviewSliderItem, i) {
+                    if(i === currentSlide) {
+                        timeline.to(reviewSliderItem, {
+                            autoAlpha:1,
+                            immediateRender: false
+                        });
 
-            (setCurrentSlide = function(initial = true){
-                let sliderHeight = 0;
+                        /* Add animation for thumbnail */
+                        if(reviewSliderItem.querySelector('.js-review-slider-list-item-thumbnail')) {
+                            tlFadeIn(reviewSliderItem.querySelector('.js-review-slider-list-item-thumbnail'), timeline);
+                        }
 
-                reviewSliderListItems.forEach(reviewSliderListItem => {
-                    /* Initial setup */
-                    if(initial === true) {
-                        if(currentSlide === parseInt(reviewSliderListItem.dataset.slideCount)) {
-                            reviewSliderListItemTl = gsap.timeline({
-                                scrollTrigger: {
-                                    trigger: reviewSlider,
-                                    start: "top center",
-                                    once: true,
-                                    invalidateOnRefresh: true,
-                                    refreshPriority: reviewSlider.dataset.stCount
-                                },
-                                onComplete: () => {
-                                    reviewSliderListItemTl.clear().kill();
-                                }
-                            });
+                        /* Add animation for details */
+                        if(reviewSliderItem.querySelector('.js-review-slider-list-item-details')) {
+                            tlFadeIn(reviewSliderItem.querySelector('.js-review-slider-list-item-details'), timeline);
+                        }
 
-                            /* Disable timeline and wait for first reveal animation to enable */
-                            if(firstSetup === true) {
-                                reviewSliderListItemTl.scrollTrigger.disable();
-                            }
+                        /* Add animation for review */
+                        if (reviewSliderItem.querySelector('.js-review-slider-list-item-review')) {
+                            tlFadeIn(reviewSliderItem.querySelector('.js-review-slider-list-item-review'), timeline);
+                        }
 
-
-                            /* Show all elements one by one
-                             *
-                            * Thumbnail */
-                            if(reviewSliderListItem.querySelector('.js-review-slider-list-item-thumbnail')) {
-                                let thumbnail = reviewSliderListItem.querySelector('.js-review-slider-list-item-thumbnail');
-
-                                tlFadeIn(thumbnail, reviewSliderListItemTl);
-                            }
-
-                            /* Details */
-                            if(reviewSliderListItem.querySelector('.js-review-slider-list-item-details')) {
-                                let details = reviewSliderListItem.querySelector('.js-review-slider-list-item-details');
-
-                                tlFadeIn(details, reviewSliderListItemTl);
-                            }
-
-                            /* Review */
-                            if (reviewSliderListItem.querySelector('.js-review-slider-list-item-review')) {
-                                let review = reviewSliderListItem.querySelector('.js-review-slider-list-item-review');
-
-                                tlFadeIn(review, reviewSliderListItemTl);
-                            }
-
-                            /* Navigation */
-                            if(reviewSlider.querySelector('.js-review-slider-nav')) {
-                                let nav = reviewSlider.querySelector('.js-review-slider-nav');
-
-                                tlFadeIn(nav, reviewSliderListItemTl);
-                            }
-                        } else {
-                            gsap.set(reviewSliderListItem, {
-                                autoAlpha: 0
-                            });
+                        /* Add animation for navigation */
+                        if(reviewSlider.querySelector('.js-review-slider-nav')) {
+                            tlFadeIn(reviewSlider.querySelector('.js-review-slider-nav'), timeline);
                         }
                     } else {
-                        if(currentSlide === parseInt(reviewSliderListItem.dataset.slideCount)) {
-                            /* Fade in slide */
-                            gsap.to(reviewSliderListItem, {
-                                delay:.25,
-                                autoAlpha: 1,
-                                overwrite: true
-                            });
-                        } else {
-                            gsap.to(reviewSliderListItem, {
-                                autoAlpha: 0,
-                                overwrite: true
-                            });
-                        }
-                    }
-
-                    /* (Re-)set slider height */
-                    if (window.outerWidth > 768) {
-                        if(initial === true) {
-                            if(sliderHeight < reviewSliderListItem.offsetHeight) {
-                                sliderHeight = reviewSliderListItem.offsetHeight;
-
-                                gsap.set(reviewSliderList, {
-                                    height: () => {
-                                        return sliderHeight + 'px';
-                                    },
-                                    onComplete:() => {
-                                        ScrollTrigger.refresh();
-                                    }
-                                });
-                            }
-                        }
-                    } else if(currentSlide === parseInt(reviewSliderListItem.dataset.slideCount)) {
-                        gsap.to(reviewSliderList, {
-                            height: () => {
-                                return reviewSliderListItem.offsetHeight + 'px';
-                            },
-                            onComplete:() => {
-                                ScrollTrigger.refresh();
-                            }
+                        gsap.set(reviewSliderItem, {
+                            autoAlpha:0,
+                            immediateRender:false
                         });
                     }
                 });
+            }
 
-                firstSetup = false;
-            })();
-
-            callAfterResize(setCurrentSlide);
+            /* Execute once */
+            buildTimeline();
 
 
-            /* Set Blobity data-attribute on buttons */
-            let setBlobityRadius;
+            /* Set slider height */
+            let setSliderHeight = function() {
+                gsap.to(reviewSliderList, {
+                    height: () => {
+                        return reviewSliderItems[currentSlide].offsetHeight + 'px';
+                    },
+                    onComplete:() => {
+                        ScrollTrigger.refresh();
+                    }
+                });
+            }
 
-            (setBlobityRadius = function(){
+            /* Execute once */
+            setSliderHeight();
+
+
+            /* Set blobity radius */
+            let setBlobityRadius = function(){
                 reviewSliderNavItems.forEach(reviewSliderNavItem => {
                     let reviewSliderNavItemFill = reviewSliderNavItem.querySelector('.js-review-slider-nav-item-fill');
 
                     reviewSliderNavItemFill.setAttribute('data-blobity-radius', ((reviewSliderNavItemFill.offsetWidth * 2) + 16) / 2);
                 });
-            })();
+            };
 
-            callAfterResize(setBlobityRadius);
+            /* Execute once */
+            setBlobityRadius();
+
+
+            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+            callAfterResize(function() {
+                buildTlAfterResize(timeline, buildTimeline);
+
+                setBlobityRadius();
+            });
 
 
 
-            /* Setup timeline and event listeners for button behavior */
+
+            /* Set current slide */
+            function setCurrentSlide() {
+                setSliderHeight();
+
+                reviewSliderItems.forEach(function(reviewSliderItem, i) {
+                    if(i === currentSlide) {
+                        gsap.to(reviewSliderItem, {
+                            delay:.25,
+                            autoAlpha: 1
+                        });
+                    } else {
+                        gsap.to(reviewSliderItem, {
+                            autoAlpha: 0,
+                            overwrite:true
+                        });
+                    }
+                });
+            }
+
+
+            /* Setup button behavior */
             reviewSliderNavItems.forEach(reviewSliderNavItem => {
                 let reviewSliderNavItemFill = reviewSliderNavItem.querySelector('.js-review-slider-nav-item-fill'),
                     reviewSliderNavItemIcon = reviewSliderNavItem.querySelector('.js-review-slider-nav-item-icon'),
                     reviewSliderNavItemTL = gsap.timeline({
-                    paused: true,
-                    yoyo: true,
-                    onStart: () => {
-                        blobity.focusElement(reviewSliderNavItemFill);
-                        blobity.updateOptions({
-                            zIndex: 1
-                        });
-                    },
-                    onComplete: () => {
-                        blobity.focusElement(reviewSliderNavItemFill);
-                        blobity.updateOptions({
-                            zIndex: 1
-                        });
-                    },
-                    onReverseComplete: () => {
-                        gsap.set([reviewSliderNavItemIcon, reviewSliderNavItemFill], {
-                            clearProps: "all"
-                        });
+                        paused: true,
+                        yoyo: true,
+                        onStart: () => {
+                            blobity.focusElement(reviewSliderNavItemFill);
+                            blobity.updateOptions({
+                                zIndex: 1
+                            });
+                        },
+                        onComplete: () => {
+                            blobity.focusElement(reviewSliderNavItemFill);
+                            blobity.updateOptions({
+                                zIndex: 1
+                            });
+                        },
+                        onReverseComplete: () => {
+                            gsap.set([reviewSliderNavItemIcon, reviewSliderNavItemFill], {
+                                clearProps: "all"
+                            });
 
-                        blobity.updateOptions({
-                            zIndex: 50
-                        });
-                    }
-                });
+                            blobity.updateOptions({
+                                zIndex: 50
+                            });
+                        }
+                    });
 
                 reviewSliderNavItemTL.to(reviewSliderNavItemIcon, {
                     color: "#ffffff"
@@ -211,20 +181,20 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, tlTextReveal
 
                     /* Toggle slide */
                     if(reviewSliderNavItem.dataset.direction === 'prev') {
-                        if(currentSlide === 1) {
-                            currentSlide = reviewSliderListItems.length;
+                        if(currentSlide === 0) {
+                            currentSlide = (reviewSliderItems.length - 1);
                         } else {
                             currentSlide--;
                         }
                     } else {
-                        if(currentSlide === reviewSliderListItems.length) {
-                            currentSlide = 1;
+                        if(currentSlide === (reviewSliderItems.length - 1)) {
+                            currentSlide = 0;
                         } else {
                             currentSlide++;
                         }
                     }
 
-                    setCurrentSlide(false);
+                    setCurrentSlide();
                 });
 
 
@@ -232,6 +202,8 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, tlTextReveal
                 /* Invalidate timeline after resize */
                 callAfterResize(function() {
                     reviewSliderNavItemTL.seek(0).invalidate();
+
+                    setCurrentSlide();
                 });
             });
         });
@@ -241,4 +213,4 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, tlTextReveal
 /* Export init function */
 export default {
     init
-};
+}

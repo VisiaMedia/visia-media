@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, InfiniteScroll){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, InfiniteScroll){
     if(document.querySelector('.js-blog-home')) {
         const blogHomes = gsap.utils.toArray('.js-blog-home');
 
@@ -31,11 +31,9 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlSetup, tlTextReveal
             buildTimeline();
 
 
-            /* Clear and rebuild timeline on resize */
+            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
             callAfterResize(function() {
-                timeline.clear();
-
-                buildTimeline();
+                buildTlAfterResize(timeline, buildTimeline);
             });
 
 

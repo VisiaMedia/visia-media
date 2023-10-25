@@ -6,7 +6,7 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap:var(--offset-block) var(--offset-side);
 
-    @media only screen and (max-width: 1024px) {
+    @media only screen and (max-width: 1080px) {
       grid-template-columns: 1fr 1fr;
     }
     @media only screen and (max-width: 600px) {
@@ -71,7 +71,7 @@
     border-left:0;
     border-right:0;
 
-    @media only screen and (max-width: 1024px) {
+    @media only screen and (max-width: 1080px) {
       grid-template-columns: 1fr 1fr;
     }
     @media only screen and (max-width: 600px) {
@@ -85,7 +85,7 @@
         display:block;
         max-width:6em;
 
-        @media only screen and (max-width: 1024px) {
+        @media only screen and (max-width: 1080px) {
           max-width:5.5em;
         }
         @media only screen and (max-width: 480px) {
@@ -153,7 +153,7 @@
       column-gap: var(--offset-side);
       overflow:hidden;
 
-      @media only screen and (max-width: 1024px) {
+      @media only screen and (max-width: 1080px) {
         columns: 2;
       }
       @media only screen and (max-width: 480px) {

@@ -1,83 +1,64 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn, createValidHtmlId){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, createValidHtmlId){
     if(document.querySelector('.js-service-scroller')) {
         /* Get all instances as array */
         const serviceScrollers = gsap.utils.toArray('.js-service-scroller');
 
-        /* Loop over scroller instances */
+        /* Loop over instances */
         serviceScrollers.forEach(serviceScroller => {
-            /* Get sections as array */
             const sections = serviceScroller.querySelectorAll('.js-service-scroller-section');
 
-            /* Reveal items in timeline */
-            let firstSetup = true,
-                setupSections;
+            /* Loop over sections */
+            sections.forEach(function(section, i) {
+                const sectionInner = section.querySelector('.js-service-scroller-inner');
 
-            (setupSections = function(){
-                /* Loop over carousel instances */
-                sections.forEach(section => {
-                    const sectionInner = section.querySelector('.js-service-scroller-inner');
-
-                    /* Setup timeline for various animations */
-                    let sectionTL = gsap.timeline({
-                        scrollTrigger: {
-                            trigger: sectionInner,
-                            start: "top center",
-                            once: true,
-                            invalidateOnRefresh: true,
-                            refreshPriority: serviceScroller.dataset.stCount
-                        },
-                        onComplete: () => {
-                            sectionTL.clear();
-                        }
-                    });
-
-                    /* Clear timeline on resize */
-                    callAfterResize(function() {
-                        sectionTL.clear();
-                    });
-
-                    /* Disable timeline and wait for initial reveal animation to enable */
-                    if(firstSetup === true) {
-                        sectionTL.scrollTrigger.disable();
-                    }
+                /* Setup timeline */
+                let timeline = tlSetup(sectionInner, serviceScroller.dataset.stCount);
 
 
+                /* Build timeline */
+                let buildTimeline = function() {
                     /* Add animation for headline reveal */
                     if(section.querySelector('.js-service-scroller-title')) {
-                        tlTextReveal(section.querySelector('.js-service-scroller-title'), sectionTL);
+                        tlTextReveal(section.querySelector('.js-service-scroller-title'), timeline);
                     }
 
                     /* Add animation for content reveal */
                     if(section.querySelector('.js-service-scroller-text')) {
-                        tlFadeIn(section.querySelector('.js-service-scroller-text'), sectionTL);
+                        tlFadeIn(section.querySelector('.js-service-scroller-text'), timeline);
                     }
 
                     /* Add animation for button reveal (one by one) */
                     if(section.querySelector('.js-service-scroller-button-wrapper')) {
                         const sectionButtons = section.querySelectorAll('.js-service-scroller-button-wrapper');
 
-                        sectionTL.fromTo(sectionButtons, {
+                        gsap.set(sectionButtons, {
                             autoAlpha: 0,
-                            y: "1.5rem"
-                        }, {
+                            y: "1.5rem",
+                            immediateRender: true
+                        });
+
+                        timeline.to(sectionButtons, {
                             autoAlpha: 1,
                             y: "0rem",
                             stagger: .2
-                        })
+                        });
                     }
+                }
+
+                /* Execute once */
+                buildTimeline();
+
+
+                /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+                callAfterResize(function() {
+                    buildTlAfterResize(timeline, buildTimeline);
                 });
 
-                firstSetup = false;
-            })();
-
-            /* Resetup section after resize */
-            callAfterResize(setupSections);
 
 
 
-            /* Add IDs to specific sections and items */
-            sections.forEach(function(section, i) {
+                /* Add IDs to specific sections and items */
                 if(section.querySelector('.js-service-scroller-title')) {
                     /* Section */
                     let sectionTitle = section.querySelector('.js-service-scroller-title'),
@@ -96,6 +77,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeI
                     navItems.item(i).href = '#'+itemID;
                 }
             });
+
 
 
 

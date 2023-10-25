@@ -1,62 +1,39 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, blobity, tlTextReveal, tlFadeIn){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, blobity, tlSetup, tlTextReveal, tlFadeIn){
     if(document.querySelector('.js-tabbed-content')) {
-
-        /* Get all tab instances as array */
         const tabbedContents = gsap.utils.toArray('.js-tabbed-content');
 
-        /* Loop over tab instances */
+        /* Loop over instances */
         tabbedContents.forEach(tabbedContent => {
-
-            /* Wrap setup in self starting function */
-            let firstSetup = true,
-                setupTabbedContent;
-
-            (setupTabbedContent = function(){
-                /* Setup timeline for various animations */
-                let tabbedContentTl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: tabbedContent,
-                        start: "top center",
-                        once: true,
-                        invalidateOnRefresh: true,
-                        refreshPriority: tabbedContent.dataset.stCount
-                    },
-                    onComplete: () => {
-                        tabbedContentTl.clear();
-                    }
-                });
-
-                /* Clear timeline on resize */
-                callAfterResize(function() {
-                    tabbedContentTl.clear();
-                });
-
-                /* Disable timeline and wait for initial reveal animation to enable */
-                if(firstSetup === true) {
-                    tabbedContentTl.scrollTrigger.disable();
-                }
+            let timeline = tlSetup(tabbedContent, tabbedContent.dataset.stCount);
 
 
+            /* Build timeline */
+            let buildTimeline = function() {
                 /* Add animation for headline reveal */
                 if(tabbedContent.querySelector('.js-tabbed-content-vertical-text-reveal')) {
-                    tlTextReveal(tabbedContent.querySelector('.js-tabbed-content-vertical-text-reveal'), tabbedContentTl);
+                    tlTextReveal(tabbedContent.querySelector('.js-tabbed-content-vertical-text-reveal'), timeline);
                 }
 
 
                 /* Add animation for navigation reveal */
                 if(tabbedContent.querySelector('.js-tabbed-content-nav')) {
-                    tlFadeIn(tabbedContent.querySelector('.js-tabbed-content-nav'), tabbedContentTl);
+                    tlFadeIn(tabbedContent.querySelector('.js-tabbed-content-nav'), timeline);
                 }
 
 
                 /* Add animation for container reveal */
                 if(tabbedContent.querySelector('.js-tabbed-content-tabs')) {
-                    tlFadeIn(tabbedContent.querySelector('.js-tabbed-content-tabs'), tabbedContentTl);
+                    tlFadeIn(tabbedContent.querySelector('.js-tabbed-content-tabs'), timeline);
                 }
+            }
+
+            /* Execute once */
+            buildTimeline();
 
 
-                /* (Re-)set tabs height */
+            /* Set tabs height */
+            let setTabsHeight = function() {
                 const tabbedContentTabContainer = tabbedContent.querySelector('.js-tabbed-content-tabs'),
                     tabbedContentTabs = tabbedContentTabContainer.querySelectorAll('.js-tabbed-content-tab');
 
@@ -73,12 +50,19 @@ export function init(gsap, ScrollTrigger, callAfterResize, blobity, tlTextReveal
                         return tallestTab + 'px';
                     }
                 });
+            }
 
-                firstSetup = false;
-            })();
+            /* Execute once */
+            setTabsHeight();
 
-            /* Resetup grid after resize */
-            callAfterResize(setupTabbedContent);
+
+            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+            callAfterResize(function() {
+                buildTlAfterResize(timeline, buildTimeline);
+
+                setTabsHeight();
+            });
+
 
 
 
@@ -246,7 +230,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, blobity, tlTextReveal
                     });
                 });
             });
-
         });
     }
 }

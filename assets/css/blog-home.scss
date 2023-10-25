@@ -3,12 +3,30 @@
 .blog-home {
   padding:var(--offset-vertical) var(--offset-side);
 
+  &--archive {
+    padding-top:calc(var(--offset-vertical) * 2);
+  }
+
+  &__archive-header {
+    margin-bottom:var(--offset-vertical);
+
+    &__title {
+      display: block;
+      margin-bottom: .5rem;
+      font-weight: $bold-weight;
+    }
+
+    &__headline {
+      margin: 0;
+    }
+  }
+
   &__items {
     display:grid;
     grid-template-columns:1fr 1fr 1fr;
     gap: var(--offset-block);
 
-    @media only screen and (max-width: 1024px) {
+    @media only screen and (max-width: 1080px) {
       grid-template-columns: 1fr 1fr;
     }
     @media only screen and (max-width: 600px) {
@@ -26,8 +44,6 @@
         margin-bottom:1em;
 
         &__img {
-          position:relative;
-          z-index:1;
           display:block;
           width:100%;
           height:auto;
@@ -60,7 +76,7 @@
         font-weight:$semibold-weight;
         font-size:1.25em;
 
-        @media only screen and (max-width: 768px) {
+        @media only screen and (max-width: 810px) {
           font-size:1.2em;
         }
         @media only screen and (max-width: 600px) {

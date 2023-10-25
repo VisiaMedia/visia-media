@@ -9,7 +9,6 @@
 			} ?>
 
 			<div class="process-carousel__container js-process-carousel-container">
-
                 <aside class="process-carousel__labels js-process-carousel-labels">
                     <ul class="process-carousel__labels__list js-process-carousel-labels-list">
 		                <?php foreach($textItems as $textItem) { ?>

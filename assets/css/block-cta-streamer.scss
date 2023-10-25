@@ -1,0 +1,49 @@
+@import './assets/css/reset/core';
+
+.cta-streamer {
+  display:flex;
+  min-height:75vh;
+  min-height:75svh;
+
+  @media only screen and (max-width: 600px) {
+    min-height:unset;
+  }
+
+  &__inner {
+    width:100%;
+    margin:auto;
+    padding:var(--offset-vertical) var(--offset-side);
+    text-align:center;
+  }
+
+  &__title {
+    margin:0 0 var(--offset-block);
+    font-weight:$bold-weight;
+    font-size:3.5em;
+
+    @media only screen and (max-width: 1080px) {
+      max-width:100%;
+      font-size:3.25em;
+    }
+    @media only screen and (max-width: 900px) {
+      font-size:3em;
+    }
+    @media only screen and (max-width: 810px) {
+      font-size:2.75em;
+    }
+    @media only screen and (max-width: 600px) {
+      font-size:2.5em;
+    }
+    @media only screen and (max-width: 380px) {
+      font-size:2.25em;
+    }
+  }
+
+  &__button-wrapper {
+    font-size:1.2em;
+
+    @media only screen and (max-width: 810px) {
+      font-size:1em;
+    }
+  }
+}

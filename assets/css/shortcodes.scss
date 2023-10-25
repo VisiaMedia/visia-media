@@ -1,38 +1,176 @@
 @import './assets/css/reset/core';
 
-.blog-download {
-  display:flex;
-  gap:var(--offset-block) var(--offset-side);
-  justify-content:space-between;
-  align-items:center;
-  width:calc(100% + (var(--offset-side) * 2));
-  margin:calc(var(--offset-block) * 2) calc(var(--offset-side) * -1);
-  padding:var(--offset-boxed) var(--offset-side);
-  font-size:1rem;
+.blog-single {
+  .blog-download {
+    display: flex;
+    gap: var(--offset-block) var(--offset-side);
+    justify-content: space-between;
+    align-items: center;
+    width: calc(100% + (var(--offset-side) * 2));
+    margin: calc(var(--offset-block) * 2) calc(var(--offset-side) * -1);
+    padding: var(--offset-boxed) var(--offset-side);
+    font-size: 1rem;
 
-  @media only screen and (max-width: 1024px) {
-    width:100%;
-    margin-right:0;
-    margin-left:0;
-  }
-  @media only screen and (max-width: 768px) {
-    flex-direction:column;
-  }
-
-  &__content {
-    flex:5;
-    order:1;
-
-    @media only screen and (max-width: 768px) {
-      order:2;
+    @media only screen and (max-width: 1080px) {
+      width: 100%;
+      margin-right: 0;
+      margin-left: 0;
+    }
+    @media only screen and (max-width: 810px) {
+      flex-direction: column;
     }
 
-    &__title.css-title {
-      font-size:1.8em;
+    &__content {
+      flex: 5;
+      order: 1;
+
+      @media only screen and (max-width: 810px) {
+        order: 2;
+      }
+
+      &__title {
+        font-size: 1.8em;
+      }
+
+      &__usps {
+        margin: var(--offset-block) 0;
+
+        &:first-child {
+          margin-top: 0;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      &__button-wrapper {
+        width: fit-content;
+        margin-top: var(--offset-block);
+        text-align: center;
+
+        @media only screen and (max-width: 810px) {
+          margin: var(--offset-block) auto 0;
+        }
+
+        &__button {
+          display: block;
+          margin: 0 auto .5em;
+        }
+
+        &__subtext {
+          display: block;
+          font-size: .75em;
+          opacity: .5;
+        }
+      }
     }
 
-    &__usps {
-      margin:var(--offset-block) 0;
+    &__image {
+      flex: 2;
+      order: 2;
+
+      @media only screen and (max-width: 810px) {
+        order: 1;
+      }
+
+      img {
+        margin-left: auto;
+        margin-right: auto;
+
+        @media only screen and (max-width: 810px) {
+          max-width: 10em;
+        }
+      }
+    }
+  }
+
+  .table-of-contents {
+    margin: calc(var(--offset-block) * 2) 0;
+    padding: calc(var(--offset-block) * 1.5);
+    background: var(--dropshadow-color);
+
+    @media only screen and (max-width: 1080px) {
+      padding:var(--offset-block) var(--offset-side);
+    }
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &__title {
+      font-size: 1.8em;
+    }
+
+    &__list {
+      list-style: none;
+      margin:0;
+      padding:0;
+      counter-reset: table-of-contents;
+
+      li {
+        padding:.5em 0;
+        border-top:1px solid var(--dark-border-color);
+        counter-increment: table-of-contents;
+
+        &:first-child {
+          border-top:none;
+        }
+
+        a {
+          position:relative;
+          display:inline-block;
+          padding-left:1.5em;
+          color:var(--current-color);
+          text-decoration:none;
+
+          &:hover {
+            color:var(--current-color);
+          }
+
+          &::before {
+            content: counter(table-of-contents)".";
+            position:absolute;
+            left:0;
+            font-weight:$bold-weight;
+          }
+        }
+      }
+    }
+  }
+
+  .blockquote {
+    width: calc(100% + (var(--offset-side) * 2));
+    margin:var(--offset-vertical) calc(var(--offset-side) * -1);
+    text-align:center;
+    font-size:2em;
+    line-height:1.25;
+
+    @media only screen and (max-width: 1080px) {
+      width: 100%;
+      margin-right: 0;
+      margin-left: 0;
+      font-size:1.75em;
+    }
+    @media only screen and (max-width: 900px) {
+      font-size:1.5em;
+    }
+    @media only screen and (max-width: 810px) {
+      font-size:1.25em;
+    }
+    @media only screen and (max-width: 600px) {
+      font-size:1.1em;
+    }
+  }
+
+  .checklist {
+    ul {
+      list-style:none;
+      padding:0;
 
       &:first-child {
         margin-top:0;
@@ -40,44 +178,50 @@
       &:last-child {
         margin-bottom:0;
       }
-    }
 
-    &__button-wrapper {
-      width:fit-content;
-      margin-top:var(--offset-block);
-      text-align:center;
+      li {
+        position:relative;
+        padding:.75em 0 .75em 1.75em;
+        border-top:1px solid var(--dark-border-color);
+        user-select: none;
 
-      @media only screen and (max-width: 768px) {
-        margin:var(--offset-block) auto 0;
-      }
+        &:first-child {
+          border-top:none;
+        }
+        &:hover {
+          text-decoration: line-through;
+        }
+        &.js-active {
+          text-decoration: line-through;
 
-      &__button {
-        display:block;
-        margin:0 auto .5em;
-      }
+          &::after {
+            opacity:1;
+          }
+        }
 
-      &__subtext {
-        display:block;
-        font-size:.75em;
-        opacity:.5;
-      }
-    }
-  }
-
-  &__image {
-    flex:2;
-    order:2;
-
-    @media only screen and (max-width: 768px) {
-      order:1;
-    }
-
-    img {
-      margin-left:auto;
-      margin-right:auto;
-
-      @media only screen and (max-width: 768px) {
-        max-width:10em;
+        &::before {
+          content:'';
+          position:absolute;
+          left:0;
+          top:1em;
+          display:block;
+          width:1em;
+          height:1em;
+          border:1px solid currentColor;
+        }
+        &::after {
+          content: '\f00c';
+          position: absolute;
+          top: 1rem;
+          left: 0;
+          width: 1rem;
+          height: 1rem;
+          font-size: .75em;
+          text-align: center;
+          line-height: 1rem;
+          opacity:0;
+          @extend %fontawesome;
+        }
       }
     }
   }

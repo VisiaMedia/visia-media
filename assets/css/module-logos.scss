@@ -8,7 +8,7 @@
     margin:0 0 calc(var(--offset-block) * 2);
     font-weight:$bold-weight;
 
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 810px) {
       margin-bottom:var(--offset-block);
     }
   }
@@ -24,7 +24,7 @@
     @media only screen and (max-width: 1921px) {
       grid-template-columns: 1fr 1fr 1fr 1fr;
     }
-    @media only screen and (max-width: 1024px) {
+    @media only screen and (max-width: 1080px) {
       grid-template-columns: 1fr 1fr 1fr;
     }
     @media only screen and (max-width: 600px) {
@@ -55,7 +55,7 @@
     margin:calc(var(--offset-block) * 2) 0 0;
     font-size:1.2em;
 
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 810px) {
       margin-top:var(--offset-block);
       font-size:1em;
     }

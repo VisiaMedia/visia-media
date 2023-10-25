@@ -540,6 +540,9 @@ readers do not read off random characters that represent icons */
 .fa-arrow-down::before {
   content: "\f063"; }
 
+.fa-check::before {
+  content: "\f00c"; }
+
 .fa-notdef::before {
   content: "\e1fe"; }
 
@@ -664,6 +667,9 @@ readers do not read off random characters that represent icons */
 
 .fad.fa-arrow-down::after, .fa-duotone.fa-arrow-down::after {
   content: "\f063\f063"; }
+
+.fad.fa-check::after, .fa-duotone.fa-check::after {
+  content: "\f00c\f00c"; }
 
 .fad.fa-notdef::after, .fa-duotone.fa-notdef::after {
   content: "\e1fe\e1fe"; }

@@ -51,6 +51,11 @@
     iconName: 'arrow-down',
     icon: [384, 512, [8595], "f063", "M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"]
   };
+  var faCheck = {
+    prefix: 'fas',
+    iconName: 'check',
+    icon: [512, 512, [10003, 10004], "f00c", "M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"]
+  };
   var faNotdef = {
     prefix: 'fas',
     iconName: 'notdef',
@@ -66,6 +71,7 @@
     faCaretDown: faCaretDown,
     faFileHeart: faFileHeart,
     faArrowDown: faArrowDown,
+    faCheck: faCheck,
     faNotdef: faNotdef
   };
 
@@ -80,6 +86,7 @@
   exports.faCaretDown = faCaretDown;
   exports.faFileHeart = faFileHeart;
   exports.faArrowDown = faArrowDown;
+  exports.faCheck = faCheck;
   exports.faNotdef = faNotdef;
 
   Object.defineProperty(exports, '__esModule', { value: true });

@@ -13,9 +13,7 @@
 					if($teamMember['profielfoto'] && $teamMember['gegevens']) { ?>
 						<li class="team__list__item js-team-member">
 							<?php if($photo = $teamMember['profielfoto']) {
-								$photoSource = wp_get_attachment_image_src($photo, 'team-width-use');
-
-								echo '<div class="team__list__item__photo" style="padding-bottom:'.(($photoSource[2] / $photoSource[1]) * 100).'%;">'.wp_get_attachment_image($photo, 'team-width-use', null, array('class' => 'team__list__item__photo__img')).'</div>';
+                                echo wp_get_attachment_image($photo, 'team-width-use', null, array('class' => 'team__list__item__photo'));
 							}
 
 							if($gegevens = $teamMember['gegevens']) {

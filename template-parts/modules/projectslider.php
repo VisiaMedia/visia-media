@@ -1,8 +1,17 @@
-<?php if($cases = get_posts(array(
+<?php
+
+if(get_sub_field('query') == 'popular') {
+    $orderby = 'menu_order';
+} else {
+	$orderby = 'rand';
+}
+
+if($cases = get_posts(array(
 	'post_type'	=> 'case',
 	'posts_per_page' => 6,
-	'orderby' => 'menu_order',
-	'order' => 'ASC'
+	'orderby' => $orderby,
+	'order' => 'ASC',
+    'post__not_in' => array(get_the_ID())
 ))) {
 	global $scrollTriggerCount;
 
@@ -13,13 +22,17 @@
 	<section class="project-slider js-project-slider" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
 		<div class="project-slider__scroller">
 			<div class="project-slider__scroller__inner js-project-slider-inner css-max-text-width">
+                <?php if($title = get_sub_field('titel')) {
+                    echo '<h1 class="project-slider__scroller__title css-title--normal-size css-title js-project-slider-title">'.$title.'</h1>';
+                } ?>
+
 				<ul class="project-slider__scroller__list js-project-slider-list">
 					<?php foreach($cases as $post) { setup_postdata($post); ?>
 						<li class="project-slider__scroller__list__item js-project-slider-list-item">
 							<a class="project-slider__scroller__list__item__link js-project-slider-list-item-link" href="<?php the_permalink(); ?>" rel="bookmark" data-no-blobity>
 								<div class="project-slider__scroller__list__item__visual">
 									<?php if(has_post_thumbnail()) {
-										echo '<div class="project-slider__scroller__list__item__visual__image js-project-slider-list-item-visual" style="background-image:url('.wp_get_attachment_image_url(get_post_thumbnail_id(), 'half-width-use').');"></div>';
+                                        echo wp_get_attachment_image(get_post_thumbnail_id(), 'project-slider-use', null, array('class' => 'project-slider__scroller__list__item__visual__image js-project-slider-list-item-visual'));
 									} ?>
 								</div>
 

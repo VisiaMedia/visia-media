@@ -4,20 +4,24 @@
   --offset-block:2rem;
   --offset-boxed:4rem;
 
+  --current-color:#212121;
+  --current-background:#ffffff;
   --plain-text-color:#6e6e6e;
+
+  --light-border-color:#2121210F;
+  --dark-border-color:#21212180;
+
+  --dropshadow-color:#0000000D;
+  --visual-img-filter:invert(0);
+
   --boxed-text-color:#6e6e6e;
   --boxed-main-color:#000;
 
-  --light-border-color:#2121210F;
-  --dropshadow-color:#0000000D;
-
   --menu-text-color:#acb0ba;
-
-  --visual-img-filter:invert(0);
 
   --font-stack: 'Visia Media', Helvetica, Arial, sans-serif;
 
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 1080px) {
     --offset-vertical:6rem;
     --offset-side:3.5rem;
     --offset-boxed:3.5rem;
@@ -27,7 +31,7 @@
     --offset-side:3rem;
     --offset-boxed:3rem;
   }
-  @media only screen and (max-width: 768px) {
+  @media only screen and (max-width: 810px) {
     --offset-side:2.5rem;
     --offset-boxed:2.5rem;
   }
@@ -43,8 +47,8 @@
 html,
 body {
   font-size:24px;
-  color:$text-color;
-  line-height:1.75;
+  color:var(--current-color);
+  line-height:1.6;
   overscroll-behavior: none;
 
   @media only screen and (max-width: 2251px) {
@@ -65,10 +69,10 @@ body {
   @media only screen and (max-width: 1367px) {
     font-size:18px;
   }
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 1080px) {
     font-size:17px;
   }
-  @media only screen and (max-width: 600px) {
+  @media only screen and (max-width: 325px) {
     font-size:16px;
   }
 }
@@ -82,6 +86,8 @@ html {
 }
 
 body {
+  background:var(--current-background);
+  color:var(--current-color);
   font-family: var(--font-stack);
   font-weight:$regular-weight;
   letter-spacing:.025em;
@@ -101,7 +107,7 @@ body {
   padding-bottom:0;
   pointer-events:none;
 
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 1080px) {
     padding:var(--offset-block) var(--offset-side);
   }
   @media only screen and (max-width: 600px) {
@@ -113,7 +119,7 @@ body {
     max-width:7em;
     pointer-events:all;
 
-    @media only screen and (max-width: 1024px) {
+    @media only screen and (max-width: 1080px) {
       max-width:6.5em;
     }
     @media only screen and (max-width: 600px) {
@@ -226,13 +232,13 @@ body {
         line-height:1.2;
         overflow:hidden;
 
-        @media only screen and (max-width: 1024px) {
+        @media only screen and (max-width: 1080px) {
           font-size:3.25em;
         }
         @media only screen and (max-width: 900px) {
           font-size:3em;
         }
-        @media only screen and (max-width: 768px) {
+        @media only screen and (max-width: 810px) {
           font-size:2.75em;
         }
         @media only screen and (max-width: 600px) {
@@ -352,37 +358,35 @@ main[tabindex="-1"] {
 .js-page-transition {
   position: fixed;
   top: 0;
-  right: 0;
-  bottom: 0;
   left: 0;
   z-index: 1000;
+  width:100%;
   pointer-events: none;
   background: darken($blue, 7.5%);
-  clip-path: inset(100% 0% 0% 0%);
-}
-
-.js-page-transition-title-wrapper {
-  position:absolute;
-  right:50%;
-  bottom:50%;
-  transform:translate(50%, 50%);
-  width:calc(100% - (var(--offset-side) * 2));
-  text-align:center;
+  overflow:hidden;
+  will-change: height, transform;
 }
 
 .js-transition-page-title {
+  position:absolute;
+  top:50vh;
+  top:50svh;
+  transform:translateY(-50%);
+  width:100%;
+  padding:0 var(--offset-side);
+  text-align:center;
   font-weight: $semibold-weight;
   color:$white;
   font-size:3.5em;
   line-height:1.2;
 
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 1080px) {
     font-size:3.25em;
   }
   @media only screen and (max-width: 900px) {
     font-size:3em;
   }
-  @media only screen and (max-width: 768px) {
+  @media only screen and (max-width: 810px) {
     font-size:2.75em;
   }
   @media only screen and (max-width: 600px) {
@@ -390,20 +394,5 @@ main[tabindex="-1"] {
   }
   @media only screen and (max-width: 380px) {
     font-size:2.25em;
-  }
-}
-
-.loader {
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  display:flex;
-  background: darken($blue, 7.5%);
-  clip-path: inset(0% 0% 0% 0%);
-
-  &__spinner {
-    margin:auto;
-    color:$white;
-    font-size:1.25em;
   }
 }

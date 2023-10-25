@@ -1,47 +1,18 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal){
     if(document.querySelector('.js-textgrid')) {
+        const textgrids = gsap.utils.toArray('.js-textgrid');
 
-        /* Wrap setup in self starting function */
-        let firstSetup = true,
-            setupTextgrids;
-
-        (setupTextgrids = function(){
-            /* Get all textgrid instances as array */
-            const textgrids = gsap.utils.toArray('.js-textgrid');
-
-            /* Loop over textgrid instances */
-            textgrids.forEach(textgrid => {
-
-                /* Setup timeline for various animations */
-                let textgridTL = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: textgrid,
-                        start: "top center",
-                        once: true,
-                        invalidateOnRefresh: true,
-                        refreshPriority: textgrid.dataset.stCount
-                    },
-                    onComplete: () => {
-                        textgridTL.clear();
-                    }
-                });
-
-                /* Clear timeline on resize */
-                callAfterResize(function() {
-                    textgridTL.clear();
-                });
-
-                /* Disable timeline and wait for initial reveal animation to enable */
-                if(firstSetup === true) {
-                    textgridTL.scrollTrigger.disable();
-                }
+        /* Loop over instances */
+        textgrids.forEach(textgrid => {
+            let timeline = tlSetup(textgrid, textgrid.dataset.stCount);
 
 
-
+            /* Build timeline */
+            let buildTimeline = function() {
                 /* Add animation for headline reveal */
                 if(textgrid.querySelector('.js-textgrid-vertical-text-reveal')) {
-                    tlTextReveal(textgrid.querySelector('.js-textgrid-vertical-text-reveal'), textgridTL);
+                    tlTextReveal(textgrid.querySelector('.js-textgrid-vertical-text-reveal'), timeline);
                 }
 
 
@@ -51,22 +22,27 @@ export function init(gsap, ScrollTrigger, callAfterResize, tlTextReveal){
 
                     gsap.set(textgridItems, {
                         autoAlpha:0,
-                        y: "1.5rem"
+                        y: "1.5rem",
+                        immediateRender: true
                     });
 
-                    textgridTL.to(textgridItems, {
+                    timeline.to(textgridItems, {
                         autoAlpha: 1,
                         y: "0rem",
                         stagger: .2
                     });
                 }
+            }
+
+            /* Execute once */
+            buildTimeline();
+
+
+            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+            callAfterResize(function() {
+                buildTlAfterResize(timeline, buildTimeline);
             });
-
-            firstSetup = false;
-        })();
-
-        /* Resetup grid after resize */
-        callAfterResize(setupTextgrids);
+        });
     }
 }
 

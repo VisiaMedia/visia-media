@@ -13,13 +13,13 @@
     font-size:2.25em;
     line-height:1;
 
-    @media only screen and (max-width: 1024px) {
+    @media only screen and (max-width: 1080px) {
       font-size:2em;
     }
     @media only screen and (max-width: 900px) {
       font-size:1.75em;
     }
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 810px) {
       font-size:1.5em;
     }
     @media only screen and (max-width: 600px) {
@@ -56,7 +56,7 @@
         font-size:.8rem;
         color:var(--plain-text-color);
 
-        @media only screen and (max-width: 1024px) {
+        @media only screen and (max-width: 1080px) {
           display:none;
         }
 

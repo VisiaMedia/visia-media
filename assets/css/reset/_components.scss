@@ -3,13 +3,31 @@
   color: $white;
 }
 
+.loader {
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  background: darken($blue, 7.5%);
+  clip-path: inset(0% 0% 0% 0%);
+
+  &__spinner {
+    margin:auto;
+    color:$white;
+    font-size:1.25em;
+  }
+}
+
 .css-main-body-container {
-  z-index:1;
+  position:relative;
+  z-index:2;
+  overflow:hidden;
 
   * {
     z-index:3;
   }
 }
+
 .css-max-text-width {
   width:100%;
   max-width:68em;
@@ -30,13 +48,13 @@
   &--small-size {
     font-size:2em;
 
-    @media only screen and (max-width: 1024px) {
+    @media only screen and (max-width: 1080px) {
       font-size:1.75em;
     }
     @media only screen and (max-width: 900px) {
       font-size:1.5em;
     }
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 810px) {
       font-size:1.25em;
     }
     @media only screen and (max-width: 600px) {
@@ -47,13 +65,13 @@
   &--normal-size {
     font-size:2.75em;
 
-    @media only screen and (max-width: 1024px) {
+    @media only screen and (max-width: 1080px) {
       font-size:2.5em;
     }
     @media only screen and (max-width: 900px) {
       font-size:2.25em;
     }
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 810px) {
       font-size:2em;
     }
     @media only screen and (max-width: 600px) {
@@ -70,25 +88,57 @@
 
   h1 {
     font-size:2em;
+
+    @media only screen and (max-width: 1080px) {
+      font-size:1.9em;
+    }
+    @media only screen and (max-width: 810px) {
+      font-size:1.8em;
+    }
   }
   h2 {
     font-size:1.8em;
+
+    @media only screen and (max-width: 1080px) {
+      font-size:1.7em;
+    }
+    @media only screen and (max-width: 810px) {
+      font-size:1.6em;
+    }
   }
   h3 {
     font-size:1.6em;
+
+    @media only screen and (max-width: 1080px) {
+      font-size:1.5em;
+    }
+    @media only screen and (max-width: 810px) {
+      font-size:1.4em;
+    }
   }
   h4 {
     font-size:1.4em;
+
+    @media only screen and (max-width: 1080px) {
+      font-size:1.3em;
+    }
+    @media only screen and (max-width: 810px) {
+      font-size:1.2em;
+    }
   }
   h5 {
     font-size:1.2em;
+
+    @media only screen and (max-width: 1080px) {
+      font-size:1.1em;
+    }
   }
   h6 {
     font-size:1em;
   }
   h1, h2, h3,
   h4, h5, h6 {
-    margin:1em 0 .5em;
+    margin:1.5em 0 1rem;
     font-weight:$bold-weight;
     line-height:1.25;
 
@@ -125,6 +175,26 @@
     text-decoration:line-through;
     text-decoration-color: $pink;
   }
+  blockquote {
+    margin:1em 0;
+    color:var(--current-color);
+    line-height:1.25;
+    font-size:1.6em;
+
+    &:first-child {
+      margin-top:0;
+    }
+    &:last-child {
+      margin-bottom:0;
+    }
+
+    @media only screen and (max-width: 1080px) {
+      font-size:1.5em;
+    }
+    @media only screen and (max-width: 810px) {
+      font-size:1.4em;
+    }
+  }
 
   img {
     display:block;
@@ -152,7 +222,7 @@
     width:auto;
     max-width:100%;
     height:auto;
-    margin:var(--offset-block) 0;
+    margin:var(--offset-block) auto;
 
     &.aligncenter {
       margin-left:auto;
@@ -183,12 +253,23 @@
     &:last-child {
       margin-bottom:0;
     }
+
+    li {
+      margin:.25em 0;
+
+      &:first-child {
+        margin-top:0;
+      }
+      &:last-child {
+        margin-bottom:0;
+      }
+    }
   }
 
   ol {
     list-style:decimal;
     margin:1.2em 0;
-    padding-left:1em;
+    padding-left:1.2em;
 
     &:first-child {
       margin-top:0;
@@ -196,11 +277,25 @@
     &:last-child {
       margin-bottom:0;
     }
+
+    li {
+      margin:.25em 0;
+
+      &:first-child {
+        margin-top:0;
+      }
+      &:last-child {
+        margin-bottom:0;
+      }
+    }
   }
 }
 
 .css-global-vertical-text-reveal-parent {
   overflow:hidden;
+}
+.css-global-vertical-text-reveal-child {
+  will-change: transform;
 }
 
 .css-global-button {

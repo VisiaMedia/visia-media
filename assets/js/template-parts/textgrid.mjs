@@ -1,5 +1,7 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal){
+import {tlFadeIn} from "../helpers/functions.mjs";
+
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
     if(document.querySelector('.js-textgrid')) {
         const textgrids = gsap.utils.toArray('.js-textgrid');
 
@@ -31,6 +33,12 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
                         y: "0rem",
                         stagger: .2
                     });
+                }
+
+
+                /* Add animation for button reveal */
+                if(textgrid.querySelector('.js-textgrid-button-wrapper')) {
+                    tlFadeIn(textgrid.querySelector('.js-textgrid-button-wrapper'), timeline);
                 }
             }
 

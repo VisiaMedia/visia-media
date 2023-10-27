@@ -462,7 +462,10 @@ function visia_scripts(){
         }
 
         /* Register script */
-	    wp_register_script($handle, get_template_directory_uri() .'/dist/'.$filename, null, null, array('defer', true));
+	    wp_register_script($handle, get_template_directory_uri() .'/dist/'.$filename, null, null, array(
+		        //'strategy'  => 'defer',
+                'in_footer' => true
+        ));
 
         /* Push handle as dependency */
         if($handle) {
@@ -489,7 +492,7 @@ function visia_styles() {
 
 /* Filter for Simply Static */
 add_filter('ss_origin_url', function($url) {
-    $url = 'https://www.visia-ontwikkeling.nl/visia-media/staging/';
+    $url = 'https://www.visia-staging.nl/';
     return $url;
 });
 

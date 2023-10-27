@@ -1,5 +1,5 @@
 <?php function visia_basis_setup() {
-	/* Set global section counter */
+	/* Create and set global section counter */
 	global $scrollTriggerCount; $scrollTriggerCount = 0;
 
 
@@ -72,7 +72,6 @@
 	}
 
 
-
 	/* Set ACF backend styles */
 	add_action('acf/input/admin_head', 'my_acf_admin_head');
 	function my_acf_admin_head() { ?>
@@ -90,7 +89,6 @@
             }
 		</style>
 	<?php }
-
 
 
 	/* Shortcodes
@@ -140,12 +138,13 @@
 	} add_shortcode('blog_download', 'visia_shortcode_blog_download');
 
 
-	/* Inhoudsopgave */
+	/* Table of contents */
 	function visia_shortcode_inhoudsopgave() {
 		return '<nav class="table-of-contents js-table-of-contents"><h3 class="table-of-contents__title css-title">'.__('Table of contents', 'visia').'</h3><ol class="table-of-contents__list js-table-of-contents-list"></ol></nav>';
 	} add_shortcode('inhoudsopgave', 'visia_shortcode_inhoudsopgave');
 
-	/* Blockquote shortcode */
+
+	/* Blockquote */
 	function visia_shortcode_blockquote($atts) {
 		$atts = shortcode_atts(array(
             'text' => null,
@@ -157,6 +156,7 @@
 	} add_shortcode('blockquote', 'visia_shortcode_blockquote');
 
 
+    /* Checklist */
 	function visia_shortcode_checklist($atts, $content = null) {
 		return '<div class="checklist js-checklist">'.$content.'</div>';
 	} add_shortcode('checklist', 'visia_shortcode_checklist');
@@ -177,12 +177,27 @@
 	});
 
 
-
     /* Filter to remove <p>'s around <img>-tags */
 	function filter_ptags_on_images($content) {
 		return preg_replace('/<p>(\s*)(<img .* \/>)(\s*)<\/p>/iU', '\2', $content);
 	} add_filter('the_content', 'filter_ptags_on_images');
 
+
+	/* Filter for Simply Static base url */
+	add_filter('ss_origin_url', function($url) {
+		$url = 'https://www.visia-staging.nl/';
+		return $url;
+	});
+
+
+	/* Removing the content editor for all pages */
+	function remove_content_editor() {
+		remove_post_type_support('page', 'editor');
+	} add_action('admin_head', 'remove_content_editor');
+
+
+	/* Disabling WordPress lazy-load */
+	add_filter( 'wp_lazy_loading_enabled', '__return_false' );
 
 
     /* Custom menu walker for main menu */
@@ -205,15 +220,17 @@
 	}
 
 
-	/* Allow SVG uploads */
-	function visia_svg_mime_types($mimes) {
-		$mimes['svg'] = 'image/svg+xml';
-		return $mimes;
-	}
-	add_filter('upload_mimes', 'visia_svg_mime_types');
+	/* Add classes to previous- and next-posts link (blog overview) */
+	function posts_link_attributes_next() {
+		return 'class="js-blog-home-nav-next"';
+	} add_filter('next_posts_link_attributes', 'posts_link_attributes_next');
+
+	function posts_link_attributes_prev() {
+		return 'class="js-blog-home-nav-prev"';
+	} add_filter('previous_posts_link_attributes', 'posts_link_attributes_prev');
 
 
-	/* Custom post types - Bedanktpagina's */
+	/* Custom post types - Thank you pages */
 	function custom_post_type_visia_thankyou() {
 		register_post_type('thankyoupage', array(
 			'label'                 => __('Thank you pages', 'visia'),
@@ -247,8 +264,7 @@
 	} add_action('init', 'custom_post_type_visia_thankyou', 0 );
 
 
-
-	/* Custom post types - Landingspagina's */
+	/* Custom post types - Landing pages */
 	function custom_post_type_visia_landing() {
 		register_post_type('landingpage', array(
 			'label'                 => __('Landing pages', 'visia'),
@@ -285,7 +301,7 @@
 		return $post_link;
 	} add_filter('post_type_link', 'visia_remove_cpt_slug', 10, 2);
 
-	/* Add WordPress support for cpt's without slug */
+	/* Add WordPress support for CPT's without slug */
 	function visia_add_cpt_post_names_to_main_query($query) {
 		if(! $query->is_main_query()) {
 			return;
@@ -302,20 +318,6 @@
 		$query->set('post_type', array('post', 'page', 'landingpage'));
 
 	} add_action('pre_get_posts', 'visia_add_cpt_post_names_to_main_query');
-
-
-
-    /* Add classes to previous- and next-posts link (blog overview) */
-	add_filter('next_posts_link_attributes', 'posts_link_attributes_next');
-	add_filter('previous_posts_link_attributes', 'posts_link_attributes_prev');
-
-	function posts_link_attributes_next() {
-		return 'class="js-blog-home-nav-next"';
-	}
-	function posts_link_attributes_prev() {
-		return 'class="js-blog-home-nav-prev"';
-	}
-
 
 
 	/* Custom post types - Reviews */
@@ -348,8 +350,7 @@
 	} add_action('init', 'custom_post_type_visia_blog_downloads', 0 );
 
 
-
-    /* Custom post types - Projecten */
+    /* Custom post types - Projects */
 	function custom_post_type_visia_cases() {
 		register_post_type('case', array(
 			'label'                 => __('Cases', 'visia'),
@@ -383,7 +384,6 @@
 	} add_action('init', 'custom_post_type_visia_cases', 0 );
 
 
-
 	/* Custom post types - Reviews */
 	function custom_post_type_visia_reviews() {
 		register_post_type('review', array(
@@ -414,11 +414,6 @@
 	} add_action('init', 'custom_post_type_visia_reviews', 0 );
 
 } add_action('after_setup_theme', 'visia_basis_setup');
-
-
-
-
-
 
 
 
@@ -478,7 +473,6 @@ function visia_scripts(){
 } add_action('wp_enqueue_scripts', 'visia_scripts');
 
 
-
 /* Enqueue styles */
 function visia_styles() {
 	wp_enqueue_style('reset', get_template_directory_uri() . '/dist/reset.min.css');
@@ -490,17 +484,9 @@ function visia_styles() {
 
 
 
-/* Filter for Simply Static */
-add_filter('ss_origin_url', function($url) {
-    $url = 'https://www.visia-staging.nl/';
-    return $url;
-});
-
-
-
+/* Add class for generating and modifying colors */
 class Sasser {
 	private $hexChars = array('a' => 10, 'b' => 11, 'c' => 12, 'd' => 13, 'e' => 14, 'f' => 15);
-
 
 	public function toRGB($hex) {
 		if (is_array($hex)) return $hex;
@@ -515,7 +501,6 @@ class Sasser {
 		return $rgb;
 	}
 
-
 	public function toHex($rgb) {
 		$hex = '#';
 		for ($i = 0; $i < count($rgb);	$i++) {
@@ -523,7 +508,6 @@ class Sasser {
 		}
 		return $hex;
 	}
-
 
 	public function lighten($hex, $percent) {
 		$rgb = $this->toRGB($hex);
@@ -542,7 +526,6 @@ class Sasser {
 		$hsl[2] -= $percent;
 		return $this->toHex($this->HSLtoRGB($hsl));
 	}
-
 
 	public function hueToRGB($p, $q, $decHue) {
 		if ($decHue < 0) $decHue += 1;
@@ -595,22 +578,6 @@ class Sasser {
 		return array(fmod($hue, 360), $saturation * 100, $lightness / 5.1);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* Function for outputting the color change trigger */
@@ -666,7 +633,6 @@ function global_color_change_trigger($colorScheme, $background = null, $text = n
 }
 
 
-
 /* Function for outputting the global button */
 function global_button($buttonLabel, $buttonTarget, $buttonLocation = 'internal', $buttonWrapperClasses = null, $buttonClasses = null) {
 	if($buttonLocation == 'internal') {
@@ -675,29 +641,4 @@ function global_button($buttonLabel, $buttonTarget, $buttonLocation = 'internal'
 		$buttonIcon = '<i class="css-global-button-icon fa-regular fa-arrow-up-right"></i>';
 	}
 	echo '<div'.(($buttonWrapperClasses) ? ' class="'.$buttonWrapperClasses.'"' : '').'><a class="css-global-button js-global-button'.(($buttonClasses) ? ' '.$buttonClasses : '').'" href="'.esc_url($buttonTarget).'"'.(($buttonLocation == 'external') ? ' target="_blank"' : '').'><span class="css-global-button-text">'.$buttonLabel.'</span><span class="css-global-button-icon-wrapper js-global-button-icon">'.$buttonIcon.'<span class="css-global-button-fill js-global-button-fill"></span></span></a></div>';
-}
-
-
-
-/* Resetting inline-css size limit */
-function adjust_inline_limits($value) {
-	return 2000;
-} add_filter( 'wphb_inline_limit_kb', 'adjust_inline_limits' );
-
-
-
-/* Removing the content editor for all pages */
-function remove_content_editor() {
-	remove_post_type_support('page', 'editor');
-} add_action('admin_head', 'remove_content_editor');
-
-
-
-/* Disabling WordPress lazy-load */
-add_filter( 'wp_lazy_loading_enabled', '__return_false' );
-
-
-
-
-
-?>
+} ?>

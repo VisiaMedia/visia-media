@@ -32,7 +32,7 @@
 							</a>
 						</li>
 					<?php } elseif($totalCases > 6) {
-						$extraCases .= '<li data-case-permalink="'.get_permalink().'"'.((has_post_thumbnail()) ? ' data-case-thumbnail="'.wp_get_attachment_image_url(get_post_thumbnail_id(), 'half-width-use').'"' : '').' data-case-title="'.rawurlencode(get_the_title()).'"'.((get_field('case_statement')) ? ' data-case-statement="'.rawurlencode(get_field('case_statement')).'"' : '').'>kek</li>';
+						$extraCases .= '<li data-case-permalink="'.get_permalink().'"'.((has_post_thumbnail()) ? ' data-case-thumbnail="'.wp_get_attachment_image_url(get_post_thumbnail_id(), 'project-grid-use').'"' : '').' data-case-title="'.rawurlencode(get_the_title()).'"'.((get_field('case_statement')) ? ' data-case-statement="'.rawurlencode(get_field('case_statement')).'"' : '').'>kek</li>';
 					} ?>
 				<?php } wp_reset_postdata(); ?>
 

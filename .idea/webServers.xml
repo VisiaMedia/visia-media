@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="86f17900-595c-4d40-af75-162463bbb19d" name="[staging] visia.media" url="https://www.visia-staging.nl">
+        <fileTransfer rootFolder="/httpdocs/wp-content/themes/visia" host="shared132.cloud86-host.io" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

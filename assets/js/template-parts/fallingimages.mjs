@@ -1,5 +1,7 @@
 /* Initialize */
-export function init(gsap){
+import {callAfterResize} from "../helpers/functions.mjs";
+
+export function init(gsap, ScrollTrigger, callAfterResize){
     if(document.querySelector('.js-falling-images')) {
 
         /* Get all instances as array */
@@ -7,73 +9,73 @@ export function init(gsap){
 
         /* Loop over faller instances */
         imagefallers.forEach(imagefaller => {
-            const imagefallerList = imagefaller.querySelector('.js-falling-images-list'),
-                imagefallerItems = imagefaller.querySelectorAll('.js-falling-images-item');
+            const imagefallerList = imagefaller.querySelector('.js-falling-images-list');
 
-            /* Setup timeline for various animations */
-            let imagefallerTl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: imagefaller,
-                    pin: true,
-                    start: "top top",
-                    end: () => {
-                        return "+=" + (imagefallerList.offsetHeight - imagefaller.offsetHeight)
-                    },
-                    scrub: true,
-                    invalidateOnRefresh: true,
-                    refreshPriority: imagefaller.dataset.stCount
-                }
-            });
+            /* Setup */
+            let setupSizes = function() {
+                const firstItem = imagefaller.querySelector('.js-falling-images-item');
+                const offsetSize = (window.outerHeight - firstItem.offsetHeight) / 2;
 
-            /* Position list to vertically center first row */
-            const firstItem = imagefaller.querySelector('.js-falling-images-item');
-
-            imagefallerTl.set(imagefallerList, {
-               y:() => {
-                   return imagefaller.offsetHeight / 2 - gsap.getProperty(imagefallerList, 'paddingTop') - firstItem.offsetHeight / 2;
-               }
-            });
-
-            /* Simulate list scrolling */
-            imagefallerTl.to(imagefallerList, {
-                y:() => {
-                    return "-=" + (imagefallerList.offsetHeight - imagefaller.offsetHeight);
-                },
-                ease: "none"
-            });
-
-            /* Fade in images on scroll and add parallax effect */
-            imagefallerItems.forEach(imagefallerItem => {
-                gsap.set(imagefallerItem, {
-                    autoAlpha:0
+                /* Position list to vertically center first row */
+                gsap.set(imagefallerList, {
+                    y: offsetSize
                 });
 
+                /* Make up for new offset */
+                gsap.set(imagefaller, {
+                    paddingBottom: offsetSize,
+                    onComplete:() => {
+                        ScrollTrigger.refresh();
+                    }
+                });
+            }
+
+            /* Execute once */
+            setupSizes();
+
+            /* Rebuild on resize */
+            callAfterResize(function() {
+                setupSizes();
+            });
+
+
+
+            /* Parallax (desktop only) */
+            const imagefallerItems = imagefaller.querySelectorAll('.js-falling-images-item');
+
+            /* Add will-change functions */
+            function addWillChange(item) {
+                item.style.willChange = 'transform';
+            }
+            function removeWillChange(item) {
+                item.style.willChange = 'auto'
+            }
+
+            imagefallerItems.forEach(imagefallerItem => {
                 gsap.to(imagefallerItem, {
                     scrollTrigger: {
                         trigger: imagefallerItem,
-                        start: "top center",
-                        once: true,
-                        invalidateOnRefresh: true,
-                        refreshPriority: imagefaller.dataset.stCount
-                    },
-                    autoAlpha: 1
-                });
-
-                /* Parallax (desktop only) */
-                if(window.matchMedia("(pointer: fine)").matches) {
-                    gsap.to(imagefallerItem, {
-                        scrollTrigger: {
-                            trigger: imagefallerItem,
-                            start: 'top bottom',
-                            end: 'bottom top',
-                            scrub: true,
-                            refreshPriority: imagefaller.dataset.stCount
+                        start: 'top bottom',
+                        end: 'bottom top',
+                        scrub: 1,
+                        refreshPriority: imagefaller.dataset.stCount,
+                        onEnter:() => {
+                            addWillChange(imagefallerItem);
                         },
-                        y:() => {
-                            return "-=" + (gsap.getProperty(imagefallerItem, 'paddingTop') * Math.random() * (1 - 0.1) + 0.1);
+                        onEnterBack:() => {
+                            addWillChange(imagefallerItem);
+                        },
+                        onLeave:() => {
+                            removeWillChange(imagefallerItem);
+                        },
+                        onLeaveBack:() => {
+                            removeWillChange(imagefallerItem);
                         }
-                    });
-                }
+                    },
+                    y:() => {
+                        return "-=" + (gsap.getProperty(imagefallerItem, 'paddingTop') * Math.random() * (1 - 0.1) + 0.1);
+                    }
+                });
             });
         });
     }

@@ -30,19 +30,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
 
                     /* Add animation for button reveal (one by one) */
                     if(section.querySelector('.js-service-scroller-button-wrapper')) {
-                        const sectionButtons = section.querySelectorAll('.js-service-scroller-button-wrapper');
-
-                        gsap.set(sectionButtons, {
-                            autoAlpha: 0,
-                            y: "1.5rem",
-                            immediateRender: true
-                        });
-
-                        timeline.to(sectionButtons, {
-                            autoAlpha: 1,
-                            y: "0rem",
-                            stagger: .2
-                        });
+                        tlFadeIn(section.querySelectorAll('.js-service-scroller-button-wrapper'), timeline);
                     }
                 }
 

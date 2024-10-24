@@ -11,7 +11,7 @@
 
 				if(has_post_thumbnail()) { ?>
 					<div class="single-review__author__thumbnail js-single-review-thumbnail">
-						<?php echo wp_get_attachment_image(get_post_thumbnail_id(), 'review-portrait-use', null, array('class' => 'single-review__author__thumbnail__img')); ?>
+						<?php echo wp_get_attachment_image(get_post_thumbnail_id(), 'review-portrait-use-retina', null, array('class' => 'single-review__author__thumbnail__img')); ?>
 					</div>
 				<?php }
 

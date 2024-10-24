@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, getSiblings){
     if(document.querySelector('.js-blog-single')) {
         const blogSingle = document.querySelector('.js-blog-single');
 
@@ -20,8 +20,16 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
             }
 
             /* Add animation for text reveal */
-            if (blogSingle.querySelector('.js-blog-single-content')) {
-                tlFadeIn(blogSingle.querySelector('.js-blog-single-content'), timeline);
+            if(blogSingle.querySelector('.js-blog-single-content')) {
+                const blogSingleContent = blogSingle.querySelector('.js-blog-single-content');
+
+                gsap.set(blogSingleContent, {
+                    autoAlpha:0
+                });
+
+                timeline.to(blogSingleContent, {
+                    autoAlpha:1
+                });
             }
         }
 
@@ -40,46 +48,14 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
 
     /* Post tags */
     if(document.querySelector('.js-tag-list')) {
-        const tagList = document.querySelector('.js-tag-list');
-
-        gsap.set(tagList, {
-            autoAlpha:0,
-            y: "1.5rem"
-        });
-
-        gsap.to(tagList, {
-            scrollTrigger: {
-                trigger: tagList,
-                start: "top center",
-                once: true,
-                invalidateOnRefresh: true
-            },
-            autoAlpha: 1,
-            y: "0rem"
-        });
+        stFadeIn(document.querySelector('.js-tag-list'), 0);
     }
 
 
 
     /* External items */
     if(document.querySelector('.js-external-items')) {
-        const externalItems = document.querySelector('.js-external-items');
-
-        gsap.set(externalItems, {
-            autoAlpha:0,
-            y: "1.5rem"
-        });
-
-        gsap.to(externalItems, {
-            scrollTrigger: {
-                trigger: externalItems,
-                start: "top center",
-                once: true,
-                invalidateOnRefresh: true
-            },
-            autoAlpha: 1,
-            y: "0rem"
-        });
+        stFadeIn(document.querySelector('.js-external-items'), 0);
     }
 
 
@@ -101,17 +77,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
             }
 
             /* Add animation for showing items */
-            gsap.set(relatedPostItems, {
-                autoAlpha:0,
-                y: "1.5rem",
-                immediateRender: true
-            });
-
-            timeline.to(relatedPostItems, {
-                autoAlpha: 1,
-                y: "0rem",
-                stagger: .2
-            });
+            tlFadeIn(relatedPostItems, timeline);
         }
 
         /* Execute once */

@@ -7,6 +7,7 @@ import SwupHeadPlugin from '@swup/head-plugin';
 import SwupFormsPlugin from '@swup/forms-plugin';
 import SwupPreloadPlugin from '@swup/preload-plugin';
 import SwupScrollPlugin from '@swup/scroll-plugin';
+import SwupGtmPlugin from '@swup/gtm-plugin';
 
 /* GSAP */
 import { gsap } from "gsap";
@@ -28,23 +29,37 @@ gsap.defaults({
     duration:.3125
 });
 
+/* Set ScrollTrigger defaults */
+ScrollTrigger.defaults({
+    fastScrollEnd: true
+});
+
 /* Day.js */
 import dayjs from 'dayjs';
 import 'dayjs/locale/nl';
 dayjs.extend(require('dayjs/plugin/relativeTime')).locale('nl');
 
-/* Masonry */
-import Masonry from "masonry-layout";
-
 /* Infinite scroll */
 import InfiniteScroll from "infinite-scroll";
 
+/* Masonry */
+import Masonry from "masonry-layout";
+
+/* Images loaded */
+import imagesLoaded from "imagesloaded";
+
 /* Blobity */
+let isDesktop = true;
+
+if(window.matchMedia("(pointer: coarse)").matches) {
+    isDesktop = false;
+}
+
 import Blobity from "blobity";
 let blobity = new Blobity({
     licenseKey: 'A5B1423C-7B244787-AC4F5CE3-FECC6E8C',
     dotColor: 'rgb(234, 44, 118)',
-    size: 40,
+    size: isDesktop ? 40 : 0,
     dotSize: 8,
     opacity:.1,
     zIndex: '50',
@@ -55,10 +70,11 @@ let blobity = new Blobity({
 /* Importing helper functions */
 import overscroll from './helpers/overscroll.mjs';
 import imageLoader from './helpers/imageloader.mjs';
-import {callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, getCookie, disableScroll, enableScroll} from './helpers/functions.mjs';
+import {callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll} from './helpers/functions.mjs';
 
 /* Importing global / side-wide modules */
 import main from './global/main.mjs';
+import presentationPlaceholders from './global/presentation-placeholders.mjs';
 import activeMenuItem from './global/active-menu-item.mjs';
 import colorChangeTrigger from './global/color-change-trigger.mjs';
 import buttons from './global/buttons.mjs';
@@ -82,6 +98,9 @@ import tabbedcontent from './template-parts/tabbedcontent.mjs';
 import dienstenscroller from './template-parts/dienstenscroller.mjs';
 import procescarousel from './template-parts/procescarousel.mjs';
 import perspectivegallery from './template-parts/perspectivegallery.mjs';
+import logopresentation from './template-parts/logopresentation.mjs';
+import faq from './template-parts/faq.mjs';
+import goalform from './template-parts/goalform.mjs';
 
 /* Modules */
 import reviewslider from './modules/reviewslider.mjs';
@@ -93,6 +112,9 @@ import projectslider from './modules/projectslider.mjs';
 import projectgrid from './modules/projectgrid.mjs';
 import recentposts from './modules/recentposts.mjs';
 import contactform from './modules/contactform.mjs';
+import presentationform from './modules/presentationform.mjs';
+import popunder from './modules/popunder.mjs';
+import linkinbio from './modules/linkinbio.mjs';
 
 /* Blog */
 import blogOverview from './blog/overview.mjs';
@@ -102,6 +124,7 @@ import shortcodes from './blog/shortcodes.mjs';
 /* CTA's */
 import ctapresentation from './template-parts/ctapresentation.mjs';
 import ctastreamer from './template-parts/ctastreamer.mjs';
+import ctaleadform from './template-parts/ctaleadform.mjs';
 
 
 
@@ -135,6 +158,64 @@ const swup = new Swup({
         new SwupJsPlugin([
             {
                 from: '(.*)',
+                to: /bedankt(.*)/,
+                in: (next) => {
+                    const pageLoader = document.querySelector('.js-thanks-loader');
+
+                    gsap.to(pageLoader, {
+                        autoAlpha: 0,
+                        onComplete: () => {
+                            /* Remove element */
+                            pageLoader.remove();
+
+                            /* Set animation listener */
+                            revealAnimationListener.state = true;
+
+                            /* Reset blobity */
+                            blobity.reset();
+
+                            /* Init new page content */
+                            next();
+                        }
+                    });
+                },
+                out: (next) => {
+                    /* Create loader element */
+                    let pageLoaderWrapper = document.createElement('div');
+                    pageLoaderWrapper.classList.add('loader', 'js-thanks-loader');
+
+                    /* Create Font Awesome spinner */
+                    let pageLoaderSpinner = document.createElement('i');
+                    pageLoaderSpinner.classList.add('loader__spinner', 'fa-duotone', 'fa-spinner-third', 'fa-spin');
+                    pageLoaderSpinner.style.setProperty('--fa-secondary-opacity', '0.25');
+
+                    /* Insert elements into eachother and then into body */
+                    pageLoaderWrapper.appendChild(pageLoaderSpinner);
+                    document.body.appendChild(pageLoaderWrapper);
+
+                    /* Hide loader at first */
+                    gsap.set(pageLoaderWrapper, {
+                        autoAlpha:0
+                    });
+
+                    /* Animate page-out reveal */
+                    gsap.to(pageLoaderWrapper, {
+                        autoAlpha:1,
+                        onComplete:() => {
+                            setTimeout(function() {
+                                revealAnimationListener.state = false;
+
+                                document.documentElement.scrollTop = document.body.scrollTop = 0;
+                            }, 100);
+
+                            setTimeout(function() {
+                                next();
+                            }, 200);
+                        }
+                    });
+                }
+            }, {
+                from: '(.*)',
                 to: '(.*)',
                 in: (next) => {
                     let pageTransitionWrapper = document.querySelector('.js-page-transition'),
@@ -144,6 +225,8 @@ const swup = new Swup({
                     gsap.to(pageTransitionTitle, {
                         autoAlpha: 1,
                         onStart:() => {
+                            document.documentElement.scrollTop = document.body.scrollTop = 0;
+
                             pageTransitionTitle.textContent = pageTransitionTitleText.dataset.itemTitle;
                         }
                     });
@@ -169,6 +252,14 @@ const swup = new Swup({
                     });
                 },
                 out: (next) => {
+                    if(document.querySelector('.js-page-transition')) {
+                        const pageTransitions = document.querySelectorAll('.js-page-transition');
+
+                        pageTransitions.forEach(pageTransition => {
+                            pageTransition.parentNode.removeChild(pageTransition);
+                        });
+                    }
+
                     /* Create top-level element */
                     let pageTransitionWrapper = document.createElement('div');
                     pageTransitionWrapper.className = 'js-page-transition';
@@ -212,6 +303,7 @@ const swup = new Swup({
         }),
         new SwupFormsPlugin(),
         new SwupPreloadPlugin(),
+        new SwupGtmPlugin(),
         new SwupScrollPlugin({
             doScrollingRightAway: true,
             animateScroll: {
@@ -227,83 +319,89 @@ const swup = new Swup({
 
 /* Initialize functions on load */
 function swupInit() {
-    /* Helpers */
-    overscroll.stopOverscroll(gsap);
-    imageLoader.loadImages(ScrollTrigger);
+    document.fonts.ready.then(function () {
+        /* Helpers */
+        overscroll.stopOverscroll(gsap);
+        imageLoader.loadImages(ScrollTrigger);
 
-    /* Main template */
-    main.init(gsap, blobity, callAfterResize, disableScroll, enableScroll);
-    activeMenuItem.init();
+        /* Main template */
+        main.init(gsap, blobity, callAfterResize, disableScroll, enableScroll);
+        presentationPlaceholders.init(getCookie);
+        activeMenuItem.init();
 
-    // Globals
-    colorChangeTrigger.init(gsap, blobity, ScrollTrigger);
-    buttons.init(gsap, blobity, callAfterResize);
-    popups.init(gsap, blobity, callAfterResize, disableScroll, enableScroll);
-    forms.init(gsap, blobity);
+        // Globals
+        colorChangeTrigger.init(gsap, blobity, ScrollTrigger);
+        buttons.init(gsap, blobity, callAfterResize);
+        popups.init(gsap, blobity, callAfterResize, disableScroll, enableScroll);
+        forms.init(gsap, ScrollTrigger, getNextSibling, getPreviousSibling);
 
-    /* Importing theme parts */
-    header.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-    footer.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn, blobity);
+        /* Importing theme parts */
+        header.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        footer.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn, blobity);
 
-    /* Template parts */
-    statement.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-    textgrid.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
-    textblock.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-    images.init(gsap);
-    statistics.init(gsap, callAfterResize, buildTlAfterResize, tlSetup);
-    columnscroller.init(gsap, ScrollTrigger);
-    ctapresentation.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-    ctastreamer.init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-    fallingimages.init(gsap, ScrollTrigger, callAfterResize, tlTextReveal, tlFadeIn);
-    textcarousel.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
-    procescarousel.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
-    tabbedcontent.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, blobity, tlSetup, tlTextReveal, tlFadeIn);
-    dienstenscroller.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, createValidHtmlId);
-    perspectivegallery.init(gsap, ScrollTrigger, Masonry);
+        /* Template parts */
+        statement.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        textgrid.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        textblock.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        images.init(gsap, stFadeIn);
+        statistics.init(gsap, callAfterResize, buildTlAfterResize, tlSetup);
+        columnscroller.init(gsap, ScrollTrigger, callAfterResize);
+        ctapresentation.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        ctastreamer.init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        ctaleadform.init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        fallingimages.init(gsap, ScrollTrigger, callAfterResize);
+        textcarousel.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
+        procescarousel.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
+        tabbedcontent.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, blobity, tlSetup, tlTextReveal, tlFadeIn);
+        dienstenscroller.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, createValidHtmlId);
+        perspectivegallery.init(gsap, stFadeIn, ScrollTrigger, Masonry);
+        logopresentation.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        faq.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        goalform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
 
-    /* Modules */
-    reviewslider.init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-    singlereview.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-    logos.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-    team.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
-    woordstreamer.init(gsap, callAfterResize);
-    projectslider.init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
-    projectgrid.init(gsap, ScrollTrigger, blobity, Masonry, callAfterResize, getSiblings);
-    recentposts.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, dayjs, getSiblings);
-    contactform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, getNextSibling, getPreviousSibling);
+        /* Modules */
+        reviewslider.init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        singlereview.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        logos.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        team.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        woordstreamer.init(gsap, callAfterResize, ScrollTrigger);
+        projectslider.init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        projectgrid.init(gsap, ScrollTrigger, stFadeIn, blobity, Masonry, InfiniteScroll, imagesLoaded);
+        recentposts.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings);
+        contactform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, getNextSibling, getPreviousSibling);
+        presentationform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        popunder.init(gsap, ScrollTrigger, blobity, callAfterResize);
+        linkinbio.init(gsap, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn);
 
-    /* Blog */
-    blogOverview.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, InfiniteScroll);
-    blogSingle.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings);
-    shortcodes.init(gsap, ScrollTrigger, createValidHtmlId, getCookie);
+        /* Blog */
+        blogOverview.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, InfiniteScroll);
+        blogSingle.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, getSiblings);
+        shortcodes.init(gsap, ScrollTrigger, createValidHtmlId, getCookie, stFadeIn);
 
-    /* Enable all disabled ScrollTriggers after initial reveal is done */
-    revealAnimationListener.registerNewListener((val) => { if(val === true) {
-        ScrollTrigger.getAll().forEach(singleScrollTrigger => {
-            singleScrollTrigger.enable();
-        });
+        /* Enable all disabled ScrollTriggers after initial reveal is done */
+        revealAnimationListener.registerNewListener((val) => { if(val === true) {
+            ScrollTrigger.getAll().forEach(singleScrollTrigger => {
+                singleScrollTrigger.enable();
+            });
 
-        /* Refresh global ScrollTrigger and bounce Blobity to reset */
-        ScrollTrigger.refresh(true);
+            /* Refresh global ScrollTrigger and bounce Blobity to reset */
+            ScrollTrigger.refresh(true);
 
-        blobity.updateOptions({
-            opacity:.1,
-            zIndex: '50'
-        });
+            blobity.updateOptions({
+                opacity:.1,
+                zIndex: '50'
+            });
 
-        blobity.bounce();
-    }});
+            blobity.bounce();
+        }});
+    });
 } swup.hooks.on('content:replace', swupInit);
 
 if(document.readyState === 'complete') {
-    document.fonts.ready.then(function () {
-        swupInit();
-    });
+    swupInit();
 } else {
     document.addEventListener('DOMContentLoaded', () => {
-        document.fonts.ready.then(function () {
-            swupInit();
-        });
+        swupInit();
     });
 }
 
@@ -314,7 +412,7 @@ function swupUnload() {
     /* Kill individual timelines */
     gsap.globalTimeline.getChildren(true, false).forEach(timeline => {
         /* Unset properties */
-        const targets = timeline.getChildren();
+        const targets = timeline.getChildren(true, true, false);
 
         for(let i = 0; i < targets.length; i++) {
             if(targets[i].targets().length) {
@@ -329,10 +427,19 @@ function swupUnload() {
     });
 
     /* Kill all scrollTriggers */
-    ScrollTrigger.killAll();
+    //ScrollTrigger.killAll();
+    ScrollTrigger.getAll().forEach(t => {
+        t.scroll(0);
+        t.kill(true);
+    });
 
     /* Main template */
     main.unload(gsap, enableScroll);
+
+    /* Other templates */
+    projectgrid.unload(gsap, Masonry, InfiniteScroll);
+    perspectivegallery.unload(Masonry);
+    blogOverview.unload(gsap, InfiniteScroll);
 } swup.hooks.before('content:replace', swupUnload);
 
 
@@ -353,7 +460,12 @@ callAfterResize(resetColoring);
 /* Initial loader reveal */
 document.addEventListener("readystatechange", (event) => {
     if(document.readyState === 'complete' && document.querySelector('.js-loader')) {
-        const loader = document.querySelector('.js-loader');
+        const loader = document.querySelector('.js-loader'),
+            topBar = document.querySelector(".js-top-bar");
+
+        gsap.set(topBar, {
+            yPercent: -100
+        });
 
         gsap.to(loader, {
             autoAlpha: 0,
@@ -361,6 +473,11 @@ document.addEventListener("readystatechange", (event) => {
                 loader.remove();
 
                 revealAnimationListener.state = true;
+
+                gsap.to(topBar, {
+                    duration: .5,
+                    yPercent: 0
+                });
             }
         });
     }

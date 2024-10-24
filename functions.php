@@ -15,14 +15,21 @@
 
 	/* Thumbnails */
 	add_theme_support( 'post-thumbnails' );
-	set_post_thumbnail_size( 150, 150, true );
-	add_image_size('full-width-use', 2560, 99999 );
-	add_image_size('half-width-use', 1280, 99999 );
-	add_image_size('team-width-use', 750, 1000, true );
-	add_image_size('blog-thumb-use', 820, 550, true );
-	add_image_size('review-portrait-use', 150, 150, true);
-	add_image_size('project-grid-use', 1280, 1024, true);
-	add_image_size('project-slider-use', 1280, 1600, true);
+	set_post_thumbnail_size( 820, 550, true );
+	add_image_size('review-portrait-use', 72, 72, true);
+	add_image_size('review-portrait-use-retina', 144, 144, true);
+	add_image_size('project-grid-use', 768, 614, true);
+	add_image_size('project-grid-use-retina', 1280, 1023, true);
+	add_image_size('project-slider-use', 614, 768, true);
+	add_image_size('project-slider-use-retina', 1228, 1536, true);
+	add_image_size('falling-images-use', 768, 99999);
+	add_image_size('team-use', 512, 682, true);
+	add_image_size('team-use-retina', 1024, 1364, true);
+	add_image_size('blog-thumb-use', 512, 342, true);
+	add_image_size('blog-thumb-use-retina', 1024, 684, true);
+	add_image_size('perspective-gallery-use', 1500, 99999);
+	add_image_size('logo-presentation-use', 400, 99999);
+	add_image_size('column-scroller-use', 768, 99999);
 
 
 	/* Menus */
@@ -108,6 +115,16 @@
 	} add_shortcode('button', 'visia_button');
 
 
+    /* Jaren ervaring */
+	function visia_years() {
+		$visiaStart = strtotime("2012-10-17 00:00:00");
+		$now = strtotime("now");
+		$diff = abs($now - $visiaStart);
+
+		return floor($diff / (365*60*60*24));
+	} add_shortcode('visiaren', 'visia_years');
+
+
     /* Highlight */
 	function visia_shortcode_highlight($atts, $content = null) {
 		$string = '';
@@ -151,7 +168,7 @@
         ), $atts);
 
         if($text = $atts['text']) {
-			return '<blockquote class="blockquote js-blockquote">'.$text.'</blockquote>';
+			return '<blockquote class="blockquote css-title js-blockquote">'.$text.'</blockquote>';
         }
 	} add_shortcode('blockquote', 'visia_shortcode_blockquote');
 
@@ -160,6 +177,18 @@
 	function visia_shortcode_checklist($atts, $content = null) {
 		return '<div class="checklist js-checklist">'.$content.'</div>';
 	} add_shortcode('checklist', 'visia_shortcode_checklist');
+
+
+	/* Presentation first name */
+	function visia_shortcode_presentation_first_name() {
+		return '<span class="js-presentation-first-name-placeholder"></span>';
+	} add_shortcode('presentatie_voornaam', 'visia_shortcode_presentation_first_name');
+
+
+	/* Presentation business */
+	function visia_shortcode_presentation_business() {
+		return '<span class="js-presentation-business-name-placeholder"></span>';
+	} add_shortcode('presentatie_bedrijfsnaam', 'visia_shortcode_presentation_business');
 
 
 	/* Filter for the archive title */
@@ -175,6 +204,13 @@
 		}
 		return $title;
 	});
+
+
+    /* Rewrite author slug */
+	function custom_author_base() {
+		global $wp_rewrite;
+		$wp_rewrite->author_base = 'auteur';
+	} add_action('init', 'custom_author_base');
 
 
     /* Filter to remove <p>'s around <img>-tags */
@@ -213,21 +249,43 @@
 
 			$output .= '</a>';
 
-			$output .= '<span class="main-menu__container__menu__item__masker js-main-menu-item-masker">'.$item->title.'</span>';
+			$output .= '<span class="main-menu__container__menu__item__masker js-main-menu-item-masker" aria-hidden="true">'.$item->title.'</span>';
 
 			$output .= '</div>';
 		}
 	}
 
 
+
 	/* Add classes to previous- and next-posts link (blog overview) */
 	function posts_link_attributes_next() {
-		return 'class="js-blog-home-nav-next"';
+		return 'class="js-nav-next"';
 	} add_filter('next_posts_link_attributes', 'posts_link_attributes_next');
 
 	function posts_link_attributes_prev() {
-		return 'class="js-blog-home-nav-prev"';
+		return 'class="js-nav-prev"';
 	} add_filter('previous_posts_link_attributes', 'posts_link_attributes_prev');
+
+
+
+	/* Add styling for ACF group fields */
+	function visia_acf_group_styles() { ?>
+        <style type="text/css">
+            .acf-field-group.no-style,
+            .acf-field-clone.no-style {
+                padding: 0 !important;
+            }
+            .acf-field-group.no-style > .acf-label,
+            .acf-field-clone.no-style > .acf-label {
+                display: none !important; /* If you want the Group's label to show, remove this style */
+            }
+            .acf-field-group.no-style > .acf-input > .acf-fields.-border,
+            .acf-field-clone.no-style > .acf-input > .acf-fields.-border {
+                border: 0 !important;
+            }
+        </style>
+	<?php } add_action( 'acf/input/admin_head', 'visia_acf_group_styles' );
+
 
 
 	/* Custom post types - Thank you pages */
@@ -263,61 +321,6 @@
 		));
 	} add_action('init', 'custom_post_type_visia_thankyou', 0 );
 
-
-	/* Custom post types - Landing pages */
-	function custom_post_type_visia_landing() {
-		register_post_type('landingpage', array(
-			'label'                 => __('Landing pages', 'visia'),
-			'description'           => __('All landing pages', 'visia'),
-			'labels'                => array(
-				'name'                  => __('Landing pages', 'visia'),
-				'singular_name'         => __('Landing page', 'visia'),
-				'menu_name'             => __('Landing pages', 'visia'),
-				'name_admin_bar'        => __('Landing pages', 'visia'),
-				'archives'              => __('Landing pages', 'visia')
-			),
-			'supports'              => array('title', 'page-attributes', 'thumbnail'),
-			'hierarchical'          => false,
-			'public'                => true,
-			'show_ui'               => true,
-			'show_in_menu'          => true,
-			'menu_position'         => 21,
-			'menu_icon'             => 'dashicons-thumbs-up',
-			'show_in_admin_bar'     => true,
-			'show_in_nav_menus'     => true,
-			'can_export'            => true,
-			'has_archive'           => false,
-			'exclude_from_search'   => false,
-			'publicly_queryable'    => true,
-			'capability_type'       => 'post'
-		));
-	} add_action('init', 'custom_post_type_visia_landing', 0 );
-
-	/* Remove slug from landing pages */
-	function visia_remove_cpt_slug($post_link, $post) {
-		if ('landingpage' === $post->post_type && 'publish' === $post->post_status) {
-			$post_link = str_replace( '/' . $post->post_type . '/', '/', $post_link );
-		}
-		return $post_link;
-	} add_filter('post_type_link', 'visia_remove_cpt_slug', 10, 2);
-
-	/* Add WordPress support for CPT's without slug */
-	function visia_add_cpt_post_names_to_main_query($query) {
-		if(! $query->is_main_query()) {
-			return;
-		}
-
-		if(! isset($query->query['page']) || 2 !== count($query->query)) {
-			return;
-		}
-
-		if(empty( $query->query['name'])) {
-			return;
-		}
-
-		$query->set('post_type', array('post', 'page', 'landingpage'));
-
-	} add_action('pre_get_posts', 'visia_add_cpt_post_names_to_main_query');
 
 
 	/* Custom post types - Reviews */
@@ -372,7 +375,7 @@
 			'show_in_admin_bar'     => true,
 			'show_in_nav_menus'     => true,
 			'can_export'            => true,
-			'has_archive'           => false,
+			'has_archive'           => 'case-archive',
 			'exclude_from_search'   => false,
 			'publicly_queryable'    => true,
 			'capability_type'       => 'post',
@@ -382,6 +385,24 @@
 			)
 		));
 	} add_action('init', 'custom_post_type_visia_cases', 0 );
+
+	function visia_cases_archive_custom_query($query) {
+		if ($query->is_post_type_archive('case') && !is_admin() && $query->is_main_query()) {
+			$query->set('posts_per_page', 6);
+			$query->set('order', 'ASC');
+			$query->set('orderby', 'menu_order');
+
+			$offset = 6;
+            if(!$query->is_paged()) {
+	            $query->set('offset', $offset);
+            } else {
+	            $paged = 0 == $query->get( 'paged' ) ? 1 : $query->get( 'paged' );
+	            $query->set('offset', $paged * $offset);
+            }
+		}
+
+		return $query;
+	} add_filter('pre_get_posts', 'visia_cases_archive_custom_query');
 
 
 	/* Custom post types - Reviews */
@@ -473,13 +494,52 @@ function visia_scripts(){
 } add_action('wp_enqueue_scripts', 'visia_scripts');
 
 
-/* Enqueue styles */
-function visia_styles() {
-	wp_enqueue_style('reset', get_template_directory_uri() . '/dist/reset.min.css');
-	wp_enqueue_style('bundle', get_template_directory_uri() . '/dist/bundle.min.css');
 
-	wp_enqueue_style('font-awesome', get_template_directory_uri() . '/assets/fontawesome-subset/css/fontawesome.min.css');
-	wp_enqueue_style('font-awesome-icons', get_template_directory_uri() . '/assets/fontawesome-subset/css/all.min.css');
+/* Run a full static export using WP-cron */
+add_action('visia_simply_static_cron', 'ssp_run_static_export_cron');
+/**
+ * Run a full static export daily via WP-CRON.
+ *
+ * @return void
+ */
+function ssp_run_static_export_cron() {
+	$simply_static = Simply_Static\Plugin::instance();
+	$simply_static->run_static_export();
+}
+
+
+add_filter('ssp_github_tree_chunk_size', function( $chunk_size ) {
+	$chunk_size = 250; // default is 500.
+	return $chunk_size;
+});
+
+/* Enqueue styles */
+function visia_inject_inline_css() {
+	function minify($data) {
+		$data = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $data);
+		$data = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $data);
+		return $data;
+	}
+
+    if($resetStyles = minify(file_get_contents('wp-content/themes/visia/dist/reset.min.css'))) {
+	    echo '<style id="inline-visia-reset" type="text/css">'.str_replace("../../fonts/", get_template_directory_uri() . '/assets/fonts/', $resetStyles).'</style>';
+    }
+
+    if($awesomeStyles = minify(file_get_contents('wp-content/themes/visia/assets/fontawesome-subset/css/all.min.css'))) {
+        echo '<style id="inline-font-awesome" type="text/css">'.str_replace("../", get_template_directory_uri() . '/assets/fontawesome-subset/', $awesomeStyles).'</style>';
+    }
+
+	echo '<link rel="stylesheet" id="bundle-css" href="'.site_url('/wp-content/themes/visia/dist/bundle.min.css').'" type="text/css" media="all" />';
+} add_action('wp_head', 'visia_inject_inline_css');
+
+function visia_styles() {
+    /* Remove default WP css */
+	wp_dequeue_style('global-styles');
+	wp_dequeue_style('classic-theme-styles');
+	wp_dequeue_style('wp-block-library');
+	wp_dequeue_style('wp-block-library-theme');
+
+    //echo '<link rel="stylesheet" id="bundle-css" href="'.site_url('/wp-content/themes/visia/dist/bundle.min.css').'" type="text/css" media="all" />';
 } add_action('wp_enqueue_scripts', 'visia_styles');
 
 
@@ -640,5 +700,11 @@ function global_button($buttonLabel, $buttonTarget, $buttonLocation = 'internal'
 	} elseif($buttonLocation == 'external') {
 		$buttonIcon = '<i class="css-global-button-icon fa-regular fa-arrow-up-right"></i>';
 	}
-	echo '<div'.(($buttonWrapperClasses) ? ' class="'.$buttonWrapperClasses.'"' : '').'><a class="css-global-button js-global-button'.(($buttonClasses) ? ' '.$buttonClasses : '').'" href="'.esc_url($buttonTarget).'"'.(($buttonLocation == 'external') ? ' target="_blank"' : '').'><span class="css-global-button-text">'.$buttonLabel.'</span><span class="css-global-button-icon-wrapper js-global-button-icon">'.$buttonIcon.'<span class="css-global-button-fill js-global-button-fill"></span></span></a></div>';
+
+    $goBack = false;
+    if($buttonTarget == 'back') {
+	    $goBack = true;
+	    $buttonIcon = '<i class="css-global-button-icon fa-regular fa-arrow-left"></i>';
+    }
+	echo '<div'.(($buttonWrapperClasses) ? ' class="'.$buttonWrapperClasses.'"' : '').'><a class="css-global-button js-global-button'.(($buttonClasses) ? ' '.$buttonClasses : '').'" '.(($goBack) ? 'onclick="history.back()"' : 'href="'.esc_url($buttonTarget).'"').' '.(($buttonLocation == 'external') ? ' target="_blank"' : '').'><span class="css-global-button-text">'.$buttonLabel.'</span><span class="css-global-button-icon-wrapper js-global-button-icon">'.$buttonIcon.'<span class="css-global-button-fill js-global-button-fill"></span></span></a></div>';
 } ?>

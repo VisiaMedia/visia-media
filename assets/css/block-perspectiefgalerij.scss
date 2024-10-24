@@ -63,6 +63,9 @@
         &--flat {
           box-shadow: -.25em .25em .5em 0 rgba($black, 50%);
         }
+        &--is-mobile {
+          max-height:50lvh;
+        }
       }
     }
   }

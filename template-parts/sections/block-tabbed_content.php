@@ -32,7 +32,7 @@
                     <?php $tabCount = 0; foreach($tabs as $tab) { ?>
                         <li class="tabbed-content__tabs__tab<?php echo ($tabCount == 0) ? ' js-active' : ''; ?> js-tabbed-content-tab" data-tab-num="<?php echo $tabCount; ?>">
                             <?php if($title = $tab['titel']) {
-	                            echo '<h2 class="tabbed-content__tabs__tab__title css-title">'.do_shortcode($title).'</h2>';
+	                            echo '<span class="tabbed-content__tabs__tab__title css-title">'.do_shortcode($title).'</span>';
                             }
 
                             if($content = $tab['content']) {

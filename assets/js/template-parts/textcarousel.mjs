@@ -74,6 +74,14 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
                 autoAlpha: .125
             });
 
+
+            /* Check if mobile or desktop */
+            let isDesktop = true;
+
+            if(window.matchMedia("(pointer: coarse)").matches) {
+                isDesktop = false;
+            }
+
             /* Increase opacity on scroll */
             textCarouselItems.forEach(function (textCarouselItem, i) {
                 let textCarouselItemTl = gsap.timeline({
@@ -89,7 +97,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
                         end: "bottom center",
                         scrub: true,
                         refreshPriority: textCarousel.dataset.stCount,
-                        snap: "labels",
+                        snap: isDesktop ? "labels" : false,
                         onEnter:() => {
                             const textCarouselCounterList = textCarousel.querySelector('.js-textcarousel-counter-list');
 

@@ -5,6 +5,14 @@ export function init(gsap, blobity, callAfterResize){
             const globalButtonIcon = globalButton.querySelector('.js-global-button-icon'),
                 globalButtonFill = globalButton.querySelector('.js-global-button-fill');
 
+            let isBoxedContent;
+
+            if(globalButton.classList.contains('js-boxed-content-button')) {
+                isBoxedContent = true;
+            } else {
+                isBoxedContent = false;
+            }
+
             /* Set Blobity data-attribute on buttons */
             let setBlobityRadius;
 
@@ -23,13 +31,13 @@ export function init(gsap, blobity, callAfterResize){
                 onStart: () => {
                     blobity.focusElement(globalButtonFill);
                     blobity.updateOptions({
-                        zIndex: 1
+                        zIndex: isBoxedContent ? 25 : 1
                     });
                 },
                 onComplete: () => {
                     blobity.focusElement(globalButtonFill);
                     blobity.updateOptions({
-                        zIndex: 1
+                        zIndex: isBoxedContent ? 25 : 1
                     });
                 },
                 onReverseComplete: () => {

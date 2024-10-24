@@ -1,39 +1,19 @@
-/* Initialize */
-export function init(gsap, ScrollTrigger, createValidHtmlId, getCookie) {
+export function init(gsap, ScrollTrigger, createValidHtmlId, getCookie, stFadeIn) {
     /* Blog download */
     if(document.querySelector('.js-blog-download')) {
-        const blogDownloads = document.querySelectorAll('.js-blog-download');
-
-        blogDownloads.forEach(blogDownload => {
-            /* Add reveal animation */
-            gsap.set(blogDownload, {
-                autoAlpha:0,
-                y: "1.5rem"
-            });
-
-            gsap.to(blogDownload, {
-                autoAlpha: 1,
-                y: "0rem",
-                scrollTrigger: {
-                    trigger: blogDownload,
-                    start: "top 75%",
-                    once: true,
-                    refreshPriority: blogDownload.dataset.stCount
-                }
-            });
-        });
+        stFadeIn(document.querySelectorAll('.js-blog-download'), 'self');
     }
 
 
 
     /* Table of contents */
-    if(document.querySelector('.js-blog-single') && document.querySelector('.js-table-of-contents')) {
-        const blogSingle = document.querySelector('.js-blog-single'),
+    if(document.querySelector('.js-blog-single-content') && document.querySelector('.js-table-of-contents')) {
+        const blogSingleContent = document.querySelector('.js-blog-single-content'),
             tablesOfContents = document.querySelectorAll('.js-table-of-contents');
 
         tablesOfContents.forEach(tableOfContents => {
             const oList = tableOfContents.querySelector('.js-table-of-contents-list'),
-                headings = blogSingle.querySelectorAll('h2');
+                headings = blogSingleContent.querySelectorAll('h2');
 
             /* Loop over headings */
             headings.forEach(heading => {
@@ -65,24 +45,7 @@ export function init(gsap, ScrollTrigger, createValidHtmlId, getCookie) {
 
     /* Blockquote */
     if(document.querySelector('.js-blockquote')) {
-        const blockQuotes = document.querySelectorAll('.js-blockquote');
-
-        blockQuotes.forEach(blockQuote => {
-            gsap.set(blockQuote, {
-                autoAlpha:0,
-                y: "1.5rem"
-            });
-
-            gsap.to(blockQuote, {
-                autoAlpha: 1,
-                y: "0rem",
-                scrollTrigger: {
-                    trigger: blockQuote,
-                    start: "top 75%",
-                    once: true
-                }
-            });
-        });
+        stFadeIn(document.querySelectorAll('.js-blockquote'), 0);
     }
 
 

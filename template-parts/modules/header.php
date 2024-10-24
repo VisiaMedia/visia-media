@@ -1,9 +1,15 @@
 <?php if(get_field('header_titel', get_queried_object_id()) || get_field('header_headline', get_queried_object_id())) {
+	$hasUSPS = false;
+
+    if($headerUSPS = get_field('header_usps', get_queried_object_id())) {
+        $hasUSPS = true;
+    }
+
     global $scrollTriggerCount;
 
 	global_color_change_trigger(get_field('header_achtergrond_kleurschema', get_queried_object_id()), get_field('header_achtergrond_achtergrond', get_queried_object_id()), get_field('header_achtergrond_tekst', get_queried_object_id())); ?>
 
-	<header class="header<?php echo (is_front_page()) ? ' header--frontpage' : ''; ?> js-header" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
+	<header class="header<?php echo ($hasUSPS) ? ' header--full-height' : ''; echo (is_front_page()) ? ' header--front-page' : ''; ?> js-header" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
         <div class="header__content">
             <div class="css-max-text-width">
                 <?php if($title = get_field('header_titel', get_queried_object_id())) { ?>
@@ -20,14 +26,14 @@
             </div>
         </div>
 
-        <?php if($headerUSPS = get_field('header_usps', get_queried_object_id())) { $scrollTriggerCount--;
+        <?php if($hasUSPS) { $scrollTriggerCount--;
             echo '<ul class="header__usps js-header-usps" data-st-count="'.$scrollTriggerCount.'">';
 
             foreach($headerUSPS as $headerUSP) {
 
                 if($headerUSP['waarde'] && $headerUSP['subtext']) { ?>
                     <li class="header__usps__usp js-header-usps-usp">
-                        <span class="header__usps__usp__waarde"><span class="js-header-usps-usp-value"><?php echo $headerUSP['waarde']; ?></span><?php echo ($postfix = $headerUSP['postfix']) ? '<span class="header__usps__usp__waarde__postfix">'.$postfix.'</span>' : ''; ?></span>
+                        <span class="header__usps__usp__waarde"><span class="js-header-usps-usp-value"><?php echo do_shortcode($headerUSP['waarde']); ?></span><?php echo ($postfix = $headerUSP['postfix']) ? '<span class="header__usps__usp__waarde__postfix">'.$postfix.'</span>' : ''; ?></span>
 
                         <span class="header__usps__usp__subtext"><?php echo $headerUSP['subtext']; ?></span>
                     </li>

@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
     if(document.querySelector('.js-team')) {
         const teamSections = gsap.utils.toArray('.js-team');
 
@@ -17,19 +17,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
 
                 /* Add animation for item reveal */
                 if(teamSection.querySelector('.js-team-member')) {
-                    const teamMembers = teamSection.querySelectorAll('.js-team-member');
-
-                    gsap.set(teamMembers, {
-                        autoAlpha: 0,
-                        y: "1.5rem",
-                        immediateRender: true
-                    });
-
-                    timeline.to(teamMembers, {
-                        autoAlpha: 1,
-                        y: "0rem",
-                        stagger: .2,
-                    });
+                    tlFadeIn(teamSection.querySelectorAll('.js-team-member'), timeline);
                 }
             }
 

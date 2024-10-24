@@ -4,6 +4,8 @@
   --offset-block:2rem;
   --offset-boxed:4rem;
 
+  --menu-font-size:3.5em;
+
   --current-color:#212121;
   --current-background:#ffffff;
   --plain-text-color:#6e6e6e;
@@ -47,7 +49,6 @@
 html,
 body {
   font-size:24px;
-  color:var(--current-color);
   line-height:1.6;
   overscroll-behavior: none;
 
@@ -86,11 +87,11 @@ html {
 }
 
 body {
-  background:var(--current-background);
-  color:var(--current-color);
   font-family: var(--font-stack);
   font-weight:$regular-weight;
-  letter-spacing:.025em;
+  letter-spacing:.0125em;
+  background:var(--current-background);
+  color:var(--current-color);
 }
 
 .top-bar {
@@ -185,8 +186,8 @@ body {
   right:calc(var(--offset-block) + 1.5rem - .5em);
   z-index:500;
   background:darken($blue, 5%);
-  width:1em;
-  height:1em;
+  width:10px;
+  height:10px;
   border-radius:50%;
 }
 .main-menu-bg-reveal-filler {
@@ -206,15 +207,15 @@ body {
   bottom:0;
   left:0;
   z-index:600;
-  display: flex;
+  display:none;
   justify-content: center;
   color:$white;
 
   &__inner {
     position:relative;
     width:100%;
-    margin: auto;
-    padding:var(--offset-vertical) var(--offset-side);
+    padding:4rem var(--offset-side);
+    margin:auto;
   }
 
   &__container {
@@ -225,28 +226,29 @@ body {
 
     &__menu {
       flex:1 1 auto;
+      font-size:min(3.5em, var(--menu-font-size));
+
+      @media only screen and (max-width: 1080px) {
+        font-size:min(3.25em, var(--menu-font-size));
+      }
+      @media only screen and (max-width: 900px) {
+        font-size:min(3em, var(--menu-font-size));
+      }
+      @media only screen and (max-width: 810px) {
+        font-size:min(2.75em, var(--menu-font-size));
+      }
+      @media only screen and (max-width: 600px) {
+        font-size:min(2.5em, var(--menu-font-size));
+      }
+      @media only screen and (max-width: 380px) {
+        font-size:min(2.25em, var(--menu-font-size));
+      }
 
       &__item {
         position:relative;
-        font-size:3.5em;
         line-height:1.2;
         overflow:hidden;
-
-        @media only screen and (max-width: 1080px) {
-          font-size:3.25em;
-        }
-        @media only screen and (max-width: 900px) {
-          font-size:3em;
-        }
-        @media only screen and (max-width: 810px) {
-          font-size:2.75em;
-        }
-        @media only screen and (max-width: 600px) {
-          font-size:2.5em;
-        }
-        @media only screen and (max-width: 380px) {
-          font-size:2.25em;
-        }
+        letter-spacing:.025rem;
 
         &__link {
           position:relative;
@@ -261,7 +263,7 @@ body {
 
         &__masker {
           position:absolute;
-          top:0;
+          bottom:0;
           left:0;
           z-index:75;
           display:block;
@@ -369,7 +371,6 @@ main[tabindex="-1"] {
 
 .js-transition-page-title {
   position:absolute;
-  top:50vh;
   top:50svh;
   transform:translateY(-50%);
   width:100%;

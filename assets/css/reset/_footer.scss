@@ -80,6 +80,8 @@
 
     &__logo-wrapper {
       filter:var(--visual-img-filter);
+      will-change: filter;
+      transform: translate3d(0, 0, 0);
 
       &__logo {
         display:block;
@@ -92,6 +94,17 @@
           max-width:5em;
         }
 
+        &--leadinfo {
+          max-width:8em;
+
+          @media only screen and (max-width: 1080px) {
+            max-width:7.5em;
+          }
+          @media only screen and (max-width: 480px) {
+            max-width:7em;
+          }
+        }
+
         &__img {
           display:block;
           width:100%;
@@ -101,6 +114,11 @@
     }
 
     &__menu {
+      small {
+        color:var(--plain-text-color);
+        font-size:1em;
+      }
+
       &__list {
         li {
           a {
@@ -112,14 +130,6 @@
             }
           }
         }
-      }
-    }
-
-    &__copyright {
-      color:var(--plain-text-color);
-
-      small {
-        font-size:1em;
       }
     }
   }
@@ -161,6 +171,10 @@
       }
 
       li {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
         a {
           color:var(--plain-text-color);
 

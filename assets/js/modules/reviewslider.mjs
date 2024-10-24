@@ -16,9 +16,9 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfter
                 /* Set stage for each slide */
                 reviewSliderItems.forEach(function(reviewSliderItem, i) {
                     if(i === currentSlide) {
-                        timeline.to(reviewSliderItem, {
+                        gsap.to(reviewSliderItem, {
                             autoAlpha:1,
-                            immediateRender: false
+                            immediateRender:false
                         });
 
                         /* Add animation for thumbnail */
@@ -43,7 +43,8 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfter
                     } else {
                         gsap.set(reviewSliderItem, {
                             autoAlpha:0,
-                            immediateRender:false
+                            immediateRender: false,
+                            overwrite: true
                         });
                     }
                 });
@@ -87,6 +88,8 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfter
                 buildTlAfterResize(timeline, buildTimeline);
 
                 setBlobityRadius();
+
+                setSliderHeight();
             });
 
 
@@ -202,8 +205,6 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfter
                 /* Invalidate timeline after resize */
                 callAfterResize(function() {
                     reviewSliderNavItemTL.seek(0).invalidate();
-
-                    setCurrentSlide();
                 });
             });
         });

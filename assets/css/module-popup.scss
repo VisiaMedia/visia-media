@@ -1,9 +1,9 @@
 @import './assets/css/reset/core';
 
-.popups {
+.popup-container {
   position:fixed;
   inset:0;
-  display:flex;
+  display:none;
   justify-content: center;
   z-index:800;
 
@@ -13,6 +13,11 @@
     margin:auto;
     padding:var(--offset-boxed) var(--offset-side);
     z-index:100;
+
+    &--full-screen {
+      width:calc(100% - var(--offset-block) * 2);
+      height:calc(100% - var(--offset-block) * 2);
+    }
 
     &__close {
       position:absolute;
@@ -43,7 +48,7 @@
     }
 
     &__title {
-      margin:0 0 1.25rem;
+      margin:0 0 1.25rem !important;
       font-weight:$bold-weight;
 
       &:last-child {

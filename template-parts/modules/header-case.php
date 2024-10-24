@@ -25,15 +25,7 @@ global_color_change_trigger('white'); ?>
 
                         <span class="header__content__case-meta__item__value"><?php echo $deliverables; ?></span>
                     </li>
-                <?php }
-
-		        if($year = get_field('case_jaar')) { ?>
-                    <li class="header__content__case-meta__item">
-                        <span class="header__content__case-meta__item__label"><?php _e('Year', 'visia'); ?></span>
-
-                        <span class="header__content__case-meta__item__value"><?php echo $year; ?></span>
-                    </li>
-		        <?php } ?>
+                <?php } ?>
             </ul>
         </div>
     </div>

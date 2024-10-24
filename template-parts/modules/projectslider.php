@@ -32,7 +32,7 @@ if($cases = get_posts(array(
 							<a class="project-slider__scroller__list__item__link js-project-slider-list-item-link" href="<?php the_permalink(); ?>" rel="bookmark" data-no-blobity>
 								<div class="project-slider__scroller__list__item__visual">
 									<?php if(has_post_thumbnail()) {
-                                        echo wp_get_attachment_image(get_post_thumbnail_id(), 'project-slider-use', null, array('class' => 'project-slider__scroller__list__item__visual__image js-project-slider-list-item-visual'));
+                                        echo wp_get_attachment_image(get_post_thumbnail_id(), 'project-slider-use-retina', null, array('class' => 'project-slider__scroller__list__item__visual__image js-project-slider-list-item-visual'));
 									} ?>
 								</div>
 

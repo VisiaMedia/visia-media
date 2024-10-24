@@ -13,7 +13,7 @@
 					if($teamMember['profielfoto'] && $teamMember['gegevens']) { ?>
 						<li class="team__list__item js-team-member">
 							<?php if($photo = $teamMember['profielfoto']) {
-                                echo wp_get_attachment_image($photo, 'team-width-use', null, array('class' => 'team__list__item__photo'));
+                                echo wp_get_attachment_image($photo, 'team-use-retina', null, array('class' => 'team__list__item__photo'));
 							}
 
 							if($gegevens = $teamMember['gegevens']) {

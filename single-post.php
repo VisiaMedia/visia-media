@@ -18,7 +18,7 @@ if(have_posts()) {
                                 <li class="blog-single__hero__blog-meta__item">
                                     <span class="blog-single__hero__blog-meta__item__label"><?php _e('Date', 'visia'); ?></span>
 
-                                    <span class="blog-single__hero__blog-meta__item__value"><?php the_time(get_option('date_format')); ?></span>
+                                    <time pubdate class="blog-single__hero__blog-meta__item__value" datetime="<?php echo get_the_time('Y-m-d H:i:s'); ?>"><?php the_time(get_option('date_format')); ?></time>
                                 </li>
 		                    <?php }
 
@@ -26,7 +26,7 @@ if(have_posts()) {
                                 <li class="blog-single__hero__blog-meta__item">
                                     <span class="blog-single__hero__blog-meta__item__label"><?php _e('Author', 'visia'); ?></span>
 
-                                    <a href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" class="blog-single__hero__blog-meta__item__value"><?php echo get_the_author_meta('first_name').' '.get_the_author_meta('last_name'); ?></a>
+                                    <a rel="author" href="<?php echo get_author_posts_url(get_the_author_meta('ID')); ?>" class="blog-single__hero__blog-meta__item__value"><?php echo get_the_author_meta('first_name').' '.get_the_author_meta('last_name'); ?></a>
                                 </li>
 		                    <?php }
 
@@ -92,7 +92,7 @@ if(have_posts()) {
 
 	            $relatedPosts = new WP_Query(array(
 		            'posts_per_page' => 3,
-		            'orderby' => 'rand',
+		            'orderby' => 'relevance',
 		            'post__not_in' => array(get_the_ID()),
 		            'tax_query' => array(
 			            'relation' => 'OR',
@@ -128,7 +128,7 @@ if(have_posts()) {
 
                                             <ul class="related-posts__list__item__metadata--right related-posts__list__item__metadata">
                                                 <li>
-                                                    <time class="js-related-posts-item-from-now" datetime="<?php the_time('Y-m-d H:i:s'); ?>"><?php the_time('Y-m-d H:i:s'); ?></time>
+                                                    <time pubdate class="js-related-posts-item-from-now" datetime="<?php the_time('Y-m-d H:i:s'); ?>"><?php the_time('Y-m-d H:i:s'); ?></time>
                                                 </li>
 
 									            <?php if($postReadingTime = get_post_meta($post->ID, '_yoast_wpseo_estimated-reading-time-minutes', true)) {
@@ -143,7 +143,10 @@ if(have_posts()) {
                             </ul>
                         </div>
                     </aside>
-	            <?php } ?>
+	            <?php }
+
+	            // Popunder
+	            get_template_part('template-parts/modules/popunder'); ?>
             </main>
         </div>
     <?php }

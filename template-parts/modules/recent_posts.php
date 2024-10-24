@@ -25,7 +25,7 @@
 
 							<ul class="recent-posts__list__item__metadata--right recent-posts__list__item__metadata">
 								<li>
-									<time class="js-recent-posts-item-from-now" datetime="<?php the_time('Y-m-d H:i:s'); ?>"><?php the_time('Y-m-d H:i:s'); ?></time>
+									<time pubdate class="js-recent-posts-item-from-now" datetime="<?php the_time('Y-m-d H:i:s'); ?>"><?php the_time('Y-m-d H:i:s'); ?></time>
 								</li>
 
 								<?php if($postReadingTime = get_post_meta($post->ID, '_yoast_wpseo_estimated-reading-time-minutes', true)) {

@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const { src, dest, watch, series, parallel } = require('gulp');
 const concat = require('gulp-concat');
-const sass =  require('gulp-sass')(require('sass'));
+const dartSass = require('gulp-dart-sass'); // Gebruik gulp-dart-sass
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
@@ -19,7 +19,7 @@ const paths = {
 
 function compileResetStyles() {
     return src(paths.stylesReset.src)
-        .pipe(sass().on('error', sass.logError))
+        .pipe(dartSass().on('error', dartSass.logError)) // Gebruik dartSass in plaats van sass
         .pipe(postcss([autoprefixer({ flexbox: true }), cssnano()]))
         .pipe(concat('reset.min.css'))
         .pipe(dest(paths.stylesReset.dest));
@@ -27,7 +27,7 @@ function compileResetStyles() {
 
 function compileStyles() {
     return src(paths.styles.src)
-        .pipe(sass().on('error', sass.logError))
+        .pipe(dartSass().on('error', dartSass.logError)) // Gebruik dartSass in plaats van sass
         .pipe(postcss([autoprefixer({ flexbox: true }), cssnano()]))
         .pipe(concat('bundle.min.css'))
         .pipe(dest(paths.styles.dest));
@@ -35,7 +35,6 @@ function compileStyles() {
 
 function watcher() {
     watch(paths.stylesReset.src, parallel(compileResetStyles));
-
     watch(paths.styles.src, parallel(compileStyles));
 }
 

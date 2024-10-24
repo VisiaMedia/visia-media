@@ -1,0 +1,40 @@
+@import './assets/css/reset/core';
+
+.cta-leadform {
+  display:flex;
+  min-height:75svh;
+
+  @media only screen and (max-width: 600px) {
+    min-height:unset;
+  }
+
+  &__inner {
+    width:100%;
+    margin:auto;
+    padding:var(--offset-vertical) var(--offset-side);
+    text-align:center;
+
+    @media only screen and (max-width: 600px) {
+      text-align:left;
+    }
+  }
+
+  &__title {
+    margin:0 0 var(--offset-block);
+    font-weight:$bold-weight;
+  }
+
+  &__text {
+    text-wrap: balance;
+  }
+
+  &__form {
+    max-width:42em;
+    margin:calc(var(--offset-block) * 2) auto 0;
+    text-align:left;
+
+    &:first-child {
+      margin-top:0;
+    }
+  }
+}

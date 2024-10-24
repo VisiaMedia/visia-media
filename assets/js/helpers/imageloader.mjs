@@ -1,9 +1,11 @@
 /* Initialize */
 export function loadImages(ScrollTrigger) {
+
+    /* Check individual images */
     const images = document.querySelectorAll('img');
 
     function loaded() {
-        ScrollTrigger.refresh(true);
+        ScrollTrigger.refresh();
     }
 
     images.forEach(image => {

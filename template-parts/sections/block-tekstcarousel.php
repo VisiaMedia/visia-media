@@ -9,7 +9,7 @@
 			} ?>
 
 			<div class="textcarousel__container js-textcarousel-container">
-                <ul class="textcarousel__counter js-textcarousel-counter">
+                <ul class="textcarousel__counter js-textcarousel-counter" aria-hidden="true">
                     <li class="textcarousel__counter__live">
                         <ul class="textcarousel__counter__live__list js-textcarousel-counter-list">
 							<?php for($i = 1; $i <= count($textItems); $i++) { ?>

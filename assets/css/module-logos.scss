@@ -19,7 +19,7 @@
     padding:0;
     list-style:none;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    gap:var(--offset-side) var(--offset-block);
+    gap:calc(var(--offset-block) * 1.5) var(--offset-side);
 
     @media only screen and (max-width: 1921px) {
       grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -35,17 +35,28 @@
       display:flex;
       justify-content: center;
       filter:var(--visual-img-filter);
+      will-change: filter;
+      transform: translate3d(0, 0, 0);
 
       &__img {
         display:block;
-        width:100%;
-        max-width:10em;
+        width:auto;
+        max-width:8em;
         height:auto;
-        max-height:2em;
+        max-height:4em;
         margin:auto;
 
+        @media only screen and (max-width: 1080px) {
+          max-height:3em;
+        }
         @media only screen and (max-width: 600px) {
+          max-width:7em;
+        }
+        @media only screen and (max-width: 480px) {
           max-width:6em;
+        }
+        @media only screen and (max-width: 380px) {
+          max-height:2.5em;
         }
       }
     }

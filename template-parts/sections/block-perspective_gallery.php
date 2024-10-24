@@ -19,9 +19,9 @@
 			<?php foreach($images as $image) { ?>
 				<li class="perspective-gallery__list__item--<?php echo $sizerClass; ?> perspective-gallery__list__item js-perspective-gallery-list-item">
 					<?php if(get_sub_field('perspectief')) {
-                        echo wp_get_attachment_image($image, 'large', null, array('class' => 'perspective-gallery__list__item__img skip-lazy'));
+                        echo wp_get_attachment_image($image, 'full', null, array('class' => 'perspective-gallery__list__item__img'.((get_sub_field('mobiele_afbeeldingen')) ? ' perspective-gallery__list__item__img--is-mobile' : '')));
 					} else {
-						echo wp_get_attachment_image($image, 'large', null, array('class' => 'perspective-gallery__list__item__img--flat perspective-gallery__list__item__img skip-lazy'));
+						echo wp_get_attachment_image($image, 'full', null, array('class' => 'perspective-gallery__list__item__img--flat perspective-gallery__list__item__img'.((get_sub_field('mobiele_afbeeldingen')) ? ' perspective-gallery__list__item__img--is-mobile' : '')));
 					} ?>
 				</li>
 			<?php } ?>

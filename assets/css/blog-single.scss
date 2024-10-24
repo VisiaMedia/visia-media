@@ -1,56 +1,6 @@
 @import './assets/css/reset/core';
 
 .blog-single {
-  padding:calc(var(--offset-vertical) * 2) var(--offset-side) 0;
-
-  &__hero {
-    max-width:42em;
-    margin:0 auto var(--offset-vertical);
-
-    &__headline {
-      margin-bottom:var(--offset-block);
-      font-weight:$bold-weight;
-    }
-
-    &__blog-meta {
-      display: flex;
-      gap: 1.5em var(--offset-side);
-      flex-wrap:wrap;
-
-      &__item {
-        flex: 0 1 auto;
-
-        @media only screen and (max-width: 600px) {
-          flex:0 1 calc(50% - var(--offset-block) / 2);
-        }
-
-        &__label {
-          display: block;
-          margin-bottom: 1em;
-          font-weight: $semibold-weight;
-          line-height: 1.2;
-          white-space:nowrap;
-        }
-
-        &__value {
-          display: block;
-          color: var(--plain-text-color);
-          font-size: .9em;
-          line-height: 1.2;
-          white-space:nowrap;
-
-          &--link {
-            text-decoration: underline;
-
-            &:hover {
-              color: inherit;
-            }
-          }
-        }
-      }
-    }
-  }
-
   &__content {
     max-width:42em;
     margin:auto;
@@ -67,6 +17,7 @@
     &__item {
       display:inline-block;
       margin:.5em !important;
+      line-height:1;
 
       a {
         display: block;
@@ -76,6 +27,7 @@
         text-transform: uppercase;
         color: var(--plain-text-color);
         text-decoration:none;
+        line-height:1;
 
         &:hover {
           color:inherit;

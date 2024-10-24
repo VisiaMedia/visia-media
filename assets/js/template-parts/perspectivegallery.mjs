@@ -1,6 +1,6 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, Masonry){
-    if (document.querySelector('.js-perspective-gallery')) {
+export function init(gsap, stFadeIn, ScrollTrigger, Masonry){
+    if(document.querySelector('.js-perspective-gallery')) {
         const perspectiveGalleries = document.querySelectorAll('.js-perspective-gallery');
 
         perspectiveGalleries.forEach(perspectiveGallery => {
@@ -54,48 +54,52 @@ export function init(gsap, ScrollTrigger, Masonry){
 
 
             /* Initially hide and reveal grid */
-            gsap.set(perspectiveGallery, {
-                autoAlpha:0,
-                y: "1.5rem",
-            });
-
-            /* Show element */
-            gsap.to(perspectiveGallery, {
-                scrollTrigger: {
-                    trigger: perspectiveGallery,
-                    start: "top center",
-                    once: true,
-                    refreshPriority: perspectiveGallery.dataset.stCount,
-                    invalidateOnRefresh: true
-                },
-                autoAlpha: 1,
-                y: "0rem"
-            });
+            stFadeIn(perspectiveGallery, perspectiveGallery.dataset.stCount);
 
 
 
             /* 'Parallax' slide individual items */
-            const gridItems = perspectiveGallery.querySelectorAll('.js-perspective-gallery-list-item');
+            if(window.matchMedia("(pointer: fine)").matches) {
+                const gridItems = perspectiveGallery.querySelectorAll('.js-perspective-gallery-list-item');
 
-            gsap.to(gridItems, {
-                scrollTrigger: {
-                    trigger: perspectiveGallery,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: true,
-                    refreshPriority: perspectiveGallery.dataset.stCount,
-                    invalidateOnRefresh: true
-                },
-                y:() => {
-                    return "-=" + (gsap.getProperty(perspectiveGallery.querySelector('.js-perspective-gallery-list-item'), "marginBottom") * Math.random() * (1 - 0.1) + 0.1);
-                },
-                immediateRender: false
-            })
+                gsap.to(gridItems, {
+                    scrollTrigger: {
+                        trigger: perspectiveGallery,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true,
+                        refreshPriority: perspectiveGallery.dataset.stCount,
+                        invalidateOnRefresh: true
+                    },
+                    y:() => {
+                        return "-=" + (gsap.getProperty(perspectiveGallery.querySelector('.js-perspective-gallery-list-item'), "marginBottom") * Math.random() * (1 - 0.1) + 0.1);
+                    },
+                    immediateRender: false
+                });
+            }
         });
     }
 }
 
-/* Export init function */
+
+/* Unload */
+export function unload(Masonry) {
+    if(document.querySelector('.js-perspective-gallery')) {
+        const perspectiveGalleries = document.querySelectorAll('.js-perspective-gallery');
+
+        perspectiveGalleries.forEach(perspectiveGallery => {
+            const perspectiveGalleryList = perspectiveGallery.querySelector('.js-perspective-gallery-list');
+            const masonry = Masonry.data(perspectiveGalleryList);
+
+            /* Destroy the grid */
+            masonry.destroy();
+        });
+    }
+}
+
+
+/* Export init and unload functions */
 export default {
-    init
-};
+    init,
+    unload
+}

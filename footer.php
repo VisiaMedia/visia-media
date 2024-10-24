@@ -34,16 +34,16 @@ global_color_change_trigger('blue'); ?>
                     $contactPhoneFormat = get_field('optie_contact_telefoon_geformatteerd', 'option');
                     $contactEmail = get_field('optie_contact_emailadres', 'option');
 
-                    if($contactEmail || $contactPhonePretty && $contactPhoneFormat) {
+                    if($contactPhonePretty && $contactPhoneFormat || $contactEmail) {
                         echo '<ul class="footer__menu-bar__menu__list">';
 
-                        if($contactEmail) {
-                            echo '<li><a href="mailto:'.$contactEmail.'">'.$contactEmail.'</a></li>';
+                        if($contactPhonePretty && $contactPhoneFormat) {
+                            echo '<li><a target="_blank" href="tel:'.$contactPhoneFormat.'">'.$contactPhonePretty.'</a></li>';
                         }
 
-                        if($contactPhonePretty && $contactPhoneFormat) {
-                            echo '<li><a href="tel:'.$contactPhoneFormat.'">'.$contactPhonePretty.'</a></li>';
-                        }
+	                    if($contactEmail) {
+		                    echo '<li><a target="_blank" href="mailto:'.$contactEmail.'">'.$contactEmail.'</a></li>';
+	                    }
 
                         echo '</ul>';
                     }
@@ -93,6 +93,8 @@ global_color_change_trigger('blue'); ?>
             </nav>
 
             <nav class="footer__legal-bar__menu">
+                <small>&copy; <?php echo date('Y'); ?>, <?php bloginfo('name'); ?></small>
+
                 <?php wp_nav_menu(array(
 			        'menu_class' => 'footer__legal-bar__menu__list',
 			        'container' => null,
@@ -101,8 +103,10 @@ global_color_change_trigger('blue'); ?>
 		        )); ?>
             </nav>
 
-            <div class="footer__legal-bar__copyright">
-                <small>&copy; <?php echo date('Y'); ?>, <?php bloginfo('name'); ?></small>
+            <div class="footer__legal-bar__logo-wrapper">
+                <a class="footer__legal-bar__logo-wrapper__logo--leadinfo footer__legal-bar__logo-wrapper__logo js-footer-logo" target="_blank" href="https://www.leadinfo.com/nl/">
+                    <img class="footer__legal-bar__logo-wrapper__logo__img" src="<?php bloginfo('template_directory');?>/assets/img/Leadinfo-partner-badge.svg" width="290" height="130" alt="<?php esc_attr_e(__('Leadinfo', 'visia')); ?>">
+                </a>
             </div>
         </div>
 
@@ -119,7 +123,13 @@ global_color_change_trigger('blue'); ?>
                     <?php while($knowledgeBaseQuery->have_posts()) {
                         $knowledgeBaseQuery->the_post();
 
-                        echo '<li><a href="'.get_permalink().'">'.substr(get_the_title(),0,25).'</a></li>';
+                        if(get_field('kennisbanktitel')) {
+	                        $title = get_field('kennisbanktitel');
+                        } else {
+                            $title = get_the_title();
+                        }
+
+                        echo '<li><a href="'.get_permalink().'">'.$title.'</a></li>';
                     } ?>
                 </ul>
             </div>
@@ -152,71 +162,6 @@ if(is_home() || is_archive() || is_singular('post')) {
 <div class="js-item-object"<?php echo ($itemTitle) ? ' data-item-title="'.esc_attr($itemTitle).'"' : ''; echo ($activeItemID) ? ' data-active-menu-item="'.$activeItemID.'"' : '' ?>></div>
 
 </div>
-</div>
-
-<div class="popups js-popups">
-    <div class="popups__popup css-boxed-content js-popups-single" data-popup="presentation-download" aria-hidden="true" role="dialog">
-        <div role="document">
-            <button class="popups__popup__close js-popups-single-close" title="<?php esc_attr_e(__('Close popup', 'visia')); ?>">
-                <span class="popups__popup__close__line--left popups__popup__close__line"></span>
-
-                <span class="popups__popup__close__line--right popups__popup__close__line"></span>
-            </button>
-
-            <?php if($popupTitle = get_field('optie_cta_presentatie_popup_titel', 'option')) {
-                echo '<h1 class="popups__popup__title css-title--small-size css-title">'.$popupTitle.'</h1>';
-            }
-
-            if($popupText = get_field('optie_cta_presentatie_popup_tekst', 'option')) {
-                echo '<div class="popups__popup__content css-normal-text">'.$popupText.'</div>';
-            }
-
-            if($thankyouPage = get_field('optie_cta_presentatie_popup_bedanktpagina_formulier', 'option')) {
-                $thankyouPage = substr(get_permalink($thankyouPage), strlen(home_url()));
-
-	            get_template_part('template-parts/forms/simple', null, array(
-                    'wrapper_class' => 'popups__popup__form',
-		            'form_name' => 'presentation-download',
-		            'thankyou_page' => $thankyouPage,
-		            'button' => __('Request presentation', 'visia')
-	            ));
-            } ?>
-        </div>
-    </div>
-
-    <?php if($blogDownloads = get_posts(array(
-        'post_type'	=> 'blog_downloads',
-        'posts_per_page' => -1,
-    ))) {
-        foreach($blogDownloads as $post) { setup_postdata($post); ?>
-            <div class="popups__popup css-boxed-content js-popups-single" data-popup="blog-download-<?php echo $post->post_name; ?>" aria-hidden="true" role="dialog">
-                <div role="document">
-                    <button class="popups__popup__close js-popups-single-close" title="<?php esc_attr_e(__('Close popup', 'visia')); ?>">
-                        <span class="popups__popup__close__line--left popups__popup__close__line"></span>
-
-                        <span class="popups__popup__close__line--right popups__popup__close__line"></span>
-                    </button>
-
-			        <?php if($popupTitle = get_the_title()) {
-				        echo '<h1 class="popups__popup__title css-title--small-size css-title">'.$popupTitle.'</h1>';
-			        }
-
-			        if($thankyouPage = get_field('bedanktpagina_formulier')) {
-				        $thankyouPage = substr(get_permalink($thankyouPage), strlen(home_url()));
-
-				        get_template_part('template-parts/forms/simple', null, array(
-					        'wrapper_class' => 'popups__popup__form',
-					        'form_name' => 'blog-download-'.$post->post_name,
-					        'thankyou_page' => $thankyouPage,
-					        'button' => get_field('knop_label')
-				        ));
-			        } ?>
-                </div>
-            </div>
-        <?php } wp_reset_postdata();
-    } ?>
-
-    <div class="popups__overlay js-popups-overlay" tabindex="-1"></div>
 </div>
 
 <?php wp_footer(); ?>

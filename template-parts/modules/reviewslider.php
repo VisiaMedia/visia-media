@@ -14,7 +14,7 @@
                         <li class="review-slider__list__item js-review-slider-list-item" data-slide-count="<?php echo $slideCounter; ?>">
 							<?php if(has_post_thumbnail()) { ?>
                                 <div class="review-slider__list__item__thumbnail js-review-slider-list-item-thumbnail">
-									<?php echo wp_get_attachment_image(get_post_thumbnail_id(), 'review-portrait-use', null, array('class' => 'review-slider__list__item__thumbnail__img')); ?>
+									<?php echo wp_get_attachment_image(get_post_thumbnail_id(), 'review-portrait-use-retina', null, array('class' => 'review-slider__list__item__thumbnail__img')); ?>
                                 </div>
 							<?php }
 

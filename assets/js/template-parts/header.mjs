@@ -41,7 +41,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
                     let timelinePosition;
 
                     if(i === 0) {
-                        timelinePosition = 0;
+                        timelinePosition = timeline.totalDuration();
                     } else {
                         timelinePosition = ">-0.065";
                     }

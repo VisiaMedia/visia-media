@@ -5,7 +5,6 @@
 
   &__section {
     display:flex;
-    min-height:100vh;
     min-height:100svh;
     padding:0 var(--offset-side);
 
@@ -60,13 +59,13 @@
         .css-global-button-text {
           font-size:1.25em;
 
-          @media only screen and (max-width: 810px) {
+          @media only screen and (max-width: 1080px) {
             font-size:1.2em;
           }
-          @media only screen and (max-width: 600px) {
+          @media only screen and (max-width: 810px) {
             font-size:1.1em;
           }
-          @media only screen and (max-width: 380px) {
+          @media only screen and (max-width: 600px) {
             font-size:1em;
           }
         }
@@ -76,7 +75,6 @@
 
   &__nav {
     position:absolute;
-    top:100vh;
     top:100svh;
     left:0;
     transform:translateY(-100%);

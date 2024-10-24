@@ -1,0 +1,80 @@
+@import './assets/css/reset/core';
+
+.popunder {
+  position: fixed;
+  right: var(--offset-block);
+  bottom: var(--offset-block);
+  z-index: 25;
+  display:flex;
+  width: calc(100% - var(--offset-block) * 2);
+  max-width: 28em;
+  font-size: .9em;
+
+  @media only screen and (max-width: 600px) {
+    right: var(--offset-side);
+    width: calc(100% - var(--offset-side) * 2);
+    max-width:unset;
+  }
+
+  &--image {
+    max-width:38em;
+  }
+
+  &__close {
+    position:absolute;
+    top:var(--offset-block);
+    right:var(--offset-block);
+    width:3em;
+    height:3em;
+    margin:-1.5em -1.5em 0 0;
+    font-size:.75em;
+
+    &__line {
+      position:absolute;
+      top:50%;
+      left:50%;
+      display:block;
+      width:1.6em;
+      height:.125em;
+      margin:-.0625em 0 0 -.8em;
+      background:$black;
+      pointer-events:none;
+
+      &--left {
+        transform:rotate(45deg);
+      }
+      &--right {
+        transform:rotate(-45deg);
+      }
+    }
+  }
+
+  &__image {
+    background-size:cover;
+    background-position:center;
+    flex:1 1 22em;
+    height:auto;
+  }
+
+  &__content {
+    flex:1 1 auto;
+    padding:var(--offset-block);
+
+    &__title {
+      margin:0;
+      font-size:1em;
+      font-weight:$bold-weight;
+    }
+
+    &__text {
+      margin:1em 0;
+
+      &:first-child {
+        margin-top:0;
+      }
+      &:last-child {
+        margin-bottom:0;
+      }
+    }
+  }
+}

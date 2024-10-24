@@ -9,7 +9,7 @@
                     echo '<span class="statement__content__title css-title--small-size css-title js-statement-title">'.$title.'</span>';
                 } ?>
 
-				<div class="statement__content__text css-title--normal-size css-title js-statement-vertical-text-reveal"><?php echo $statement; ?></div>
+				<div class="statement__content__text css-title--normal-size css-title js-statement-vertical-text-reveal"><?php echo do_shortcode($statement); ?></div>
 
 				<?php if(get_sub_field('button_label') && get_sub_field('button_doel')) {
 					global_button(get_sub_field('button_label'), get_sub_field('button_doel'), 'internal', 'statement__content__button-wrapper js-statement-button-wrapper');

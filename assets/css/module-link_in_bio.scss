@@ -1,0 +1,40 @@
+@import './assets/css/reset/core';
+
+.social-links {
+  padding:calc(var(--offset-vertical) * 2) var(--offset-side) var(--offset-vertical);
+  text-align:center;
+
+  &__list {
+    width:max-content;
+    margin:auto;
+    font-size:1.25em;
+
+    &__item {
+      display:block;
+      margin:.75em 0;
+
+      &:first-child {
+        margin-top:0;
+
+        & a {
+          background:$white;
+          color:var(--current-background);
+        }
+      }
+      &:last-child {
+        margin-bottom:0;
+      }
+
+      &__link {
+        display:block;
+        width:100%;
+        margin:auto;
+        padding:.5em 1.5em;
+        border:2px solid rgba($white, 50%);
+        line-height:1;
+        font-weight:$semibold-weight;
+        border-radius:1em;
+      }
+    }
+  }
+}

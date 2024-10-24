@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal){
+export function init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
     if(document.querySelector('.js-project-slider')) {
         /* Get all project grid slider as array */
         const projectSliders = gsap.utils.toArray('.js-project-slider');
@@ -22,19 +22,8 @@ export function init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAft
                     tlTextReveal(projectSlider.querySelector('.js-project-slider-title'), timeline);
                 }
 
-
-                /* Initially hide and offset all slides */
-                gsap.set(projectSliderListItems, {
-                    autoAlpha:0,
-                    y: "1.5rem"
-                });
-
                 /* Show items one by one */
-                timeline.to(projectSliderListItems, {
-                    autoAlpha: 1,
-                    y: "0rem",
-                    stagger: .2
-                });
+                tlFadeIn(projectSliderListItems, timeline);
             }
 
             /* Execute once */

@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, blobity, Masonry){
+export function init(gsap, ScrollTrigger, stFadeIn, blobity, Masonry, InfiniteScroll, imagesLoaded){
     if(document.querySelector('.js-project-grid')) {
         /* Get all project grid instances as array */
         const projectGrids = gsap.utils.toArray('.js-project-grid');
@@ -14,225 +14,173 @@ export function init(gsap, ScrollTrigger, blobity, Masonry){
                 columnWidth: '.js-grid-sizer',
                 gutter: '.js-gutter-sizer',
                 percentPosition: true,
-                initLayout: false
+                initLayout: false,
+                transitionDuration: 0
             });
 
             /* Add event listener */
             masonry.on('layoutComplete', function() {
-                ScrollTrigger.refresh(true);
+                ScrollTrigger.refresh();
             });
 
+            /* Add function for laying out Masrony on image load */
             function newImageLoaded() {
                 masonry.layout();
             }
+
+
+            /* Add imagesloaded to InifinteScroll */
+            InfiniteScroll.imagesLoaded = imagesLoaded;
+
+
+            /* Setup InfiniteScroll */
+            const infScroll = new InfiniteScroll(projectGridList, {
+                path: function() {
+                    let returnValue,
+                        pageNumber = this.loadCount + 1;
+
+                    if(pageNumber === 1) {
+                        returnValue = '/case-archive/';
+                    } else {
+                        returnValue = `/case-archive/page/${pageNumber}`;
+                    }
+
+                    return returnValue;
+                },
+                checkLastPage: '.js-nav-next',
+                append: '.js-project-grid-item',
+                history: false,
+                prefill: false,
+                outlayer: masonry,
+                button: '.js-project-grid-button',
+                scrollThreshold: false,
+            });
+
+            /* Init items after appending */
+            infScroll.on('append', function(body, path, items) {
+                items.forEach(item => {
+                    setupGridItem(item);
+                });
+
+                ScrollTrigger.refresh();
+
+                masonry.layout();
+            });
+
 
             /* Init Masonry */
             masonry.layout();
 
 
 
-            /* Animate grid items on scroll */
-            const projectGridItems = projectGrid.querySelectorAll('.js-project-grid-item');
+            /* Setup function for grid items */
+            function setupGridItem(item, isInitial = false) {
+                const itemLink = item.querySelector('.js-project-grid-item-link');
+                const itemVisual = item.querySelector('.js-project-grid-item-visual');
 
-            /* Loop over projectgrid items */
-            projectGridItems.forEach(projectGridItem => {
-                /* Initially hide element */
-                gsap.set(projectGridItem, {
-                    autoAlpha:0,
-                    y: "1.5rem",
-                });
+                /* Add event listener for loading image and recalculating ScrollTrigger + Masrony */
+                itemVisual.addEventListener('load', newImageLoaded);
 
-                /* Show element */
-                gsap.to(projectGridItem, {
-                    scrollTrigger: {
-                        trigger: projectGridItem,
-                        start: "top center",
-                        once: true,
-                        refreshPriority: projectGrid.dataset.stCount
-                    },
-                    autoAlpha: 1,
-                    y: "0rem"
-                });
-            });
-
-
-
-            /* Add logic for hovering items */
-            if(window.matchMedia("(pointer: fine)").matches) {
-                gsap.utils.toArray('.js-project-grid-item').forEach(projectGridItem => {
-                    const projectGridItemLink = projectGridItem.querySelector('.js-project-grid-item-link');
-                    const projectGridItemVisual = projectGridItem.querySelector('.js-project-grid-item-visual');
-
-                    /* Event listeners */
-                    projectGridItemLink.addEventListener("mouseenter", function() {
-                        gsap.to(projectGridItemVisual, {
-                            scale: 1.1
-                        });
-                    });
-
-                    projectGridItemLink.addEventListener("mouseleave", function() {
-                        gsap.to(projectGridItemVisual, {
-                            scale: 1
-                        });
-                    });
-                });
-            }
-
-
-
-            /* Animate 'show more' button on scroll and add functionality */
-            if(projectGrid.querySelector('.js-project-grid-button-wrapper')) {
-                const projectGridButtonWrapper = projectGrid.querySelector('.js-project-grid-button-wrapper'),
-                    projectGridButton = projectGridButtonWrapper.querySelector('.js-project-grid-button'),
-                    projectGridExtraCases = projectGrid.querySelector('.js-project-grid-extra-cases');
-
-                /* Initially hide element */
-                gsap.set(projectGridButtonWrapper, {
+                /* Initially hide elements */
+                gsap.set(item, {
                     autoAlpha:0,
                     y: "1.5rem"
                 });
 
-                /* Show element */
-                gsap.to(projectGridButtonWrapper, {
-                    scrollTrigger: {
-                        trigger: projectGridButtonWrapper,
-                        start: "top center",
-                        once: true,
-                        refreshPriority: projectGrid.dataset.stCount
-                    },
-                    autoAlpha: 1,
-                    y: "0rem"
-                });
+                if(isInitial) {
+                    gsap.to(item, {
+                        scrollTrigger: {
+                            trigger: item,
+                            start: "top center",
+                            end: "top top",
+                            once: true,
+                            refreshPriority: projectGrid.dataset.stCount
+                        },
+                        autoAlpha: 1,
+                        y: "0rem",
+                        onStart:() => {
+                            item.style.willChange = 'transform, opacity';
+                        },
+                        onComplete:() => {
+                            item.style.willChange = 'auto';
 
-
-
-                /* Adding event listener */
-                projectGridButton.addEventListener("click", function() {
-                    blobity.reset();
-
-                    let extraCases = projectGridExtraCases.children,
-                        appendCount = 0,
-                        appendingElems = [],
-                        documentFragment = document.createDocumentFragment();
-
-                    for(let i = 0; i < extraCases.length && i < 4; i++) {
-                        appendCount++;
-
-                        let extraCase = extraCases[i],
-                            extraCaseElem = document.createElement('li');
-
-                        /* Create the element
-                         *
-                         * Define variables */
-                        let elemPermalink = extraCase.dataset.casePermalink,
-                            elemTitle = extraCase.dataset.caseTitle,
-                            caseStatement = extraCase.dataset.caseStatement,
-                            elemThumbnail = extraCase.dataset.caseThumbnail;
-
-                        /* Build HTML element */
-                        extraCaseElem.className = 'project-grid__list__item js-project-grid-item';
-
-                        /* Create the link */
-                        let extraCaseElemLink = document.createElement('a');
-                        extraCaseElemLink.className = 'project-grid__list__item__link';
-                        extraCaseElemLink.setAttribute('rel', 'bookmark');
-                        extraCaseElemLink.setAttribute('data-no-blobity', 'true');
-                        extraCaseElemLink.setAttribute('href', elemPermalink);
-
-                        /* Create the thumbnail */
-                        let extraCaseElemVisual = document.createElement('div');
-                        extraCaseElemVisual.className = 'project-grid__list__item__visual';
-
-                        /* Create the image */
-                        let extraCaseElemVisualImg = document.createElement('img');
-                        extraCaseElemVisualImg.className = 'project-grid__list__item__visual__image';
-                        extraCaseElemVisualImg.src = elemThumbnail;
-
-                        /* Set up loading event listener for image to recalculate ScrollTrigger and Masonry */
-                        extraCaseElemVisualImg.addEventListener('load', newImageLoaded);
-
-
-                        /* Create the heading */
-                        let extraCaseElemHeading = document.createElement('h2');
-                        extraCaseElemHeading.className = 'project-grid__list__item__title css-title';
-                        extraCaseElemHeading.innerHTML = decodeURI(elemTitle) + ' &mdash; ';
-
-                        /* Create the statement */
-                        let extraCaseElemStatement = document.createElement('span');
-                        extraCaseElemStatement.className = 'project-grid__list__item__title__statement';
-                        extraCaseElemStatement.innerText = decodeURI(caseStatement);
-
-                        /* Put it together */
-                        extraCaseElemVisual.appendChild(extraCaseElemVisualImg);
-                        extraCaseElemHeading.appendChild(extraCaseElemStatement);
-
-                        extraCaseElemLink.appendChild(extraCaseElemVisual);
-                        extraCaseElemLink.appendChild(extraCaseElemHeading);
-
-                        extraCaseElem.appendChild(extraCaseElemLink);
-
-                        /* Add logic for hovering */
-                        if(window.matchMedia("(pointer: fine)").matches) {
-                            /* Event listeners */
-                            extraCaseElemLink.addEventListener("mouseenter", function() {
-                                gsap.to(extraCaseElemVisualImg, {
-                                    scale: 1.1
-                                });
+                            gsap.set(item, {
+                                clearProps: "transform",
                             });
+                        },
+                    });
+                } else {
+                    gsap.to(item, {
+                        autoAlpha: 1,
+                        y: "0rem",
+                        onStart:() => {
+                            item.style.willChange = 'transform, opacity';
+                        },
+                        onComplete:() => {
+                            item.style.willChange = 'auto';
 
-                            extraCaseElemLink.addEventListener("mouseleave", function() {
-                                gsap.to(extraCaseElemVisualImg, {
-                                    scale: 1
-                                });
+                            gsap.set(item, {
+                                clearProps: "transform",
                             });
-                        }
+                        },
+                    });
+                }
 
-                        /* Append new element to Document Fragment and push to array */
-                        documentFragment.appendChild(extraCaseElem);
-                        appendingElems.push(extraCaseElem);
-                    }
 
-                    /* Add new items to grid */
-                    projectGridList.appendChild(documentFragment);
-
-                    /* Lay-out using Masonry */
-                    masonry.appended(appendingElems);
-
-                    /* Remove appended items */
-                    for(let x = 0; x < appendCount; x++) {
-                        extraCases.item(0).remove();
-                    }
-
-                    /* Remove button if extraCases is empty */
-                    if(!projectGridExtraCases.hasChildNodes()) {
-                        gsap.to(projectGridButtonWrapper, {
-                            autoAlpha: 0,
-                            height: 0,
-                            margin: 0,
-                            padding: 0,
-                            duration:.1,
-                            onComplete: blobity.reset(),
-                            onStart:() => {
-                                gsap.to(projectGridButton, {
-                                    display: 'none',
-                                    autoAlpha: 0,
-                                    height: 0,
-                                    margin: 0,
-                                    padding: 0,
-                                    duration:.1,
-                                    onStart: blobity.reset(),
-                                    onComplete: blobity.reset(),
-                                });
-                            }
+                /* Add logic for hovering */
+                if(window.matchMedia("(pointer: fine)").matches) {
+                    itemLink.addEventListener("mouseenter", function() {
+                        gsap.to(itemVisual, {
+                            scale: 1.1
                         });
-                    }
-                });
+                    });
+
+                    itemLink.addEventListener("mouseleave", function() {
+                        gsap.to(itemVisual, {
+                            scale: 1
+                        });
+                    });
+                }
+            }
+
+            /* Set up initial items */
+            const initialItems = projectGridList.querySelectorAll('.js-project-grid-item');
+
+            initialItems.forEach(initialItem => {
+                setupGridItem(initialItem, true);
+            });
+
+            /* Fade in button on scroll */
+            if(projectGrid.querySelector('.js-project-grid-button-wrapper')) {
+                stFadeIn(projectGrid.querySelector('.js-project-grid-button-wrapper'), projectGrid.dataset.stCount);
             }
         });
     }
 }
 
-/* Export init function */
+
+/* Unload */
+export function unload(gsap, Masonry, InfiniteScroll) {
+    if(document.querySelector('.js-project-grid')) {
+        const projectGrids = gsap.utils.toArray('.js-project-grid');
+
+        projectGrids.forEach(projectGrid => {
+            const projectGridList = projectGrid.querySelector('.js-project-grid-list');
+            const masonry = Masonry.data(projectGridList);
+            const infScroll = InfiniteScroll.data(projectGridList)
+
+            /* Destroy Masonry */
+            masonry.destroy();
+
+            /* Destroy Infinite Scroll */
+            infScroll.destroy();
+        });
+    }
+}
+
+
+/* Export init and unload functions */
 export default {
-    init
-};
+    init,
+    unload
+}

@@ -1,105 +1,111 @@
 /* Initialize */
 export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll){
-    const focusableSelectors = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]';
-    const mainBodyContainer = document.querySelector('.js-main-body-container');
+    if(document.querySelector('.js-popup-container')) {
+        const popupContainers = document.querySelectorAll('.js-popup-container');
+        const focusableSelectors = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]';
+        const mainBodyContainer = document.querySelector('.js-main-body-container');
 
-    /* Initially hide popups */
-    if(document.querySelector('.js-popups') && document.querySelector('.js-popups-single') && document.querySelector('.js-popups-overlay')) {
-        let popupContainer = document.querySelector('.js-popups'),
-            singlePopups = document.querySelectorAll('.js-popups-single'),
-            popupOverlay = document.querySelector('.js-popups-overlay');
-
-        /* Hide elements */
-        gsap.set([popupContainer, singlePopups, popupOverlay], {
-            autoAlpha:0
-        });
-
-        gsap.set(singlePopups, {
-            display: "none"
-        });
+        popupContainers.forEach(popupContainer => {
+            const singlePopup = popupContainer.querySelector('.js-popup');
+            const popupName = singlePopup.dataset.popup;
+            const closeButton = popupContainer.querySelector('.js-close');
+            const overlay = popupContainer.querySelector('.js-overlay');
 
 
+            /* Initially hide elements */
+            gsap.set([popupContainer, singlePopup, overlay], {
+                autoAlpha:0
+            });
 
-        function closeAllPopups() {
-            if(popupContainer.classList.contains('js-active')) {
-                gsap.to(popupContainer, {
-                    autoAlpha:0,
-                    onStart:() => {
-                        const focusableElements = mainBodyContainer.querySelectorAll(focusableSelectors);
-                        focusableElements.forEach(el => el.removeAttribute('tabindex'));
+            gsap.set(popupContainer, {
+                display: "flex"
+            });
 
-                        /* Update screenreader focus */
-                        singlePopups.forEach(singlePopup => {
-                            singlePopup.setAttribute('aria-hidden', 'true');
-                        });
-                        mainBodyContainer.removeAttribute('aria-hidden');
+            gsap.set(singlePopup, {
+                display: "none"
+            });
 
-                        /* Update blobity */
-                        blobity.updateOptions({
-                            zIndex:50,
-                            color:gsap.getProperty(document.querySelector('body'), 'color')
-                        });
 
-                        blobity.bounce();
 
-                        /* Enable scrolling */
-                        enableScroll();
-                    },
-                    onComplete:() => {
-                        /* Hide popups and overlay */
-                        gsap.set([singlePopups, popupOverlay], {
-                            autoAlpha:0
-                        });
+            /* Set Blobity radius on close button */
+            let setBlobityRadius = function() {
+                closeButton.setAttribute("data-blobity-offset-x", 0);
+                closeButton.setAttribute("data-blobity-offset-y", 0);
 
-                        gsap.set(singlePopups, {
-                            display: "none"
-                        });
-
-                        /* Remove active class from container */
-                        popupContainer.classList.remove('js-active');
-                    }
-                });
+                const closeButtonRadius = closeButton.offsetWidth / 2;
+                closeButton.setAttribute("data-blobity-radius", closeButtonRadius.toString());
             }
-        }
+
+            /* Execute on resize */
+            callAfterResize(setBlobityRadius);
 
 
+            /* Function for closing the popup */
+            function closePopup() {
+                if(popupContainer.classList.contains('js-active')) {
+                    gsap.to(popupContainer, {
+                        autoAlpha:0,
+                        onStart:() => {
+                            const focusableElements = mainBodyContainer.querySelectorAll(focusableSelectors);
+                            focusableElements.forEach(el => el.removeAttribute('tabindex'));
 
-        /* Loop over triggers */
-        if(document.querySelector('.js-popup-trigger')) {
-            let popupTriggers = document.querySelectorAll('.js-popup-trigger');
+                            /* Add negative tabindex to all elements inside popup */
+                            const popupFocusableElements = singlePopup.querySelectorAll(focusableSelectors);
+                            popupFocusableElements.forEach(el => el.setAttribute('tabindex', '-1'));
 
-            popupTriggers.forEach(popupTrigger => {
-                const targetPopup = popupTrigger.dataset.popup;
+                            /* Update screenreader focus */
+                            singlePopup.setAttribute('aria-hidden', 'true');
+                            mainBodyContainer.setAttribute('aria-hidden', 'false');
 
-                /* Check if popup exists */
-                if(document.querySelector('.js-popups-single[data-popup='+targetPopup+']')) {
-                    let targetPopupElem = document.querySelector('.js-popups-single[data-popup='+targetPopup+']'),
-                        targetPopupCloseElem = targetPopupElem.querySelector('.js-popups-single-close');
+                            /* Update blobity */
+                            blobity.updateOptions({
+                                zIndex:50,
+                                color:gsap.getProperty(document.querySelector('body'), 'color')
+                            });
 
-                    /* Set blobity radius on popup close button */
-                    function setBlobityRadius() {
-                        if(targetPopupElem.offsetParent !== null) {
-                            targetPopupCloseElem.setAttribute("data-blobity-offset-x", 0);
-                            targetPopupCloseElem.setAttribute("data-blobity-offset-y", 0);
-                            targetPopupCloseElem.setAttribute("data-blobity-radius", targetPopupCloseElem.offsetWidth / 2);
+                            /* Enable scrolling */
+                            enableScroll();
+                        },
+                        onComplete:() => {
+                            /* Hide popups and overlay */
+                            gsap.set([singlePopup, overlay], {
+                                autoAlpha:0
+                            });
+
+                            gsap.set(singlePopup, {
+                                display: "none"
+                            });
+
+                            /* Remove active class from container */
+                            popupContainer.classList.remove('js-active');
                         }
-                    };
+                    });
+                }
+            }
 
-                    callAfterResize(setBlobityRadius);
 
-                    /* Create timeline and animations */
+            /* Function for triggering the popup */
+            if(document.querySelector('.js-popup-trigger[data-popup='+popupName+']')) {
+                const popupTriggers = document.querySelectorAll('.js-popup-trigger[data-popup='+popupName+']');
+
+                popupTriggers.forEach(popupTrigger => {
                     let popupTL = gsap.timeline({
                         paused: true,
                         onStart:() => {
                             /* Focus on first element inside the popup */
-                            targetPopupElem.querySelector(focusableSelectors).focus();
+                            singlePopup.querySelector(focusableSelectors).focus();
 
                             /* Set negative tabindex for all elements inside main body */
                             const focusableElements = mainBodyContainer.querySelectorAll(focusableSelectors);
                             focusableElements.forEach(el => el.setAttribute('tabindex', '-1'));
 
+                            /* Remove (negative) tabindex for all elements inside popup */
+                            const popupFocusableElements = singlePopup.querySelectorAll(focusableSelectors);
+                            popupFocusableElements.forEach(el => el.removeAttribute('tabindex'));
+
+
                             /* Set aria visibility on popup and main body */
-                            targetPopupElem.removeAttribute('aria-hidden');
+                            singlePopup.setAttribute('aria-hidden', 'false');
                             mainBodyContainer.setAttribute('aria-hidden', 'true');
 
                             /* Disable scrolling */
@@ -112,8 +118,6 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                             });
 
                             blobity.reset();
-
-                            setBlobityRadius();
                         }
                     });
 
@@ -123,14 +127,17 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                     });
 
                     /* Fade in overlay */
-                    popupTL.to(popupOverlay, {
+                    popupTL.to(overlay, {
                         autoAlpha:1
                     });
 
                     /* Fade in popup */
-                    popupTL.to(targetPopupElem, {
+                    popupTL.to(singlePopup, {
                         autoAlpha:1,
-                        display: "block"
+                        display:"block",
+                        onComplete:() => {
+                            setBlobityRadius();
+                        }
                     });
 
                     /* Create event listener */
@@ -146,21 +153,22 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                     });
 
                     /* Add event listener to close button */
-                    targetPopupCloseElem.addEventListener("click", closeAllPopups);
+                    closeButton.addEventListener("click", closePopup);
+                });
+            }
+
+
+            /* Add event listener to overlay */
+            overlay.addEventListener("click", closePopup);
+
+            /* Add event listener to escape button */
+            document.addEventListener("keydown", function(event) {
+                const key = event.key;
+
+                if(key === "Escape") {
+                    closePopup();
                 }
             });
-        }
-
-        /* Add event listener to overlay */
-        popupOverlay.addEventListener("click", closeAllPopups);
-
-        /* Add event listener to escape button */
-        document.addEventListener("keydown", function(event) {
-            const key = event.key;
-
-            if(key === "Escape") {
-                closeAllPopups();
-            }
         });
     }
 }

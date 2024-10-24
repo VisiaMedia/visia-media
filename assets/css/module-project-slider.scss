@@ -17,8 +17,9 @@
       gap:calc(var(--offset-side) / 2);
 
       &__item {
-        width:calc(80vh - 3.5em - (((var(--offset-vertical) * 2)) * .8));
+        width:calc(80svh - 3.5em - (((var(--offset-vertical) * 2)) * .8));
         max-width:33vw;
+        min-width:18em;
 
         @media only screen and (max-width: 900px) {
           max-width:calc(50vw - var(--offset-side) * 2);

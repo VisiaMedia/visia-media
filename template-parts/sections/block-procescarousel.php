@@ -9,7 +9,7 @@
 			} ?>
 
 			<div class="process-carousel__container js-process-carousel-container">
-                <aside class="process-carousel__labels js-process-carousel-labels">
+                <aside class="process-carousel__labels js-process-carousel-labels" aria-hidden="true">
                     <ul class="process-carousel__labels__list js-process-carousel-labels-list">
 		                <?php foreach($textItems as $textItem) { ?>
                             <li class="process-carousel__labels__list__item js-process-carousel-label"><?php echo $textItem['titel']; ?></li>

@@ -30,6 +30,13 @@
 
       &__title {
         font-size: 1.8em;
+
+        @media only screen and (max-width: 1080px) {
+          font-size:1.7em;
+        }
+        @media only screen and (max-width: 810px) {
+          font-size:1.6em;
+        }
       }
 
       &__usps {
@@ -86,9 +93,10 @@
   }
 
   .table-of-contents {
-    margin: calc(var(--offset-block) * 2) 0;
-    padding: calc(var(--offset-block) * 1.5);
+    margin: calc(var(--offset-block) * 1.5) 0;
+    padding: var(--offset-block);
     background: var(--dropshadow-color);
+    font-size:.9em;
 
     @media only screen and (max-width: 1080px) {
       padding:var(--offset-block) var(--offset-side);
@@ -103,7 +111,14 @@
     }
 
     &__title {
-      font-size: 1.8em;
+      font-size:1.75em;
+
+      @media only screen and (max-width: 900px) {
+        font-size:1.5em;
+      }
+      @media only screen and (max-width: 810px) {
+        font-size:1.25em;
+      }
     }
 
     &__list {
@@ -124,7 +139,7 @@
         a {
           position:relative;
           display:inline-block;
-          padding-left:1.5em;
+          padding-left:1.75em;
           color:var(--current-color);
           text-decoration:none;
 

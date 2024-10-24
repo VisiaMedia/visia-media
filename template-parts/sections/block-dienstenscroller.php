@@ -59,7 +59,7 @@
 		            <?php foreach($services as $service) {
 			            if($title = $service['titel']) { ?>
                             <li class="service-scroller__nav__list__item">
-                                <a class="js-service-scroller-nav-list-item-link" href="#<?php echo ($idSlug != $previousID) ? $idSlug : $idSlug.$serviceCount ?>"><?php echo do_shortcode($title); ?></a>
+                                <a class="js-service-scroller-nav-list-item-link"><?php echo do_shortcode($title); ?></a>
                             </li>
                         <?php }
 		            } ?>

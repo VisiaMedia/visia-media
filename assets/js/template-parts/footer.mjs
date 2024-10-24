@@ -30,19 +30,21 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
 
 
 
-        /* Remove blobity on logo hover */
+        /* Remove blobity on logo's hover */
         if(document.querySelector('.js-footer-logo')) {
-            const footerLogo = document.querySelector('.js-footer-logo');
+            const footerLogos = document.querySelectorAll('.js-footer-logo');
 
-            footerLogo.addEventListener("mouseenter", function() {
-                blobity.updateOptions({
-                    opacity: 0
+            footerLogos.forEach(footerLogo => {
+                footerLogo.addEventListener("mouseenter", function() {
+                    blobity.updateOptions({
+                        opacity: 0
+                    });
                 });
-            });
 
-            footerLogo.addEventListener("mouseleave", function() {
-                blobity.updateOptions({
-                    opacity:0.1
+                footerLogo.addEventListener("mouseleave", function() {
+                    blobity.updateOptions({
+                        opacity:0.1
+                    });
                 });
             });
         }
@@ -55,62 +57,72 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
                 knowledgeBaseToggle = footer.querySelector('.js-footer-kb-toggle'),
                 knowledgeBaseToggleIcon = footer.querySelector('.js-footer-kb-toggle-icon');
 
-            /* Set initial styles */
-            if(window.outerWidth <= 600) {
-                gsap.set(knowledgeBaseToggleIcon, {
-                    rotate:0
-                });
+            let knowledgeBaseSetup = function() {
+                if(window.outerWidth <= 600) {
+                    gsap.set(knowledgeBaseToggleIcon, {
+                        rotate:0
+                    });
 
-                gsap.set(knowledgeBaseList, {
-                    height:0,
-                    onComplete:() => {
-                        knowledgeBaseList.classList.remove('js-is-visible');
-                        knowledgeBaseList.classList.add('js-is-hidden');
-                    }
-                });
-            } else {
-                gsap.set(knowledgeBaseList, {
-                    height:'auto',
-                    onComplete:() => {
-                        knowledgeBaseList.classList.remove('js-is-visible');
-                        knowledgeBaseList.classList.remove('js-is-hidden');
-                    }
-                });
+                    gsap.set(knowledgeBaseList, {
+                        height:0,
+                        immediateRender:false,
+                        onComplete:() => {
+                            knowledgeBaseList.classList.remove('js-is-visible');
+                            knowledgeBaseList.classList.add('js-is-hidden');
+                        }
+                    });
+                } else {
+                    gsap.set(knowledgeBaseList, {
+                        height:'auto',
+                        immediateRender:false,
+                        onComplete:() => {
+                            knowledgeBaseList.classList.remove('js-is-visible');
+                            knowledgeBaseList.classList.remove('js-is-hidden');
+                        }
+                    });
+                }
             }
+
+            /* Execute once */
+            knowledgeBaseSetup();
+
+            /* Execute after resize */
+            callAfterResize(function() {
+                knowledgeBaseSetup();
+            });
+
 
 
             /* Add event listeners */
-            knowledgeBaseToggle.addEventListener("click", function(event) {
-                if(window.outerWidth <= 600) {
-                    if(knowledgeBaseList.classList.contains('js-is-visible')) {
-                        gsap.set(knowledgeBaseToggleIcon, {
-                            rotate: 0
-                        });
+            knowledgeBaseToggle.addEventListener("click", function() {
+                if(knowledgeBaseList.classList.contains('js-is-visible')) {
+                    gsap.set(knowledgeBaseToggleIcon, {
+                        rotate: 0
+                    });
 
-                        gsap.to(knowledgeBaseList, {
-                            height:0,
-                            onComplete:() => {
-                                knowledgeBaseList.classList.remove('js-is-visible');
-                                knowledgeBaseList.classList.add('js-is-hidden');
+                    gsap.to(knowledgeBaseList, {
+                        height:0,
+                        onComplete:() => {
+                            knowledgeBaseList.classList.remove('js-is-visible');
+                            knowledgeBaseList.classList.add('js-is-hidden');
 
-                                ScrollTrigger.refresh(true);
-                            }
-                        });
-                    } else {
-                        gsap.set(knowledgeBaseToggleIcon, {
-                            rotate: 180
-                        });
+                            ScrollTrigger.refresh(true);
+                        }
+                    });
+                } else {
+                    gsap.set(knowledgeBaseToggleIcon, {
+                        rotate: 180
+                    });
 
-                        gsap.to(knowledgeBaseList, {
-                            height:'auto',
-                            onComplete:() => {
-                                knowledgeBaseList.classList.remove('js-is-hidden');
-                                knowledgeBaseList.classList.add('js-is-visible');
+                    gsap.to(knowledgeBaseList, {
+                        height:'auto',
+                        onComplete:() => {
+                            knowledgeBaseList.classList.remove('js-is-hidden');
+                            knowledgeBaseList.classList.add('js-is-visible');
 
-                                ScrollTrigger.refresh(true);
-                            }
-                        });
-                    }
+                            ScrollTrigger.refresh(true);
+                        }
+                    });
                 }
             });
         }

@@ -1,0 +1,62 @@
+@import './assets/css/reset/core';
+
+.goalform {
+  display:flex;
+  min-height:75svh;
+
+  @media only screen and (max-width: 600px) {
+    min-height:unset;
+  }
+
+  &__inner {
+    width:100%;
+    margin:auto;
+    padding:var(--offset-vertical) var(--offset-side);
+    text-align:center;
+
+    @media only screen and (max-width: 600px) {
+      text-align:left;
+    }
+  }
+
+  &__title {
+    margin:0 0 var(--offset-block);
+    font-weight:$bold-weight;
+  }
+
+  &__text {
+    text-wrap: balance;
+  }
+
+  &__options {
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap:var(--offset-block);
+    margin:calc(var(--offset-block) * 1.5) auto;
+
+    &__item {
+      &__button {
+        display:block;
+        width:100%;
+        margin:auto;
+        padding:.75em 1.5em;
+        border:2px solid var(--current-color);
+        color:var(--current-color);
+        line-height:1;
+        font-weight:$semibold-weight;
+        border-radius:3em;
+      }
+    }
+  }
+
+  &__button {
+    display:inline-block;
+  }
+
+  &__caption {
+    display:block;
+    margin-top:1.25rem;
+    font-size:.8em;
+    color:var(--plain-text-color);
+  }
+}

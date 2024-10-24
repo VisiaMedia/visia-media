@@ -36,6 +36,11 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
 
 
 
+        /* Initially set main menu to 'hidden' */
+        mainMenu.setAttribute('aria-hidden', 'true');
+
+
+
         /* Set Blobity data-attribute on menu-button and side block icon links */
         let setBlobityRadius;
         (setBlobityRadius = function(){
@@ -48,6 +53,40 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
         })();
 
         callAfterResize(setBlobityRadius);
+
+
+
+        /* Determine and set menu font-size */
+        const setMenuItemSize =  function() {
+            const menuList = document.querySelector('.js-main-menu-list'),
+                menuListItems = menuList.querySelectorAll('.js-main-menu-item'),
+                containerPadding = 8 * parseFloat(getComputedStyle(document.body).fontSize),
+                menuListOffset = document.querySelector('.js-top-bar').offsetHeight,
+                workingHeight = window.innerHeight - containerPadding - menuListOffset;
+
+            let returnValue = workingHeight / menuListItems.length;
+
+            if(returnValue < parseFloat(getComputedStyle(document.body).fontSize)) {
+                returnValue = parseFloat(getComputedStyle(document.body).fontSize);
+            }
+
+            document.querySelector(':root').style.setProperty('--menu-font-size', returnValue + 'px');
+        }
+
+        /* Execute once */
+        setMenuItemSize();
+
+        /* Execute on resize */
+        let menuItemSizeTimer;
+
+        window.onresize = function() {
+            clearTimeout(menuItemSizeTimer);
+            menuItemSizeTimer = setTimeout(function() {
+                setMenuItemSize();
+            }, 100);
+        };
+
+
 
 
 
@@ -66,7 +105,7 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
         });
 
         gsap.set(".js-main-menu-bg-reveal", {
-           fontSize: 0
+           scale: 0
         });
 
         gsap.set(".js-main-menu-bg-reveal-filler", {
@@ -75,6 +114,7 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
 
         gsap.set(".js-main-menu", {
             autoAlpha: 0,
+            display: "flex"
         });
 
         gsap.set(".js-main-menu-item-wrapper", {
@@ -93,6 +133,12 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
             topBar = document.querySelector(".js-top-bar"),
             topBarHeight = topBar.offsetHeight;
 
+        /* Initially show menu */
+        gsap.set(topBar, {
+            yPercent: 0
+        });
+
+        /* On scroll */
         window.onscroll = function() {
             didScroll = true;
         };
@@ -126,10 +172,6 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                 }
 
                 lastScrollTop = st;
-            } else {
-                gsap.set(topBar, {
-                    yPercent: 0
-                });
             }
         }
 
@@ -139,12 +181,15 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
             paused: true,
             yoyo: true,
             onComplete: () => {
-                blobity.bounce();
+                mainMenu.setAttribute('aria-hidden', 'false');
+                setBlobityRadius();
             },
             onReverseComplete: () => {
                 gsap.set('.js-main-menu-button-line-bottom', {
                     clearProps: 'width'
-                })
+                });
+
+                mainMenu.setAttribute('aria-hidden', 'true');
             }
         });
 
@@ -192,14 +237,16 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
 
         .to(".js-main-menu-bg-reveal", {
             duration: .625,
-            fontSize: () => {
-                return (Math.max(window.innerWidth, window.innerHeight) * 2.25) + 'px';
+            scale:() => {
+                return (Math.max(window.innerWidth, window.innerHeight) / 10) * 2.4;
             },
             onStart: () => {
                 blobity.updateOptions({
-                    zIndex: 650,
-                    color: '#ffffff'
+                    color: '#ffffff',
+                    zIndex: 650
                 });
+
+                blobity.bounce();
 
                 disableScroll();
             },
@@ -338,9 +385,17 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
 
 
     /* Set offset for main menu */
-    if (document.querySelector('.js-top-bar') && document.querySelector('.js-main-menu-list')) {
-        document.querySelector('.js-main-menu-list').style.paddingTop = document.querySelector('.js-top-bar').offsetHeight + 'px';
+    const setMainMenuOffset = function() {
+        if (document.querySelector('.js-top-bar') && document.querySelector('.js-main-menu-list')) {
+            document.querySelector('.js-main-menu-list').style.paddingTop = document.querySelector('.js-top-bar').offsetHeight + 'px';
+        }
     }
+
+    /* Execute once */
+    setMainMenuOffset();
+
+    /* Call after resize */
+    callAfterResize(setMainMenuOffset);
 }
 
 /* Unload */
@@ -393,4 +448,4 @@ export function unload(gsap, enableScroll){
 export default {
     init,
     unload
-};
+}

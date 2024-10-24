@@ -1,26 +1,6 @@
 @import './assets/css/reset/core';
 
 .blog-home {
-  padding:var(--offset-vertical) var(--offset-side);
-
-  &--archive {
-    padding-top:calc(var(--offset-vertical) * 2);
-  }
-
-  &__archive-header {
-    margin-bottom:var(--offset-vertical);
-
-    &__title {
-      display: block;
-      margin-bottom: .5rem;
-      font-weight: $bold-weight;
-    }
-
-    &__headline {
-      margin: 0;
-    }
-  }
-
   &__items {
     display:grid;
     grid-template-columns:1fr 1fr 1fr;

@@ -15,6 +15,10 @@ function callAfterResize(func, delay) {
 
     window.addEventListener("resize", handler);
 
+    if (screen.orientation) {
+        screen.orientation.addEventListener("change", handler);
+    }
+
     return handler;
 }
 
@@ -41,8 +45,11 @@ function tlSetup(element, stCount) {
         scrollTrigger: {
             trigger: element,
             start: "top center",
+            end: "top top",
+            once: true,
             invalidateOnRefresh: true,
-            refreshPriority: stCount
+            refreshPriority: stCount,
+            preventOverlaps: 'globaltimeline'
         }
     });
 
@@ -101,19 +108,96 @@ function tlFadeIn(element, timeline) {
     gsap.set(element, {
         autoAlpha: 0,
         y: "1.5rem",
-        immediateRender: true,
-        onComplete:() => {
-            element.style.willChange = 'transform, opacity';
-        }
+        immediateRender: true
     });
 
     timeline.to(element, {
         y: "0rem",
         autoAlpha: 1,
+        stagger: .2,
+        onStart:() => {
+            if(NodeList.prototype.isPrototypeOf(element)) {
+                element.forEach(el => {
+                    el.style.willChange = 'transform, opacity';
+                });
+            } else {
+                element.style.willChange = 'transform, opacity';
+            }
+        },
         onComplete:() => {
-            element.style.willChange = 'auto';
+            if(NodeList.prototype.isPrototypeOf(element)) {
+                element.forEach(el => {
+                    el.style.willChange = 'auto';
+
+                    gsap.set(el, {
+                        clearProps: "transform",
+                    });
+                });
+            } else {
+                element.style.willChange = 'auto';
+
+                gsap.set(element, {
+                    clearProps: "transform",
+                });
+            }
         }
     });
+}
+
+
+
+/* Standalone ScrollTrigger fadein */
+function stFadeIn(element, refreshPriority) {
+
+    /* Setup function for a single element */
+    function singleSetup(el, refresh) {
+        /* Initially hide */
+        gsap.set(el, {
+            autoAlpha:0,
+            y: "1.5rem"
+        });
+
+        /* ScrollTrigger */
+        gsap.to(el, {
+            autoAlpha: 1,
+            y: "0rem",
+            onStart:() => {
+                el.style.willChange = 'transform, opacity';
+            },
+            onComplete:() => {
+                el.style.willChange = 'auto';
+
+                gsap.set(el, {
+                    clearProps: "transform",
+                });
+            },
+            scrollTrigger: {
+                trigger: el,
+                start: "top 75%",
+                end: "top top",
+                once: true,
+                refreshPriority: (refresh === 'self') ? el.dataset.stCount : refresh
+            }
+        });
+    }
+
+    /* If input is nodelist, loop over it and set up each individual element */
+    if(NodeList.prototype.isPrototypeOf(element)) {
+        element.forEach(el => {
+            singleSetup(el, refreshPriority);
+        });
+    } else { /* Else, just run setup once */
+        singleSetup(element, refreshPriority);
+    }
+}
+
+
+
+/* Getcookie */
+function getCookie(name) {
+    let value = `; ${document.cookie}`;
+    let parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
 
@@ -182,17 +266,8 @@ function createValidHtmlId(value) {
 
 
 
-/* Getcookie */
-function getCookie(name) {
-    let value = `; ${document.cookie}`;
-    let parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-
-
 /* Add support for disabling scroll */
-const scrollKeys = {37: 1, 38: 1, 39: 1, 40: 1, 32: 1, 33: 1, 34: 1, 35: 1, 36: 1};
+const scrollKeys = {37: 1, 38: 1, 39: 1, 40: 1, 33: 1, 34: 1, 35: 1, 36: 1};
 
 function scrollPreventDefault(e) {
     e.preventDefault();
@@ -231,4 +306,4 @@ function enableScroll() {
     window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
 }
 
-export {callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, getCookie, disableScroll, enableScroll};
+export {callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll};

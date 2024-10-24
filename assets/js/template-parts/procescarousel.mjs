@@ -66,7 +66,8 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
                 end:() => {
                     return "bottom-="+ procesCarousel.querySelector('.js-process-carousel-item:last-child').offsetHeight / 2 +"px center";
                 },
-                refreshPriority: procesCarousel.dataset.stCount
+                refreshPriority: procesCarousel.dataset.stCount,
+                pinSpacing: false
             });
 
             /* Set individual items opacity */
@@ -77,6 +78,12 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
             });
 
 
+            /* Check if mobile or desktop */
+            let isDesktop = true;
+
+            if(window.matchMedia("(pointer: coarse)").matches) {
+                isDesktop = false;
+            }
 
             /* Increase opacity on scroll */
             procesCarouselItems.forEach(function (procesCarouselItem, i) {
@@ -93,7 +100,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
                         end: "bottom center",
                         scrub: true,
                         refreshPriority: procesCarousel.dataset.stCount,
-                        snap: "labels",
+                        snap: isDesktop ? "labels" : false,
                         onEnter:() => {
                             let targetLabel = procesCarouselLabels.querySelector('.js-process-carousel-label:nth-child('+(i + 1)+')'),
                                 targetOffset = targetLabel.offsetTop * -1;

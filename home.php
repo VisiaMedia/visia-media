@@ -4,10 +4,9 @@ if(have_posts()) {
 	global $scrollTriggerCount;
 	global_color_change_trigger('white');
 
+    $infiniteScroll = false;
 	if($wp_query->found_posts > get_option('posts_per_page')) {
 		$infiniteScroll = true;
-	} else {
-		$infiniteScroll = false;
 	} ?>
 
     <div class="blog-home js-blog-home" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
@@ -21,7 +20,7 @@ if(have_posts()) {
 							        <?php if(has_post_thumbnail()) {
 								        echo '<div class="blog-home__items__item__thumb">';
 
-                                        the_post_thumbnail('blog-thumb-use', array('class' => 'blog-home__items__item__thumb__img js-blog-home-thumb-img'));
+                                        the_post_thumbnail('blog-thumb-use-retina', array('class' => 'blog-home__items__item__thumb__img js-blog-home-thumb-img'));
 
 								        if($readingTime = get_post_meta(get_the_ID(), '_yoast_wpseo_estimated-reading-time-minutes', true)) {
 									        echo '<span class="blog-home__items__item__thumb__reading-time">'.sprintf(__('Reading time: %s minutes', 'visia' ), $readingTime).'</span>';
@@ -31,7 +30,7 @@ if(have_posts()) {
 							        } ?>
 
 							        <?php if($postCategories = get_the_category()) {
-								        echo '<span class="blog-home__items__item__cat">'.$postCategories[0]->name.', <time class="js-blog-home-from-now" datetime="'.get_the_time('Y-m-d H:i:s').'">'.get_the_time('Y-m-d H:i:s').'</time></span>';
+								        echo '<span class="blog-home__items__item__cat">'.$postCategories[0]->name.', <time pubdate class="js-blog-home-from-now" datetime="'.get_the_time('Y-m-d H:i:s').'">'.get_the_time('Y-m-d H:i:s').'</time></span>';
 							        } ?>
 
                                     <h2 class="blog-home__items__item__title css-title js-blog-home-title"><?php the_title(); ?></h2>

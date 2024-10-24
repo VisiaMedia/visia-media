@@ -64,17 +64,20 @@
     }
   }
 
-  &__extra-cases {
-    @extend %hidden;
-  }
-
   &__button-wrapper {
-    margin:calc(var(--offset-block) * 2) 0 0;
     font-size:1.2em;
     text-align:center;
 
     @media only screen and (max-width: 810px) {
       font-size:1em;
+    }
+
+    &__button {
+      margin-top:calc(var(--offset-block) * 2);
+
+      @media only screen and (max-width: 810px) {
+        margin-top:calc(var(--offset-block) * 1.5);
+      }
     }
   }
 }

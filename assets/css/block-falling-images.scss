@@ -2,12 +2,8 @@
 
 .falling-images {
   padding:0 var(--offset-side);
-  height:100vh;
-  height:100lvh;
-  overflow:hidden;
 
   &__list {
-    padding:var(--offset-vertical) 0;
     display:grid;
     grid-template-columns: 1fr 1fr;
     gap:0 var(--offset-side);
@@ -20,6 +16,17 @@
       display:flex;
       justify-content: center;
       padding:var(--offset-vertical) 0;
+
+      &:nth-child(1) {
+        padding-top:0;
+      }
+      &:nth-child(2) {
+        padding-top:0;
+
+        @media only screen and (max-width: 810px) {
+          padding-top:var(--offset-vertical);
+        }
+      }
 
       &__wrapper {
         width:100%;

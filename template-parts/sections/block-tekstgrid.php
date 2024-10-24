@@ -17,7 +17,7 @@
                             }
 
                             if($text = $gridItem['tekst']) {
-                                echo '<div class="textgrid__grid__item__text css-normal-text">'.$text.'</div>';
+                                echo '<div class="textgrid__grid__item__text css-normal-text">'.do_shortcode($text).'</div>';
                             }
 
                             if($gridItem['button_label'] && $gridItem['button_doel']) {

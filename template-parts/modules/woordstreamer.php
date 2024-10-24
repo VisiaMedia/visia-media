@@ -23,12 +23,12 @@
 				$charCounter = $charCounter + strlen($singleWord);
 
 				if($charCounter >= $rowLength && $split == false) {
-					echo '</ul><ul class="woordstreamer__row--bottom woordstreamer__row js-woordstreamer-row">';
+					echo '</ul><ul class="woordstreamer__row--bottom woordstreamer__row js-woordstreamer-row js-woordstreamer-row-rtl">';
 
 					$split = true;
 				}
 
-				echo '<li class="woordstreamer__row__word js-woordstreamer-row-word'.(($split) ? ' js-woordstreamer-row-word-rtl' : '').'">'.$singleWord.'</li><li class="woordstreamer__row__word js-woordstreamer-row-word'.(($split) ? ' js-woordstreamer-row-word-rtl' : '').'">&mdash;</li>';
+				echo '<li class="woordstreamer__row__word js-woordstreamer-row-word">'.$singleWord.'</li><li class="woordstreamer__row__word js-woordstreamer-row-word'.(($split) ? ' js-woordstreamer-row-word-rtl' : '').'">&mdash;</li>';
 			}
 		}
 

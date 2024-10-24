@@ -1,0 +1,49 @@
+@import './assets/css/reset/core';
+
+.presentation-form {
+  &__intro {
+    display:flex;
+    min-height:75svh;
+    padding:var(--offset-vertical) var(--offset-side);
+
+    &__title {
+      max-width:42rem;
+      margin:0 auto;
+      font-size:3.5em;
+      text-align:center;
+
+      @media only screen and (max-width: 1080px) {
+        max-width:unset;
+        margin:0;
+        font-size:3.25em;
+        text-align:left;
+      }
+      @media only screen and (max-width: 900px) {
+        font-size:3em;
+      }
+      @media only screen and (max-width: 810px) {
+        font-size:2em;
+      }
+      @media only screen and (max-width: 600px) {
+        font-size:1.75em;
+      }
+      @media only screen and (max-width: 380px) {
+        font-size:1.5em;
+      }
+    }
+  }
+
+  &__content {
+    padding:0 var(--offset-side) var(--offset-vertical);
+
+    &__form {
+      width:100%;
+      max-width:42rem;
+      margin:auto;
+
+      @media only screen and (max-width: 1080px) {
+        max-width:unset;
+      }
+    }
+  }
+}

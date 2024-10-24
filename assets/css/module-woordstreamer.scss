@@ -3,7 +3,7 @@
 .woordstreamer {
   padding:var(--offset-vertical) 0;
   overflow:hidden;
-  pointer-events: none;
+  user-select: none;
 
   &__inner {
     position:relative;

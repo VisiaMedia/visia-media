@@ -1,0 +1,173 @@
+@import './assets/css/reset/core';
+
+.logo-presentation {
+  padding:var(--offset-vertical) var(--offset-side);
+  text-align:center;
+
+  &__title {
+    margin:0 0 var(--offset-block);
+    font-weight:$bold-weight;
+  }
+
+  &__description {
+    margin:var(--offset-block) 0;
+
+    &:first-child {
+      margin-top:0;
+    }
+    &:last-child {
+      margin-bottom:0;
+    }
+  }
+
+  &__list {
+    margin-top:calc(var(--offset-block) * 2);
+    display:flex;
+    justify-content: center;
+    align-items:stretch;
+    gap: calc(var(--offset-block) * 2);
+    flex-wrap:wrap;
+    user-select:none;
+
+    &:first-child {
+      margin-top:0;
+    }
+
+    $this: &;
+    &--is-boxed,
+    &--is-boxed#{$this}--has-signs {
+      gap:1em;
+    }
+    &--has-signs {
+      gap:var(--offset-block);
+
+      @media only screen and (max-width: 1280px) {
+        gap:calc(var(--offset-block) * 2) var(--offset-block);
+      }
+      @media only screen and (max-width: 600px) {
+        gap:var(--offset-block);
+      }
+    }
+
+    &__item {
+      position:relative;
+      flex:0 0 calc(25% - (((var(--offset-block) * 2) * 3) / 4));
+      display:flex;
+      max-width:20em;
+      border-radius:calc(var(--offset-block) / 2);
+
+      @media only screen and (max-width: 1080px) {
+        flex-basis:calc(50% - ((var(--offset-block) * 2) / 2));
+      }
+
+      &--is-boxed {
+        flex-basis:calc(25% - ((1em * 3) / 4));
+        padding:var(--offset-block);
+        min-height:calc(3.5em + (var(--offset-block) * 2));
+
+        @media only screen and (max-width: 1080px) {
+          flex-basis:calc(50% - (1em / 2));
+        }
+      }
+      &--has-signs {
+        flex-basis:calc(25% - ((((var(--offset-block) * 2) + 1.75em) * 3) / 4));
+
+        @media only screen and (max-width: 1280px) {
+          flex-basis:calc(25% - (((var(--offset-block) * 2) * 3) / 4));
+        }
+        @media only screen and (max-width: 1080px) {
+          flex-basis:calc(50% - ((var(--offset-block) * 2) / 2));
+        }
+      }
+      $this: &;
+      &--is-boxed#{$this}--has-signs {
+        flex-basis: calc(25% - ((((1em * 2) + 1.75em) * 3) / 4));
+
+        @media only screen and (max-width: 1280px) {
+          flex-basis: calc(25% - (((1em * 2) * 3) / 4));
+        }
+        @media only screen and (max-width: 1080px) {
+          flex-basis: calc(50% - ((1em * 2) / 2));
+        }
+      }
+
+      @media only screen and (max-width: 600px) {
+        flex-basis:100% !important;
+      }
+
+      &--has-caption {
+        padding-bottom:var(--offset-block);
+      }
+
+      $this: &;
+      &--is-boxed#{$this}--has-caption {
+        min-height:calc(3.5em + (var(--offset-block) * 2) + .8em);
+        padding-bottom:calc(var(--offset-block) + .8em);
+      }
+      &--is-boxed#{$this}--has-caption ~ #{$this} {
+        min-height:calc(3.5em + (var(--offset-block) * 2) + .8em);
+      }
+
+      &--sign {
+        flex:0 0 1em;
+        align-self:center;
+        padding:0;
+        font-size:1.75em;
+        text-align:center;
+        min-height:unset !important;
+
+        @media only screen and (max-width: 1280px) {
+          display:none;
+        }
+        @media only screen and (max-width: 600px) {
+          flex-basis:100%;
+          display:block;
+          font-size:2em;
+        }
+      }
+
+      &__img,
+      picture {
+        display:block;
+        width: auto;
+        max-width: min(100%, 12em);
+        height: auto;
+        max-height: 3.5em;
+        margin: auto;
+      }
+
+      $this: &;
+      &--is-large {
+        #{$this}__img,
+        picture {
+          max-width:100%;
+          max-height:10em;
+        }
+      }
+
+      &__caption {
+        position:absolute;
+        right:var(--offset-block);
+        bottom:0;
+        left:var(--offset-block);
+        display:block;
+        font-size:.8em;
+        font-weight:$semibold-weight;
+        line-height:1;
+
+        &--is-boxed {
+          bottom:1em;
+        }
+      }
+
+      &__sign {
+        display: block;
+        width: 1em;
+        height: 1em;
+        margin:auto;
+        font-weight: $semibold-weight;
+        line-height: 1;
+      }
+    }
+  }
+}

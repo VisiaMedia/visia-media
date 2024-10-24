@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, callAfterResize){
+export function init(gsap, callAfterResize, ScrollTrigger){
     if(document.querySelector('.js-woordstreamer')) {
         const woordStreamers = gsap.utils.toArray('.js-woordstreamer');
 
@@ -35,7 +35,10 @@ export function init(gsap, callAfterResize){
 
                 /* Set inner height */
                 gsap.set(woordStreamerInner, {
-                    height: woordStreamerHeight
+                    height: woordStreamerHeight,
+                    onComplete:() => {
+                        ScrollTrigger.refresh();
+                    }
                 });
             })();
 
@@ -45,19 +48,29 @@ export function init(gsap, callAfterResize){
 
             /* Loop over rows to set up scrolltriggers */
             woordStreamerRows.forEach(woordStreamerRow => {
-                let woordStreamerRowWords = gsap.utils.toArray(woordStreamerRow.querySelectorAll('.js-woordstreamer-row-word'));
-
-                gsap.to(woordStreamerRowWords, {
+                gsap.to(woordStreamerRow, {
                     scrollTrigger: {
                         trigger: woordStreamerInner,
                         start: "top bottom",
                         end: "bottom top",
                         scrub: 0.75,
                         invalidateOnRefresh: true,
-                        refreshPriority: woordStreamer.dataset.stCount
+                        refreshPriority: woordStreamer.dataset.stCount,
+                        onEnter:() => {
+                            woordStreamerRow.style.willChange = 'transform';
+                        },
+                        onEnterBack:() => {
+                            woordStreamerRow.style.willChange = 'transform';
+                        },
+                        onLeave:() => {
+                            woordStreamerRow.style.willChange = 'auto';
+                        },
+                        onLeaveBack:() => {
+                            woordStreamerRow.style.willChange = 'auto';
+                        }
                     },
                     x: (index, target) => {
-                        if(target.classList.contains('js-woordstreamer-row-word-rtl')) {
+                        if(target.classList.contains('js-woordstreamer-row-rtl')) {
                             return Math.min(woordStreamerRowSmallestWidth - window.outerWidth, window.outerWidth / 2) * -1;
                         } else {
                             return Math.min(woordStreamerRowSmallestWidth - window.outerWidth, window.outerWidth / 2);

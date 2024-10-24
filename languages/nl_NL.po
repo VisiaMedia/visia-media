@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Visia Media\n"
-"POT-Creation-Date: 2023-10-24 17:47+0200\n"
-"PO-Revision-Date: 2023-10-24 17:49+0200\n"
+"POT-Creation-Date: 2024-03-22 14:31+0100\n"
+"PO-Revision-Date: 2024-03-22 14:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.4.1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: style.css\n"
@@ -20,6 +20,10 @@ msgstr ""
 "_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: archive-case.php:64 archive.php:74 home.php:50
+msgid "Next page"
+msgstr "Volgende pagina"
 
 #: archive.php:20 single-post.php:35
 msgid "Category"
@@ -33,54 +37,14 @@ msgstr "Tag"
 msgid "Author"
 msgstr "Auteur"
 
-#: archive.php:50 home.php:27
+#: archive.php:50 home.php:26
 #, php-format
 msgid "Reading time: %s minutes"
 msgstr "Leestijd: %s minuten"
 
-#: archive.php:72 home.php:49
+#: archive.php:72 home.php:48
 msgid "Previous page"
 msgstr "Vorige pagina"
-
-#: archive.php:74 home.php:51
-msgid "Next page"
-msgstr "Volgende pagina"
-
-#: dist/gsap-ec852548.js:1
-msgid "paddingLeft"
-msgstr ""
-
-#: dist/gsap-ec852548.js:1
-msgid "borderBottomWidth"
-msgstr ""
-
-#: dist/gsap-ec852548.js:1
-msgid "borderTopWidth"
-msgstr ""
-
-#: dist/gsap-ec852548.js:1
-msgid "borderLeftWidth"
-msgstr ""
-
-#: dist/gsap-ec852548.js:1
-msgid "borderRightWidth"
-msgstr ""
-
-#: dist/gsap-ec852548.js:1
-msgid "paddingTop"
-msgstr ""
-
-#: dist/gsap-ec852548.js:1
-msgid "paddingBottom"
-msgstr ""
-
-#: dist/gsap-ec852548.js:1
-msgid "paddingRight"
-msgstr ""
-
-#: dist/gsap-ec852548.js:1
-msgid "fontSize"
-msgstr ""
 
 #: footer.php:9
 msgid "What we do"
@@ -94,19 +58,19 @@ msgstr "Wat we zijn"
 msgid "Contact"
 msgstr "Contact"
 
-#: footer.php:53 header.php:119 template-parts/modules/contactform.php:111
+#: footer.php:53 header.php:126 template-parts/modules/contactform.php:130
 msgid "Get in touch"
 msgstr "Contact opnemen"
 
-#: footer.php:69 header.php:80 template-parts/modules/contactform.php:77
+#: footer.php:69 header.php:87 template-parts/modules/contactform.php:96
 msgid "Follow us on Facebook"
 msgstr "Volg ons op Facebook"
 
-#: footer.php:74 header.php:85 template-parts/modules/contactform.php:82
+#: footer.php:74 header.php:92 template-parts/modules/contactform.php:101
 msgid "Follow us on Instagram"
 msgstr "Volg ons op Instagram"
 
-#: footer.php:79 header.php:90 template-parts/modules/contactform.php:87
+#: footer.php:79 header.php:97 template-parts/modules/contactform.php:106
 msgid "Follow us on LinkedIn"
 msgstr "Volg ons op LinkedIn"
 
@@ -114,124 +78,116 @@ msgstr "Volg ons op LinkedIn"
 msgid "Knowledge base"
 msgstr "Kennisbank"
 
-#: footer.php:160 footer.php:194
-msgid "Close popup"
-msgstr "Venster sluiten"
-
-#: footer.php:181
-msgid "Request presentation"
-msgstr "Presentatie aanvragen"
-
-#: functions.php:30 header.php:54
+#: functions.php:37 header.php:61
 msgid "Main menu"
 msgstr "Hoofdmenu"
 
-#: functions.php:31
+#: functions.php:38
 msgid "Footer menu 1"
 msgstr "Footermenu 1"
 
-#: functions.php:32
+#: functions.php:39
 msgid "Footer menu 2"
 msgstr "Footermenu 2"
 
-#: functions.php:33
+#: functions.php:40
 msgid "Legal menu"
 msgstr "Legal menu"
 
-#: functions.php:40
+#: functions.php:47
 msgid "General theme options"
 msgstr "Algemene opties"
 
-#: functions.php:41
+#: functions.php:48
 msgid "Theme options"
 msgstr "Thema opties"
 
-#: functions.php:47 functions.php:48
+#: functions.php:54 functions.php:55
 msgid "Logo's"
 msgstr "Logo's"
 
-#: functions.php:54 functions.php:55
+#: functions.php:61 functions.php:62
 msgid "Team"
 msgstr "Team"
 
-#: functions.php:61 functions.php:62
+#: functions.php:68 functions.php:69
 msgid "CTA's"
 msgstr "CTA's"
 
-#: functions.php:145
+#: functions.php:160
 msgid "Table of contents"
 msgstr "Inhoudsopgave"
 
-#: functions.php:219 functions.php:222 functions.php:224 functions.php:225
-#: functions.php:226
+#: functions.php:294 functions.php:297 functions.php:299 functions.php:300
+#: functions.php:301
 msgid "Thank you pages"
 msgstr "Bedanktpagina’s"
 
-#: functions.php:220
+#: functions.php:295
 msgid "All thank you pages"
 msgstr "Alle bedankpagina's"
 
-#: functions.php:223
+#: functions.php:298
 msgid "Thank you page"
 msgstr "Bedankpagina"
 
-#: functions.php:254 functions.php:257 functions.php:259 functions.php:260
-#: functions.php:261
+#: functions.php:328 functions.php:331 functions.php:333 functions.php:334
+#: functions.php:335
 msgid "Landing pages"
 msgstr "Landingspagina's"
 
-#: functions.php:255
+#: functions.php:329
 msgid "All landing pages"
 msgstr "Alle landingspagina's"
 
-#: functions.php:258
+#: functions.php:332
 msgid "Landing page"
 msgstr "Landingspagina"
 
-#: functions.php:324 functions.php:327 functions.php:329 functions.php:330
-#: functions.php:331
+#: functions.php:384 functions.php:387 functions.php:389 functions.php:390
+#: functions.php:391
 msgid "Blog downloads"
 msgstr "Blog downloads"
 
-#: functions.php:325
+#: functions.php:385
 msgid "All blog downloads"
 msgstr "Alle blog downloads"
 
-#: functions.php:328
+#: functions.php:388
 msgid "Blog download"
 msgstr "Blog download"
 
-#: functions.php:355 functions.php:358 functions.php:360 functions.php:361
-#: functions.php:362
+#: functions.php:414 functions.php:417 functions.php:419 functions.php:420
+#: functions.php:421
 msgid "Cases"
 msgstr "Cases"
 
-#: functions.php:356
+#: functions.php:415
 msgid "All cases"
 msgstr "Alle cases"
 
-#: functions.php:359 template-parts/modules/header-case.php:8
+#: functions.php:418 template-parts/modules/header-case.php:8
 msgid "Case"
 msgstr "Case"
 
-#: functions.php:390 functions.php:393 functions.php:395 functions.php:396
-#: functions.php:397
+#: functions.php:466 functions.php:469 functions.php:471 functions.php:472
+#: functions.php:473
 msgid "Reviews"
 msgstr "Reviews"
 
-#: functions.php:391
+#: functions.php:467
 msgid "All reviews"
 msgstr "Alle reviews"
 
-#: functions.php:394
+#: functions.php:470
 msgid "Review"
 msgstr "Review"
 
-#: header.php:41
+#: header.php:48
 msgid "Open main menu"
 msgstr "Hoofdmenu openen"
 
-#: header.php:135 template-parts/modules/contactform.php:127
+#: header.php:142 template-parts/modules/contactform.php:146
 msgid "Follow us"
 msgstr "Volg ons"
 
@@ -261,44 +217,94 @@ msgstr "Gerelateerd"
 msgid "%s minutes reading time"
 msgstr "%s minuten leestijd"
 
-#: template-parts/forms/simple.php:11 template-parts/forms/simple.php:15
+#: template-parts/forms/simple.php:12 template-parts/forms/simple.php:16
+#: template-parts/modules/online_presentation.php:25
 msgid "First name"
 msgstr "Voornaam"
 
-#: template-parts/forms/simple.php:20 template-parts/forms/simple.php:24
-#: template-parts/modules/contactform.php:35
+#: template-parts/forms/simple.php:18
+#: template-parts/modules/online_presentation.php:27
+msgid "Please enter your first name"
+msgstr "Voer je voornaam in"
+
+#: template-parts/forms/simple.php:23 template-parts/forms/simple.php:27
+#: template-parts/modules/contactform.php:36
+#: template-parts/modules/online_presentation.php:35
+#: template-parts/sections/block-cta_leadform.php:49
+#: template-parts/sections/block-cta_leadform.php:53
 msgid "Email address"
 msgstr "Mailadres"
 
-#: template-parts/modules/contactform.php:25
+#: template-parts/forms/simple.php:29 template-parts/modules/contactform.php:38
+#: template-parts/modules/online_presentation.php:37
+#: template-parts/sections/block-cta_leadform.php:55
+msgid "Please enter your email address"
+msgstr "Voer je mailadres in"
+
+#: template-parts/forms/simple.php:36 template-parts/modules/contactform.php:67
+#: template-parts/modules/online_presentation.php:56
+#: template-parts/sections/block-cta_leadform.php:62
+#, php-format
+msgid ""
+"I agree to the storage and processing of my data as stated in the "
+"%1$sprivacy statement%2$s*"
+msgstr "Ik ga akkoord met het %1$sprivacy statement%2$s*"
+
+#: template-parts/forms/simple.php:38 template-parts/modules/contactform.php:69
+#: template-parts/modules/online_presentation.php:58
+#: template-parts/sections/block-cta_leadform.php:64
+msgid "Check to confirm that you agree to the processing of your data"
+msgstr "Geef aan dat je akkoord gaat met de verwerking van je gegevens"
+
+#: template-parts/modules/contactform.php:24
+#: template-parts/modules/online_presentation.php:23
 msgid "What's your name?"
 msgstr "Wat is je naam?"
 
-#: template-parts/modules/contactform.php:27
+#: template-parts/modules/contactform.php:26
 msgid "First and last name"
 msgstr "Voor- en achternaam"
 
-#: template-parts/modules/contactform.php:33
+#: template-parts/modules/contactform.php:28
+msgid "Please enter your first and last name"
+msgstr "Voer je voor- en achternaam in"
+
+#: template-parts/modules/contactform.php:34
+#: template-parts/modules/online_presentation.php:33
 msgid "What's your email address?"
 msgstr "Wat is je mailadres?"
 
-#: template-parts/modules/contactform.php:41
+#: template-parts/modules/contactform.php:44
+#: template-parts/modules/online_presentation.php:43
 msgid "What's your business' name?"
 msgstr "Wat is je bedrijfsnaam?"
 
-#: template-parts/modules/contactform.php:43
+#: template-parts/modules/contactform.php:46
+#: template-parts/modules/online_presentation.php:45
+#: template-parts/sections/block-cta_leadform.php:37
+#: template-parts/sections/block-cta_leadform.php:41
 msgid "Business name"
 msgstr "Bedrijfsnaam"
 
-#: template-parts/modules/contactform.php:49
+#: template-parts/modules/contactform.php:48
+#: template-parts/modules/online_presentation.php:47
+#: template-parts/sections/block-cta_leadform.php:43
+msgid "Please enter your business' name"
+msgstr "Voer je bedrijfsnaam in"
+
+#: template-parts/modules/contactform.php:54
 msgid "Describe the project"
 msgstr "Omschrijf het project"
 
-#: template-parts/modules/contactform.php:51
-msgid "Additional information"
-msgstr "Aanvullende informatie"
+#: template-parts/modules/contactform.php:56
+msgid "Brief description of the project"
+msgstr "Korte omschrijving van het project"
 
-#: template-parts/modules/contactform.php:59
+#: template-parts/modules/contactform.php:58
+msgid "Please enter a brief description of the project"
+msgstr "Geef een korte omschrijving van het project"
+
+#: template-parts/modules/contactform.php:76
 msgid "Discuss project"
 msgstr "Project bespreken"
 
@@ -308,31 +314,61 @@ msgstr "Klant"
 
 #: template-parts/modules/header-case.php:24
 msgid "Deliverables"
-msgstr "Deliverables"
+msgstr "Opgeleverd"
 
-#: template-parts/modules/header-case.php:32
-msgid "Year"
-msgstr "Jaar"
+#: template-parts/modules/online_presentation.php:65
+msgid "View presentation"
+msgstr "Presentatie bekijken"
 
-#: template-parts/modules/projectgrid.php:48
+#: template-parts/modules/popunder.php:8
+msgid "Close window"
+msgstr "Venster sluiten"
+
+#: template-parts/modules/projectgrid.php:45
 msgid "Show more cases"
 msgstr "Toon meer cases"
 
-#: template-parts/sections/block-cta_presentation.php:13
+#: template-parts/sections/block-cta_leadform.php:26
+#: template-parts/sections/block-cta_leadform.php:30
+msgid "Full name"
+msgstr "Volledige naam"
+
+#: template-parts/sections/block-cta_leadform.php:32
+msgid "Please enter your full name"
+msgstr "Voer je volledige naam in"
+
+#: template-parts/sections/block-cta_leadform.php:71
+msgid "Free advice"
+msgstr "Vrijblijvend advies"
+
+#: template-parts/sections/block-cta_presentation.php:15
 msgid "Schedule a no-obligation conversation"
 msgstr "Plan een vrijblijvend gesprek"
 
-#: template-parts/sections/block-cta_presentation.php:17
+#: template-parts/sections/block-cta_presentation.php:19
 msgid "All information summarized"
 msgstr "Alles dat je moet weten"
 
-#: template-parts/sections/block-cta_presentation.php:22
+#: template-parts/sections/block-cta_presentation.php:24
 msgid "Online presentation"
 msgstr "Online presentatie"
 
-#: template-parts/sections/block-cta_presentation.php:27
-msgid "Download the presentation (PDF)"
-msgstr "Download de presentatie (PDF)"
+#: template-parts/sections/block-cta_presentation.php:29
+msgid "Download the pricelist (PDF)"
+msgstr "Download de prijslijst (PDF)"
+
+#: template-parts/sections/block-cta_presentation.php:39
+#: template-parts/shortcodes/blog-download.php:48
+msgid "Close popup"
+msgstr "Venster sluiten"
+
+#: template-parts/sections/block-cta_presentation.php:60
+msgid "Request pricelist"
+msgstr "Prijslijst aanvragen"
+
+#: template-parts/shortcodes/blog-download.php:58
+msgid "Leave your details and we will send you the download."
+msgstr "Laat je gegevens achter en we sturen je de download."
 
 #. Theme Name of the plugin/theme
 #. Author of the plugin/theme
@@ -352,6 +388,56 @@ msgstr ""
 "Officieel Visia Media WordPress thema. Ontworpen door Victor Strouken, "
 "ontwikkeld door Maarten Emmerink."
 
+#. Template Name of the plugin/theme
+msgid "Link in bio"
+msgstr "Link in bio"
+
+#~ msgid "paddingLeft"
+#~ msgstr "paddingLeft"
+
+#~ msgid "borderBottomWidth"
+#~ msgstr "borderBottomWidth"
+
+#~ msgid "borderTopWidth"
+#~ msgstr "borderTopWidth"
+
+#~ msgid "borderLeftWidth"
+#~ msgstr "borderLeftWidth"
+
+#~ msgid "borderRightWidth"
+#~ msgstr "borderRightWidth"
+
+#~ msgid "paddingTop"
+#~ msgstr "paddingTop"
+
+#~ msgid "paddingBottom"
+#~ msgstr "paddingBottom"
+
+#~ msgid "paddingRight"
+#~ msgstr "paddingRight"
+
+#~ msgid "fontSize"
+#~ msgstr "fontSize"
+
+#~ msgid "404: Not Available"
+#~ msgstr "404: Niet beschikbaar"
+
+#~ msgid ""
+#~ "This page has disappeared into digital nothingness. But don't stress, "
+#~ "here's a way back to the start."
+#~ msgstr ""
+#~ "Deze pagina is verdwenen in het digitale niets. Maar niet getreurd, hier "
+#~ "is een weg terug naar de start."
+
+#~ msgid "Back to home"
+#~ msgstr "Naar home"
+
+#~ msgid "Additional information"
+#~ msgstr "Aanvullende informatie"
+
+#~ msgid "Year"
+#~ msgstr "Jaar"
+
 #~ msgid "Published on"
 #~ msgstr "Geplaatst op"
 
@@ -366,9 +452,6 @@ msgstr ""
 
 #~ msgid "All"
 #~ msgstr "Alle"
-
-#~ msgid "Full name"
-#~ msgstr "Volledige naam"
 
 #~ msgid "View case"
 #~ msgstr "Case bekijken"

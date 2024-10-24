@@ -1,15 +1,15 @@
 <!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
-
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="apple-mobile-web-app-title" content="<?php esc_attr_e(get_bloginfo('name')); ?>">
     <meta name="application-name" content="<?php esc_attr_e(get_bloginfo('name')); ?>">
-    <meta name="msapplication-TileColor" content="#ea2c76">
-    <meta name="msapplication-TileImage" content="<?php bloginfo('template_directory');?>/assets/favicon/mstile-144x144.png">
-    <meta name="msapplication-config" content="<?php bloginfo('template_directory');?>/assets/favicon/browserconfig.xml">
     <meta name="theme-color" content="#1b2843">
+
+    <!-- Google Tag Manager -->
+    <script>!function(){"use strict";function l(e){for(var t=e,r=0,n=document.cookie.split(";");r<n.length;r++){var o=n[r].split("=");if(o[0].trim()===t)return o[1]}}function s(e){return localStorage.getItem(e)}function u(e){return window[e]}function d(e,t){e=document.querySelector(e);return t?null==e?void 0:e.getAttribute(t):null==e?void 0:e.textContent}var e=window,t=document,r="script",n="dataLayer",o="MCTK73C9",a="https://gtm.visia.media",i="https://load.gtm.visia.media",c="pvyhpfqo",E="stapeUserId",I="",v="",g=!1;try{var g=!!E&&(m=navigator.userAgent,!!(m=new RegExp("Version/([0-9._]+)(.*Mobile)?.*Safari.*").exec(m)))&&16.4<=parseFloat(m[1]),A="stapeUserId"===E,f=g&&!A?function(e,t,r){void 0===t&&(t="");var n={cookie:l,localStorage:s,jsVariable:u,cssSelector:d},t=Array.isArray(t)?t:[t];if(e&&n[e])for(var o=n[e],a=0,i=t;a<i.length;a++){var c=i[a],c=r?o(c,r):o(c);if(c)return c}else console.warn("invalid uid source",e)}(E,I,v):void 0;g=g&&(!!f||A)}catch(e){console.error(e)}var m=e,E=(m[n]=m[n]||[],m[n].push({"gtm.start":(new Date).getTime(),event:"gtm.js"}),t.getElementsByTagName(r)[0]),I="dataLayer"===n?"":"&l="+n,v=f?"&bi="+encodeURIComponent(f):"",A=t.createElement(r),e=g?"kp"+c:c,n=!g&&i?i:a;A.async=!0,A.src=n+"/"+e+".js?st="+o+I+v,null!=(f=E.parentNode)&&f.insertBefore(A,E)}();</script>
+    <!-- End Google Tag Manager -->
 
     <?php wp_head(); ?>
 
@@ -26,6 +26,10 @@
 </head>
 
 <body <?php body_class(); ?>>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://load.gtm.visia.media/ns.html?id=GTM-MCTK73C9" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <div class="loader js-loader">
     <i class="loader__spinner fa-duotone fa-spinner-third fa-spin" style="--fa-secondary-opacity: 0.25;"></i>
@@ -51,7 +55,7 @@
 <div class="main-menu-bg-reveal js-main-menu-bg-reveal"></div>
 <div class="main-menu-bg-reveal-filler js-main-menu-bg-reveal-filler"></div>
 
-<nav class="main-menu js-main-menu js-is-inactive" aria-label="<?php esc_attr_e(__('Main menu', 'visia')); ?>">
+<nav class="main-menu js-main-menu js-is-inactive" aria-label="<?php esc_attr_e(__('Main menu', 'visia')); ?>" aria-hidden="true">
     <div class="main-menu__inner js-main-menu-inner">
         <div class="css-max-text-width">
             <div class="main-menu__container">
@@ -120,11 +124,11 @@
 
                                     <ul class="main-menu__container__side__block__list">
                                         <?php if($contactPhonePretty && $contactPhoneFormat) {
-                                            echo '<li class="main-menu__container__side__block__list__item"><a href="tel:'.$contactPhoneFormat.'" data-blobity-magnetic="false">'.$contactPhonePretty.'</a></li>';
+                                            echo '<li class="main-menu__container__side__block__list__item"><a target="_blank" href="tel:'.$contactPhoneFormat.'" data-blobity-magnetic="false">'.$contactPhonePretty.'</a></li>';
                                         }
 
                                         if($contactEmail) {
-	                                        echo '<li class="main-menu__container__side__block__list__item"><a href="mailto:'.$contactEmail.'" data-blobity-magnetic="false">'.$contactEmail.'</a></li>';
+	                                        echo '<li class="main-menu__container__side__block__list__item"><a target="_blank" href="mailto:'.$contactEmail.'" data-blobity-magnetic="false">'.$contactEmail.'</a></li>';
                                         } ?>
                                     </ul>
                                 </div>
@@ -159,4 +163,6 @@
 
 <div class="js-swap-container">
 
-<?php get_template_part('template-parts/modules/header', get_post_type(get_queried_object_id())); ?>
+<?php if(!is_archive()) {
+	get_template_part('template-parts/modules/header', get_post_type(get_queried_object_id()));
+} ?>

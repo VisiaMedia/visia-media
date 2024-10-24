@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, dayjs, getSiblings){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings){
     if(document.querySelector('.js-recent-posts')) {
         const recentPostsSections = gsap.utils.toArray('.js-recent-posts');
 
@@ -17,17 +17,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
                 }
 
                 /* Add animation for showing items */
-                gsap.set(recentPostItems, {
-                    autoAlpha:0,
-                    y: "1.5rem",
-                    immediateRender: true
-                }, 0);
-
-                timeline.to(recentPostItems, {
-                    autoAlpha: 1,
-                    y: "0rem",
-                    stagger: .2
-                });
+                tlFadeIn(recentPostsSection.querySelectorAll('.js-recent-posts-item'), timeline);
             }
 
             /* Execute once */
@@ -66,12 +56,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
 
                     /* Event listeners */
                     recentPostItem.addEventListener("mouseenter", function() {
-                        gsap.to(recentPostItem, {
-                            borderBottomColor: () => {
-                                return getComputedStyle(document.documentElement).getPropertyValue('--plain-text-color');
-                            }
-                        })
-
                         gsap.to(recentPostItemTitle, {
                             x: "0.5em"
                         });

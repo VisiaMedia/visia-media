@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="159.223.217.182" id="9ccdef19-979c-4ab2-b49d-5898112333b9" port="22" nameFormat="DESCRIPTIVE" username="visia-staging" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>

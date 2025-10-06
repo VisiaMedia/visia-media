@@ -1,133 +1,87 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, InfiniteScroll){
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, InfiniteScroll) {
     const blogHome = document.querySelector('.js-blog-home');
 
-    if(blogHome) {
-        let timeline = tlSetup(blogHome, blogHome.dataset.stCount);
+    if (!blogHome) return;
 
+    let timeline = tlSetup(blogHome, blogHome.dataset.stCount);
 
-        /* Build timeline */
-        let buildTimeline = function() {
-            /* Add animation for title reveal */
-            if(blogHome.querySelector('.js-blog-home-title')) {
-                tlFadeIn(blogHome.querySelector('.js-blog-home-title'), timeline)
-            }
+    /* Build timeline */
+    const buildTimeline = () => {
+        const title = blogHome.querySelector('.js-blog-home-title');
+        const headline = blogHome.querySelector('.js-blog-home-headline');
+        const postList = blogHome.querySelector('.js-blog-home-list');
 
-            /* Add animation for headline reveal */
-            if(blogHome.querySelector('.js-blog-home-headline')) {
-                tlTextReveal(blogHome.querySelector('.js-blog-home-headline'), timeline);
-            }
+        /* Add animation for title, headline and posts reveal */
+        if (title) tlFadeIn(title, timeline);
+        if (headline) tlTextReveal(headline, timeline);
+        if (postList) tlFadeIn(postList, timeline);
+    };
 
-            /* Add animation for posts reveal */
-            if(blogHome.querySelector('.js-blog-home-list')) {
-                tlFadeIn(blogHome.querySelector('.js-blog-home-list'), timeline)
-            }
+    /* Execute once */
+    buildTimeline();
+
+    /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+    callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
+
+    /* Animate individual items */
+    const blogHomeItems = blogHome.querySelectorAll('.js-blog-home-item');
+
+    /* Setup function for individual items */
+    const setupHomeItems = (item, isNew) => {
+        if (isNew) stFadeIn(item, blogHome.dataset.stCount);
+
+        /* Set "from-now" date */
+        const timeElem = item.querySelector('.js-blog-home-from-now');
+        if (timeElem) {
+            const postDate = timeElem.getAttribute('datetime');
+            timeElem.textContent = dayjs(postDate).fromNow();
         }
 
-        /* Execute once */
-        buildTimeline();
+        /* Set pointer events for thumbnail */
+        const blogItemLink = item.querySelector('.js-blog-home-link');
+        const blogItemThumbImg = item.querySelector('.js-blog-home-thumb-img');
+        if (window.matchMedia("(pointer: fine)").matches && blogItemLink && blogItemThumbImg) {
+            blogItemLink.addEventListener("mouseenter", () => gsap.to(blogItemThumbImg, { scale: 1.1 }));
+            blogItemLink.addEventListener("mouseleave", () => gsap.to(blogItemThumbImg, { scale: 1 }));
+        }
+    };
 
+    /* Setup initial items */
+    blogHomeItems.forEach(item => setupHomeItems(item, false));
 
-        /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-        callAfterResize(function() {
-            buildTlAfterResize(timeline, buildTimeline);
+    /* Setup Infinite Scroll */
+    const infiniteScrollContainer = blogHome.querySelector('.js-infinite-scroll-container');
+    if (infiniteScrollContainer) {
+        const infScroll = new InfiniteScroll(infiniteScrollContainer, {
+            path: '.js-nav-next',
+            append: '.js-blog-home-item',
+            history: false,
+            status: '.js-blog-home-status'
         });
 
-
-
-
-        /* Animate individual items */
-        const blogHomeItems = blogHome.querySelectorAll('.js-blog-home-item');
-
-        /* Setup function for individual items */
-        function setupHomeItems(item, isnew) {
-            /* Add reveal animation for new items */
-            if(isnew) {
-                stFadeIn(item, blogHome.dataset.stCount);
-            }
-
-
-            /* Set "from-now" date */
-            if(item.querySelector('.js-blog-home-from-now')) {
-                let timeElem = item.querySelector('.js-blog-home-from-now'),
-                    postDate = timeElem.getAttribute('datetime'),
-                    fromNow = dayjs(postDate).fromNow();
-
-                /* Set text for date element */
-                timeElem.textContent = fromNow;
-            }
-
-
-            /* Set pointer events for thumbnail */
-            if(window.matchMedia("(pointer: fine)").matches) {
-                if(item.querySelector('.js-blog-home-thumb-img')) {
-                    let blogItemLink = item.querySelector('.js-blog-home-link'),
-                        blogItemThumbImg = item.querySelector('.js-blog-home-thumb-img');
-
-                    /* Event listeners */
-                    blogItemLink.addEventListener("mouseenter", function() {
-                        gsap.to(blogItemThumbImg, {
-                            scale: 1.1
-                        });
-                    });
-
-                    blogItemLink.addEventListener("mouseleave", function() {
-                        gsap.to(blogItemThumbImg, {
-                            scale: 1
-                        });
-                    });
-                }
-            }
-        }
-
-        /* Setup initial items */
-        blogHomeItems.forEach(blogHomeItem => {
-            setupHomeItems(blogHomeItem, false);
+        /* Init items after appending */
+        infScroll.on('append', (body, path, items) => {
+            items.forEach(item => setupHomeItems(item, true));
+            ScrollTrigger.refresh();
         });
-
-
-
-        /* Setup Infinite Scroll */
-        if(blogHome.querySelector('.js-infinite-scroll-container')) {
-            const infiniteScrollContainer = blogHome.querySelector('.js-infinite-scroll-container');
-            const infScroll = new InfiniteScroll(infiniteScrollContainer, {
-                path: '.js-nav-next',
-                append: '.js-blog-home-item',
-                history: false,
-                status: '.js-blog-home-status'
-            });
-
-            /* Init items after appending */
-            infScroll.on('append', function(body, path, items) {
-                items.forEach(item => {
-                    setupHomeItems(item, true);
-                });
-
-                ScrollTrigger.refresh();
-            });
-        }
     }
 }
-
 
 /* Unload */
 export function unload(gsap, InfiniteScroll) {
-    if(document.querySelector('.js-blog-home')) {
-        const blogHome = document.querySelector('.js-blog-home');
-
-        if(blogHome.querySelector('.js-infinite-scroll-container')) {
-            const infiniteScrollContainer = blogHome.querySelector('.js-infinite-scroll-container');
+    const blogHome = document.querySelector('.js-blog-home');
+    if (blogHome) {
+        const infiniteScrollContainer = blogHome.querySelector('.js-infinite-scroll-container');
+        if (infiniteScrollContainer) {
             const infScroll = InfiniteScroll.data(infiniteScrollContainer);
-
-            /* Destroy the instance */
-            infScroll.destroy();
+            if (infScroll) infScroll.destroy();
         }
     }
 }
-
 
 /* Export init and unload functions */
 export default {
     init,
     unload
-}
+};

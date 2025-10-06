@@ -1,12 +1,14 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, stFadeIn, blobity, Masonry, InfiniteScroll, imagesLoaded){
-    if(document.querySelector('.js-project-grid')) {
-        /* Get all project grid instances as array */
-        const projectGrids = gsap.utils.toArray('.js-project-grid');
+export function init(gsap, ScrollTrigger, stFadeIn, Masonry, InfiniteScroll, imagesLoaded) {
+    const projectGrids = gsap.utils.toArray('.js-project-grid');
 
+    if (projectGrids.length > 0) {
         /* Loop over project grid instances */
         projectGrids.forEach(projectGrid => {
             const projectGridList = projectGrid.querySelector('.js-project-grid-list');
+            const buttonWrapper = projectGrid.querySelector('.js-project-grid-button-wrapper');
+            const initialItems = projectGridList.querySelectorAll('.js-project-grid-item');
+            const mediaQueryFinePointer = window.matchMedia("(pointer: fine)");
 
             /* Setup Masonry for grid layout */
             const masonry = new Masonry(projectGridList, {
@@ -18,34 +20,24 @@ export function init(gsap, ScrollTrigger, stFadeIn, blobity, Masonry, InfiniteSc
                 transitionDuration: 0
             });
 
-            /* Add event listener */
-            masonry.on('layoutComplete', function() {
-                ScrollTrigger.refresh();
+            /* Refresh ScrollTrigger on Masonry layout */
+            masonry.on('layoutComplete', () => {
+                ScrollTrigger.refresh(true);
             });
 
-            /* Add function for laying out Masrony on image load */
+            /* Lay out Masonry when new images load */
             function newImageLoaded() {
                 masonry.layout();
             }
 
-
-            /* Add imagesloaded to InifinteScroll */
+            /* Add imagesLoaded to InfiniteScroll */
             InfiniteScroll.imagesLoaded = imagesLoaded;
-
 
             /* Setup InfiniteScroll */
             const infScroll = new InfiniteScroll(projectGridList, {
                 path: function() {
-                    let returnValue,
-                        pageNumber = this.loadCount + 1;
-
-                    if(pageNumber === 1) {
-                        returnValue = '/case-archive/';
-                    } else {
-                        returnValue = `/case-archive/page/${pageNumber}`;
-                    }
-
-                    return returnValue;
+                    let pageNumber = this.loadCount + 1; // Correct use of 'this'
+                    return pageNumber === 1 ? '/case-archive/' : `/case-archive/page/${pageNumber}`;
                 },
                 checkLastPage: '.js-nav-next',
                 append: '.js-project-grid-item',
@@ -56,131 +48,80 @@ export function init(gsap, ScrollTrigger, stFadeIn, blobity, Masonry, InfiniteSc
                 scrollThreshold: false,
             });
 
-            /* Init items after appending */
-            infScroll.on('append', function(body, path, items) {
-                items.forEach(item => {
-                    setupGridItem(item);
-                });
-
-                ScrollTrigger.refresh();
-
-                masonry.layout();
-            });
-
-
-            /* Init Masonry */
-            masonry.layout();
-
-
-
-            /* Setup function for grid items */
+            /* Set up grid item animations and interactions */
             function setupGridItem(item, isInitial = false) {
                 const itemLink = item.querySelector('.js-project-grid-item-link');
                 const itemVisual = item.querySelector('.js-project-grid-item-visual');
 
-                /* Add event listener for loading image and recalculating ScrollTrigger + Masrony */
+                /* Add event listener for loading image */
                 itemVisual.addEventListener('load', newImageLoaded);
 
                 /* Initially hide elements */
-                gsap.set(item, {
-                    autoAlpha:0,
-                    y: "1.5rem"
+                gsap.set(item, { autoAlpha: 0, y: "1.5rem" });
+
+                /* Fade-in animation */
+                gsap.to(item, {
+                    scrollTrigger: {
+                        trigger: item,
+                        start: "top center",
+                        end: "top top",
+                        once: true,
+                        refreshPriority: projectGrid.dataset.stCount
+                    },
+                    autoAlpha: 1,
+                    y: "0rem",
+                    onStart: () => item.style.willChange = 'transform, opacity',
+                    onComplete: () => {
+                        item.style.willChange = 'auto';
+                        gsap.set(item, { clearProps: "transform" });
+                    }
                 });
 
-                if(isInitial) {
-                    gsap.to(item, {
-                        scrollTrigger: {
-                            trigger: item,
-                            start: "top center",
-                            end: "top top",
-                            once: true,
-                            refreshPriority: projectGrid.dataset.stCount
-                        },
-                        autoAlpha: 1,
-                        y: "0rem",
-                        onStart:() => {
-                            item.style.willChange = 'transform, opacity';
-                        },
-                        onComplete:() => {
-                            item.style.willChange = 'auto';
-
-                            gsap.set(item, {
-                                clearProps: "transform",
-                            });
-                        },
-                    });
-                } else {
-                    gsap.to(item, {
-                        autoAlpha: 1,
-                        y: "0rem",
-                        onStart:() => {
-                            item.style.willChange = 'transform, opacity';
-                        },
-                        onComplete:() => {
-                            item.style.willChange = 'auto';
-
-                            gsap.set(item, {
-                                clearProps: "transform",
-                            });
-                        },
-                    });
-                }
-
-
-                /* Add logic for hovering */
-                if(window.matchMedia("(pointer: fine)").matches) {
-                    itemLink.addEventListener("mouseenter", function() {
-                        gsap.to(itemVisual, {
-                            scale: 1.1
-                        });
-                    });
-
-                    itemLink.addEventListener("mouseleave", function() {
-                        gsap.to(itemVisual, {
-                            scale: 1
-                        });
-                    });
+                /* Hover effect for desktop devices */
+                if (mediaQueryFinePointer.matches) {
+                    itemLink.addEventListener("mouseenter", () => gsap.to(itemVisual, { scale: 1.1 }));
+                    itemLink.addEventListener("mouseleave", () => gsap.to(itemVisual, { scale: 1 }));
                 }
             }
 
-            /* Set up initial items */
-            const initialItems = projectGridList.querySelectorAll('.js-project-grid-item');
-
-            initialItems.forEach(initialItem => {
-                setupGridItem(initialItem, true);
+            /* Handle appending new items via InfiniteScroll */
+            infScroll.on('append', (body, path, items) => {
+                items.forEach(item => setupGridItem(item));
+                ScrollTrigger.refresh();
+                masonry.layout();
             });
 
+            /* Initialize Masonry layout and grid items */
+            masonry.layout();
+            initialItems.forEach(item => setupGridItem(item, true));
+
             /* Fade in button on scroll */
-            if(projectGrid.querySelector('.js-project-grid-button-wrapper')) {
-                stFadeIn(projectGrid.querySelector('.js-project-grid-button-wrapper'), projectGrid.dataset.stCount);
+            if (buttonWrapper) {
+                stFadeIn(buttonWrapper, projectGrid.dataset.stCount);
             }
         });
     }
 }
-
 
 /* Unload */
 export function unload(gsap, Masonry, InfiniteScroll) {
-    if(document.querySelector('.js-project-grid')) {
-        const projectGrids = gsap.utils.toArray('.js-project-grid');
+    const projectGrids = gsap.utils.toArray('.js-project-grid');
 
-        projectGrids.forEach(projectGrid => {
-            const projectGridList = projectGrid.querySelector('.js-project-grid-list');
-            const masonry = Masonry.data(projectGridList);
-            const infScroll = InfiniteScroll.data(projectGridList)
+    projectGrids.forEach(projectGrid => {
+        const projectGridList = projectGrid.querySelector('.js-project-grid-list');
+        const masonry = Masonry.data(projectGridList);
+        const infScroll = InfiniteScroll.data(projectGridList);
 
-            /* Destroy Masonry */
-            masonry.destroy();
+        /* Destroy Masonry */
+        masonry.destroy();
 
-            /* Destroy Infinite Scroll */
-            infScroll.destroy();
-        });
-    }
+        /* Destroy Infinite Scroll */
+        infScroll.destroy();
+    });
 }
-
 
 /* Export init and unload functions */
 export default {
     init,
     unload
-}
+};

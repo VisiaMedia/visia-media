@@ -1,34 +1,30 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
-    if(document.querySelector('.js-team')) {
-        const teamSections = gsap.utils.toArray('.js-team');
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+    const teamSections = gsap.utils.toArray('.js-team');
 
+    if (teamSections.length > 0) {
         /* Loop over instances */
         teamSections.forEach(teamSection => {
+            const verticalTextReveal = teamSection.querySelector('.js-team-vertical-text-reveal');
+            const teamMembers = teamSection.querySelectorAll('.js-team-member');
+
+            /* Setup timeline */
             let timeline = tlSetup(teamSection, teamSection.dataset.stCount);
 
-
             /* Build timeline */
-            let buildTimeline = function() {
-                /* Add animation for headline reveal */
-                if(teamSection.querySelector('.js-team-vertical-text-reveal')) {
-                    tlTextReveal(teamSection.querySelector('.js-team-vertical-text-reveal'), timeline);
+            const buildTimeline = () => {
+                if (verticalTextReveal) {
+                    tlTextReveal(verticalTextReveal, timeline);
                 }
-
-                /* Add animation for item reveal */
-                if(teamSection.querySelector('.js-team-member')) {
-                    tlFadeIn(teamSection.querySelectorAll('.js-team-member'), timeline);
+                if (teamMembers.length > 0) {
+                    tlFadeIn(teamMembers, timeline);
                 }
-            }
+            };
 
-            /* Execute once */
-            buildTimeline();
+            buildTimeline(); // Execute once
 
-
-            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
-                buildTlAfterResize(timeline, buildTimeline);
-            });
+            /* Clear and rebuild timeline on resize */
+            callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
         });
     }
 }
@@ -36,4 +32,4 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
 /* Export init function */
 export default {
     init
-}
+};

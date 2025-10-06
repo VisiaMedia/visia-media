@@ -1,34 +1,31 @@
-export function init(getCookie){
+export function init(getCookie) {
     /* Replace presentation placeholders */
-    if(document.querySelector('.js-presentation-first-name-placeholder') || document.querySelector('.js-presentation-business-name-placeholder')) {
-        /* Function for wrapping each word in span */
-        function wrapWords(str, tmpl) {
-            return str.replace(/\w+/g, tmpl || '<span class="css-presentation-placeholder">$&</span>');
-        }
+    const firstNamePlaceholders = document.querySelectorAll('.js-presentation-first-name-placeholder');
+    const businessNamePlaceholders = document.querySelectorAll('.js-presentation-business-name-placeholder');
 
-        /* First name */
-        if(document.querySelector('.js-presentation-first-name-placeholder') && getCookie('presentationFirstName')) {
-            const placeholders = document.querySelectorAll('.js-presentation-first-name-placeholder');
+    /* Function for wrapping each word in span */
+    const wrapWords = (str, tmpl) => {
+        return str.replace(/\w+/g, tmpl || '<span class="css-presentation-placeholder">$&</span>');
+    };
 
-            placeholders.forEach(placeholder => {
-                const tempWrapper = document.createElement('div');
-                tempWrapper.innerHTML = wrapWords(getCookie('presentationFirstName'));
+    /* First name replacement */
+    const firstName = getCookie('presentationFirstName');
+    if (firstName && firstNamePlaceholders.length > 0) {
+        firstNamePlaceholders.forEach(placeholder => {
+            const tempWrapper = document.createElement('div');
+            tempWrapper.innerHTML = wrapWords(firstName);
+            placeholder.replaceWith(...tempWrapper.childNodes);
+        });
+    }
 
-                placeholder.replaceWith(...tempWrapper.childNodes);
-            });
-        }
-
-        /* Business name */
-        if(document.querySelector('.js-presentation-business-name-placeholder') && getCookie('presentationBusiness')) {
-            const placeholders = document.querySelectorAll('.js-presentation-business-name-placeholder');
-
-            placeholders.forEach(placeholder => {
-                const tempWrapper = document.createElement('div');
-                tempWrapper.innerHTML = wrapWords(getCookie('presentationBusiness'));
-
-                placeholder.replaceWith(...tempWrapper.childNodes);
-            });
-        }
+    /* Business name replacement */
+    const businessName = getCookie('presentationBusiness');
+    if (businessName && businessNamePlaceholders.length > 0) {
+        businessNamePlaceholders.forEach(placeholder => {
+            const tempWrapper = document.createElement('div');
+            tempWrapper.innerHTML = wrapWords(businessName);
+            placeholder.replaceWith(...tempWrapper.childNodes);
+        });
     }
 }
 

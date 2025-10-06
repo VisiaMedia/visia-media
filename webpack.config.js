@@ -1,77 +1,122 @@
 const path = require("path");
-const webpack = require("webpack");
-const CompressionPlugin = require("compression-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
 module.exports = {
     mode: 'production',
-    plugins: [
-        new CompressionPlugin(),
-        new BundleAnalyzerPlugin(),
-        new CleanWebpackPlugin({
-            cleanOnceBeforeBuildPatterns: ['**/*', '!*.css'],
-            cleanAfterEveryBuildPatterns: ['!*.css']
-        })
-    ],
-    performance: {
-        hints: false,
-        maxEntrypointSize: 512000,
-        maxAssetSize: 512000
-    },
     entry: {
-        'app': './assets/js/app.js'
+        app: './assets/js/app.js'
     },
-    devtool: false,
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].js', // Main bundle name
+        chunkFilename: '[name].[contenthash:8].js', // Unique name for async chunks
+    },
+    devtool: false, // Disable source maps in production
+    performance: {
+        hints: 'warning',
+        maxEntrypointSize: 400000, // Limiet voor initiële laadgrootte
+        maxAssetSize: 300000 // Max asset grootte
+    },
     optimization: {
         minimize: true,
         minimizer: [new TerserPlugin({
+            parallel: true, // Parallelle processen inschakelen
             terserOptions: {
+                compress: {
+                    drop_console: true, // Console.logs verwijderen voor productie
+                    drop_debugger: true, // Debuggers verwijderen
+                    dead_code: true, // Dode code verwijderen
+                    passes: 2, // Optimalisatie passes verhogen voor betere compressie
+                },
+                mangle: true, // Variabelen en functie namen verkleinen
                 format: {
-                    comments: false,
+                    comments: false // Alle opmerkingen verwijderen
                 },
             },
-            extractComments: false
+            extractComments: false,
         })],
         splitChunks: {
-            chunks: "all",
+            chunks: 'async',
+            minSize: 20000,
+            maxSize: 350000, // verhoog de chunksize limiet
             cacheGroups: {
-                common: {
-                    test: /[\\/]node_modules[\\/]/,
-                    priority: -5,
-                    reuseExistingChunk: true,
-                    chunks: "initial",
-                    name: "vendors",
-                    minSize: 0,
-                    maxSize: 175000,
+                blobity: {
+                    test: /[\\/]node_modules[\\/](blobity)[\\/]/,
+                    name: 'blobity',
+                    priority: 20,
+                    chunks: 'async'
                 },
-                default: {
-                    minChunks: 2,
-                    priority: -20,
-                    reuseExistingChunk: true,
-                    maxSize: 175000,
+                dayjs: {
+                    test: /[\\/]node_modules[\\/](dayjs)[\\/]/,
+                    name: 'dayjs',
+                    priority: 20,
+                    chunks: 'async'
                 },
-                defaultVendors: false,
+                infiniteScroll: {
+                    test: /[\\/]node_modules[\\/](infinite-scroll)[\\/]/,
+                    name: 'infinite-scroll',
+                    priority: 20,
+                    chunks: 'async'
+                },
+                masonry: {
+                    test: /[\\/]node_modules[\\/](masonry-layout)[\\/]/,
+                    name: 'masonry',
+                    priority: 20,
+                    chunks: 'async'
+                },
+                imagesLoaded: {
+                    test: /[\\/]node_modules[\\/](imagesloaded)[\\/]/,
+                    name: 'imagesloaded',
+                    priority: 20,
+                    chunks: 'async'
+                },
+                draggableInertia: {
+                    test: /[\\/]node_modules[\\/](gsap)[\\/](Draggable|InertiaPlugin)\.js/,
+                    name: 'draggable-inertia',
+                    priority: 25,
+                    chunks: 'async'
+                },
                 gsap: {
-                    test: /[\\/]node_modules[\\/](gsap)[\\/]/,
+                    test: /[\\/]node_modules[\\/](gsap)[\\/](?!Draggable|InertiaPlugin)/,
                     name: 'gsap',
-                    chunks: "all",
+                    enforce: true,
                     priority: 10,
-                    maxSize: 175000,
+                    chunks: 'all'
                 },
                 swup: {
                     test: /[\\/]node_modules[\\/](swup|@swup)[\\/]/,
                     name: 'swup',
-                    chunks: "all",
+                    enforce: true,
                     priority: 10,
-                    maxSize: 175000,
+                    chunks: 'all'
                 }
             }
         }
     },
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: '[name].js'
-    }
+    module: {
+        rules: [
+            {
+                test: /\.(png|jpg|gif|svg|woff|woff2|eot|ttf|otf)$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192,
+                            name: '[name].[hash:7].[ext]',
+                            outputPath: 'assets',
+                        },
+                    },
+                ],
+            },
+        ],
+    },
+    plugins: [
+        new CleanWebpackPlugin({
+            cleanOnceBeforeBuildPatterns: ['**/*', '!*.css'],
+            cleanAfterEveryBuildPatterns: ['!*.css']
+        }),
+        new BundleAnalyzerPlugin() // Voor analysedoeleinden
+    ],
 };

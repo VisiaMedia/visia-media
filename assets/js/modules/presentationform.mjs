@@ -1,73 +1,54 @@
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
-    if(document.querySelector('.js-presentation-form')) {
-        const presentationForms = gsap.utils.toArray('.js-presentation-form');
+/* Initialize */
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+    const presentationForms = gsap.utils.toArray('.js-presentation-form');
 
-        /* Loop over instances */
+    if (presentationForms.length > 0) {
         presentationForms.forEach(presentationForm => {
             const presentationFormSelf = presentationForm.querySelector('.js-presentation-form-self');
+            const firstNameInput = presentationForm.querySelector('.js-presentation-form-first-name');
+            const businessInput = presentationForm.querySelector('.js-presentation-form-business');
 
             /* Intro animations */
-            if(presentationForm.querySelector('.js-presentation-form-intro')) {
-                const presentationFormIntro = presentationForm.querySelector('.js-presentation-form-intro');
+            const presentationFormIntro = presentationForm.querySelector('.js-presentation-form-intro');
+            if (presentationFormIntro) {
+                const verticalTextReveal = presentationForm.querySelector('.js-presentation-form-vertical-text-reveal');
+                let timelineIntro = tlSetup(presentationFormIntro, presentationForm.dataset.stCount);
 
-                /* Setup timeline */
-                let timeline = tlSetup(presentationFormIntro, presentationForm.dataset.stCount);
-
-
-                /* Build timeline */
-                let buildTimeline = function() {
-                    /* Add animation for title reveal */
-                    if(presentationForm.querySelector('.js-presentation-form-vertical-text-reveal')) {
-                        tlTextReveal(presentationForm.querySelector('.js-presentation-form-vertical-text-reveal'), timeline);
+                const buildIntroTimeline = () => {
+                    if (verticalTextReveal) {
+                        tlTextReveal(verticalTextReveal, timelineIntro);
                     }
-                }
+                };
 
-                /* Execute once */
-                buildTimeline();
+                buildIntroTimeline(); // Execute once
 
-
-                /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-                callAfterResize(function() {
-                    buildTlAfterResize(timeline, buildTimeline);
-                });
+                /* Clear and rebuild intro timeline on resize */
+                callAfterResize(() => buildTlAfterResize(timelineIntro, buildIntroTimeline));
             }
-
-
 
             /* Content animations */
-            if(presentationForm.querySelector('.js-presentation-form-content')) {
-                const presentationFormContent = presentationForm.querySelector('.js-presentation-form-content');
+            const presentationFormContent = presentationForm.querySelector('.js-presentation-form-content');
+            if (presentationFormContent) {
+                let timelineContent = tlSetup(presentationFormContent, presentationForm.dataset.stCount);
 
-                /* Setup timeline */
-                let timeline = tlSetup(presentationFormContent, presentationForm.dataset.stCount);
+                const buildContentTimeline = () => {
+                    tlFadeIn(presentationFormSelf, timelineContent);
+                };
 
+                buildContentTimeline(); // Execute once
 
-                /* Build timeline */
-                let buildTimeline = function() {
-                    tlFadeIn(presentationFormSelf, timeline);
-                }
-
-                /* Execute once */
-                buildTimeline();
-
-
-                /* Clear and rebuild timeline on resize */
-                callAfterResize(function() {
-                    buildTlAfterResize(timeline, buildTimeline);
-                });
-
+                /* Clear and rebuild content timeline on resize */
+                callAfterResize(() => buildTlAfterResize(timelineContent, buildContentTimeline));
             }
 
-
-
             /* Submit button behavior (set cookies) */
-            presentationFormSelf.addEventListener("submit", function() {
-                if(presentationForm.querySelector('.js-presentation-form-first-name').value) {
-                    document.cookie = 'presentationFirstName='+presentationForm.querySelector('.js-presentation-form-first-name').value+'; path=/';
+            presentationFormSelf.addEventListener("submit", () => {
+                if (firstNameInput && firstNameInput.value) {
+                    document.cookie = `presentationFirstName=${firstNameInput.value}; path=/`;
                 }
 
-                if(presentationForm.querySelector('.js-presentation-form-business').value) {
-                    document.cookie = 'presentationBusiness='+presentationForm.querySelector('.js-presentation-form-business').value+'; path=/';
+                if (businessInput && businessInput.value) {
+                    document.cookie = `presentationBusiness=${businessInput.value}; path=/`;
                 }
             });
         });

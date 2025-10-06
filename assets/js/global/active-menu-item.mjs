@@ -1,21 +1,21 @@
 /* Initialize */
-export function init(){
-    if(document.querySelector('.js-main-menu-list') && document.querySelector('.js-item-object')) {
-        const menuList = document.querySelector('.js-main-menu-list');
+export function init() {
+    const menuList = document.querySelector('.js-main-menu-list');
+    const itemObject = document.querySelector('.js-item-object');
 
-        /* Check and remove current active item */
-        if(menuList.querySelector('.js-main-menu-item-link-active')) {
-            const menuItemLinkActive = menuList.querySelector('.js-main-menu-item-link-active');
-
-            menuItemLinkActive.classList.remove('js-main-menu-item-link-active');
+    if (menuList && itemObject) {
+        /* Remove current active item */
+        const activeMenuLink = menuList.querySelector('.js-main-menu-item-link-active');
+        if (activeMenuLink) {
+            activeMenuLink.classList.remove('js-main-menu-item-link-active');
         }
 
-        /* Set active item */
-        if(document.querySelector('.js-item-object').dataset.activeMenuItem) {
-            const activeMenuItemID = document.querySelector('.js-item-object').dataset.activeMenuItem;
-
-            if(document.getElementById('menuItem'+activeMenuItemID)) {
-                document.getElementById('menuItem'+activeMenuItemID).classList.add('js-main-menu-item-link-active')
+        /* Set new active item */
+        const activeMenuItemID = itemObject.dataset.activeMenuItem;
+        if (activeMenuItemID) {
+            const newActiveMenuItem = document.getElementById('menuItem' + activeMenuItemID);
+            if (newActiveMenuItem) {
+                newActiveMenuItem.classList.add('js-main-menu-item-link-active');
             }
         }
     }

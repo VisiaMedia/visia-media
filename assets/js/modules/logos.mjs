@@ -1,41 +1,39 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
-    if(document.querySelector('.js-logos')) {
-        const logoGrids = gsap.utils.toArray('.js-logos');
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+    const logoGrids = gsap.utils.toArray('.js-logos');
 
+    if (logoGrids.length > 0) {
         /* Loop over instances */
         logoGrids.forEach(logoGrid => {
             let timeline = tlSetup(logoGrid, logoGrid.dataset.stCount);
 
-
             /* Build timeline */
-            let buildTimeline = function() {
-                /* Add animation for headline reveal */
-                if(logoGrid.querySelector('.js-logos-vertical-text-reveal')) {
-                    tlTextReveal(logoGrid.querySelector('.js-logos-vertical-text-reveal'), timeline);
-                }
+            const buildTimeline = () => {
+                const verticalTextReveal = logoGrid.querySelector('.js-logos-vertical-text-reveal');
+                const logoList = logoGrid.querySelector('.js-logos-list');
+                const buttonWrapper = logoGrid.querySelector('.js-logos-button-wrapper');
 
+                /* Add animation for headline reveal */
+                if (verticalTextReveal) {
+                    tlTextReveal(verticalTextReveal, timeline);
+                }
 
                 /* Add animation for item reveal */
-                if(logoGrid.querySelector('.js-logos-list')) {
-                    tlFadeIn(logoGrid.querySelector('.js-logos-list'), timeline);
+                if (logoList) {
+                    tlFadeIn(logoList, timeline);
                 }
-
 
                 /* Add animation for button reveal */
-                if (logoGrid.querySelector('.js-logos-button-wrapper')) {
-                    tlFadeIn(logoGrid.querySelector('.js-logos-button-wrapper'), timeline);
+                if (buttonWrapper) {
+                    tlFadeIn(buttonWrapper, timeline);
                 }
-            }
+            };
 
             /* Execute once */
             buildTimeline();
 
-
-            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
-                buildTlAfterResize(timeline, buildTimeline);
-            });
+            /* Clear and rebuild timeline on resize */
+            callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
         });
     }
 }

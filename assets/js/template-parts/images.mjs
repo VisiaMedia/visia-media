@@ -1,10 +1,14 @@
-export function init(gsap, stFadeIn){
-    if(document.querySelector('.js-block-images')) {
-        const imageBlocks = document.querySelectorAll('.js-block-images');
+/* Initialize */
+export function init(gsap, stFadeIn) {
+    const imageBlocks = document.querySelectorAll('.js-block-images');
 
+    if (imageBlocks.length > 0) {
         /* Loop over instances */
         imageBlocks.forEach(imageBlock => {
-            stFadeIn(imageBlock.querySelectorAll('.js-item'), imageBlock.dataset.stCount);
+            const items = imageBlock.querySelectorAll('.js-item');
+            if (items.length > 0) {
+                stFadeIn(items, imageBlock.dataset.stCount);
+            }
         });
     }
 }

@@ -2,6 +2,7 @@
   "name": "visia",
   "private": true,
   "version": "1.0.0",
+  "sideEffects": false,
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "clean-webpack-plugin": "^4.0.0",

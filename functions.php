@@ -442,7 +442,7 @@
 function visia_scripts(){
     $distFiles = glob(get_template_directory(). '/dist/*.js');
     $appDeps = array();
-    $gsapCount = $swupCount = $vendorCount = 0;
+    $gsapCount = $swupCount = 0;
 
     foreach($distFiles as $file) {
         $filename = basename($file);
@@ -465,21 +465,13 @@ function visia_scripts(){
 		    } else {
 			    $handle = 'swup-'.$swupCount;
 		    }
-	    } elseif(str_starts_with($filename, 'vendor')) {
-		    $vendorCount++;
-
-		    if($vendorCount == 1) {
-			    $handle = 'vendor';
-		    } else {
-			    $handle = 'vendor-'.$vendorCount;
-		    }
 	    } elseif(str_starts_with($filename, 'app')) {
 		    continue;
         }
 
         /* Register script */
 	    wp_register_script($handle, get_template_directory_uri() .'/dist/'.$filename, null, null, array(
-		        //'strategy'  => 'defer',
+		        'strategy'  => 'defer',
                 'in_footer' => true
         ));
 
@@ -490,28 +482,21 @@ function visia_scripts(){
     }
 
     /* Enqueue app.js with all dependencies */
-	wp_enqueue_script('app', get_template_directory_uri() .'/dist/app.js', $appDeps, null, true);
+	wp_enqueue_script('app', get_template_directory_uri() .'/dist/app.js', $appDeps, null, array(
+        'strategy' => 'defer',
+        'in_footer' => true,
+    ));
 } add_action('wp_enqueue_scripts', 'visia_scripts');
 
 
 
-/* Run a full static export using WP-cron */
-add_action('visia_simply_static_cron', 'ssp_run_static_export_cron');
-/**
- * Run a full static export daily via WP-CRON.
- *
- * @return void
- */
-function ssp_run_static_export_cron() {
-	$simply_static = Simply_Static\Plugin::instance();
-	$simply_static->run_static_export();
-}
-
-
+/* Change Github chunk size */
 add_filter('ssp_github_tree_chunk_size', function( $chunk_size ) {
 	$chunk_size = 250; // default is 500.
 	return $chunk_size;
 });
+
+
 
 /* Enqueue styles */
 function visia_inject_inline_css() {
@@ -532,15 +517,24 @@ function visia_inject_inline_css() {
 	echo '<link rel="stylesheet" id="bundle-css" href="'.site_url('/wp-content/themes/visia/dist/bundle.min.css').'" type="text/css" media="all" />';
 } add_action('wp_head', 'visia_inject_inline_css');
 
-function visia_styles() {
+function visia_dequeue_styles() {
     /* Remove default WP css */
 	wp_dequeue_style('global-styles');
 	wp_dequeue_style('classic-theme-styles');
 	wp_dequeue_style('wp-block-library');
 	wp_dequeue_style('wp-block-library-theme');
+} add_action('wp_enqueue_scripts', 'visia_dequeue_styles');
 
-    //echo '<link rel="stylesheet" id="bundle-css" href="'.site_url('/wp-content/themes/visia/dist/bundle.min.css').'" type="text/css" media="all" />';
-} add_action('wp_enqueue_scripts', 'visia_styles');
+
+
+/* Force remove jquery (after Yoast SEO local added it) */
+function visia_remove_jquery() {
+	if (!is_admin()) {
+		wp_deregister_script('jquery');
+		wp_register_script('jquery', false);
+	}
+}
+add_action('wp_enqueue_scripts', 'visia_remove_jquery');
 
 
 

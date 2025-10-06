@@ -1,58 +1,52 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
-    if(document.querySelector('.js-logo-presentation')) {
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+    if (document.querySelector('.js-logo-presentation')) {
         const logoPresentations = document.querySelectorAll('.js-logo-presentation');
 
         logoPresentations.forEach(logoPresentation => {
-            let timeline = tlSetup(logoPresentation, logoPresentation.dataset.stCount);
+            const title = logoPresentation.querySelector('.js-title');
+            const intro = logoPresentation.querySelector('.js-intro');
+            const items = logoPresentation.querySelectorAll('.js-item');
+            const signs = logoPresentation.querySelectorAll('.js-item-sign');
 
+            let timeline = tlSetup(logoPresentation, logoPresentation.dataset.stCount);
 
             /* Build timeline */
             let buildTimeline = function() {
-                /* Add animation for headline reveal */
-                if(logoPresentation.querySelector('.js-title')) {
-                    tlTextReveal(logoPresentation.querySelector('.js-title'), timeline);
+                /* Animate title */
+                if (title) {
+                    tlTextReveal(title, timeline);
                 }
 
-
-                /* Add animation for text reveal */
-                if(logoPresentation.querySelector('.js-intro')) {
-                    tlFadeIn(logoPresentation.querySelector('.js-intro'), timeline);
+                /* Animate intro */
+                if (intro) {
+                    tlFadeIn(intro, timeline);
                 }
 
-                /* Add animation for item reveal */
-                if(logoPresentation.querySelector('.js-item')) {
-                    const items = logoPresentation.querySelectorAll('.js-item');
-
-                    gsap.set(items, {
-                        autoAlpha:0
-                    });
+                /* Animate items */
+                if (items.length > 0) {
+                    gsap.set(items, { autoAlpha: 0 });
 
                     timeline.to(items, {
-                        autoAlpha:1,
-                        stagger: .2
+                        autoAlpha: 1,
+                        stagger: 0.2
                     });
                 }
 
-                /* Fade in signs */
-                if(logoPresentation.querySelector('.js-item-sign')) {
-                    const signs = logoPresentation.querySelectorAll('.js-item-sign');
-
-                    gsap.set(signs, {
-                        autoAlpha:0
-                    });
+                /* Animate signs */
+                if (signs.length > 0) {
+                    gsap.set(signs, { autoAlpha: 0 });
 
                     timeline.to(signs, {
-                        autoAlpha:1
+                        autoAlpha: 1
                     });
                 }
-            }
+            };
 
             /* Execute once */
             buildTimeline();
 
-
-            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
+            /* Clear and rebuild timeline on resize */
             callAfterResize(function() {
                 buildTlAfterResize(timeline, buildTimeline);
             });
@@ -63,4 +57,4 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
 /* Export init function */
 export default {
     init
-}
+};

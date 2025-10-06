@@ -1,23 +1,22 @@
 /* Initialize */
-export function init(gsap, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn){
-    if(document.querySelector('.js-link-in-bio')) {
-        const linkInBio = document.querySelector('.js-link-in-bio');
+export function init(gsap, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn) {
+    const linkInBio = document.querySelector('.js-link-in-bio');
+
+    if (linkInBio) {
         let timeline = tlSetup(linkInBio, linkInBio.dataset.stCount);
 
         /* Build timeline */
-        let buildTimeline = function() {
-            /* Add animation for item reveal */
-            if(linkInBio.querySelector('.js-item')) {
-                tlFadeIn(linkInBio.querySelectorAll('.js-item'), timeline);
+        const buildTimeline = () => {
+            const items = linkInBio.querySelectorAll('.js-item');
+            if (items.length > 0) {
+                tlFadeIn(items, timeline);
             }
-        }
+        };
 
-        /* Execute once */
-        buildTimeline();
+        buildTimeline(); // Execute once
 
-
-        /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-        callAfterResize(function() {
+        /* Clear and rebuild timeline on resize */
+        callAfterResize(() => {
             buildTlAfterResize(timeline, buildTimeline);
         });
     }

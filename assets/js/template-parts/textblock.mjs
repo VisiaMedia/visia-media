@@ -1,33 +1,30 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
-    if(document.querySelector('.js-textblock')) {
-        const textblocks = gsap.utils.toArray('.js-textblock');
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+    const textblocks = gsap.utils.toArray('.js-textblock');
 
+    if (textblocks.length > 0) {
         /* Loop over instances */
         textblocks.forEach(textblock => {
+            const textblockTitle = textblock.querySelector('.js-textblock-title');
+            const textblockText = textblock.querySelector('.js-textblock-text');
             let timeline = tlSetup(textblock, textblock.dataset.stCount);
 
-
             /* Build timeline */
-            let buildTimeline = function() {
-                /* Add animation for headline reveal */
-                if(textblock.querySelector('.js-textblock-title')) {
-                    tlTextReveal(textblock.querySelector('.js-textblock-title'), timeline);
+            const buildTimeline = function() {
+                if (textblockTitle) {
+                    tlTextReveal(textblockTitle, timeline);
                 }
 
-
-                /* Add animation for item reveal */
-                if(textblock.querySelector('.js-textblock-text')) {
-                    tlFadeIn(textblock.querySelector('.js-textblock-text'), timeline);
+                if (textblockText) {
+                    tlFadeIn(textblockText, timeline);
                 }
-            }
+            };
 
             /* Execute once */
             buildTimeline();
 
-
             /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
+            callAfterResize(() => {
                 buildTlAfterResize(timeline, buildTimeline);
             });
         });

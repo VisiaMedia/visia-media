@@ -1,37 +1,27 @@
 /* Initialize */
-export function init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
-    if(document.querySelector('.js-cta-streamer')) {
-        const ctaStreamers = document.querySelectorAll('.js-cta-streamer');
+export function init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+    const ctaStreamers = document.querySelectorAll('.js-cta-streamer');
 
+    if (ctaStreamers.length > 0) {
         /* Loop over instances */
         ctaStreamers.forEach(ctaStreamer => {
             const ctaStreamerInner = ctaStreamer.querySelector('.js-cta-streamer-inner');
+            const title = ctaStreamer.querySelector('.js-cta-streamer-title');
+            const buttonWrapper = ctaStreamer.querySelector('.js-cta-streamer-button-wrapper');
 
             /* Setup timeline */
             let timeline = tlSetup(ctaStreamerInner, ctaStreamer.dataset.stCount);
 
-
             /* Build timeline */
-            let buildTimeline = function() {
-                /* Add animation for title reveal */
-                if(ctaStreamer.querySelector('.js-cta-streamer-title')) {
-                    tlTextReveal(ctaStreamer.querySelector('.js-cta-streamer-title'), timeline);
-                }
+            const buildTimeline = () => {
+                if (title) tlTextReveal(title, timeline);
+                if (buttonWrapper) tlFadeIn(buttonWrapper, timeline);
+            };
 
-                /* Add animation for button reveal */
-                if(ctaStreamer.querySelector('.js-cta-streamer-button-wrapper')) {
-                    tlFadeIn(ctaStreamer.querySelector('.js-cta-streamer-button-wrapper'), timeline);
-                }
-            }
+            buildTimeline(); // Execute once
 
-            /* Execute once */
-            buildTimeline();
-
-
-            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
-                buildTlAfterResize(timeline, buildTimeline);
-            });
+            /* Clear and rebuild timeline on resize */
+            callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
         });
     }
 }

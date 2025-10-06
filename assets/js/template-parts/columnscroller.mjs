@@ -1,20 +1,14 @@
 /* Initialize */
-import {callAfterResize} from "../helpers/functions.mjs";
+export function init(gsap, ScrollTrigger, callAfterResize) {
+    const columnScrollers = gsap.utils.toArray('.js-column-scroller');
 
-export function init(gsap, ScrollTrigger, callAfterResize){
-    if(document.querySelector('.js-column-scroller')) {
-        /* Get all instances as array */
-        const columnScrollers = gsap.utils.toArray('.js-column-scroller');
-
-        /* Loop over instances */
+    if (columnScrollers.length > 0) {
         columnScrollers.forEach(columnScroller => {
             const columnScrollerContainer = columnScroller.querySelector('.js-column-scroller-container');
             const columnScrollerSections = columnScroller.querySelectorAll('.js-column-scroller-section');
             const columnScrollerImagesList = columnScroller.querySelector('.js-column-scroller-images-list');
             const columnScrollerImagesListItem = columnScroller.querySelectorAll('.js-column-scroller-images-list-item');
             const columnScrollerScrollTriggerID = Math.random().toString(16).slice(2);
-
-
 
             /* Function for creating or killing ScrollTrigger */
             let createOrKill = function() {

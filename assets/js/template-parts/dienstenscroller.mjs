@@ -1,156 +1,93 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, createValidHtmlId){
-    if(document.querySelector('.js-service-scroller')) {
-        /* Get all instances as array */
-        const serviceScrollers = gsap.utils.toArray('.js-service-scroller');
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, createValidHtmlId) {
+    const serviceScrollers = gsap.utils.toArray('.js-service-scroller');
 
-        /* Loop over instances */
+    if (serviceScrollers.length > 0) {
         serviceScrollers.forEach(serviceScroller => {
             const sections = serviceScroller.querySelectorAll('.js-service-scroller-section');
+            const nav = serviceScroller.querySelector('.js-service-scroller-nav');
+            const navItems = serviceScroller.querySelectorAll('.js-service-scroller-nav-list-item-link');
+            const navBullet = nav?.querySelector('.js-service-scroller-nav-bullet');
+            const navTracker = nav?.querySelector('.js-service-scroller-nav-tracker');
 
-            /* Loop over sections */
-            sections.forEach(function(section, i) {
+            sections.forEach((section, i) => {
                 const sectionInner = section.querySelector('.js-service-scroller-inner');
+                const title = section.querySelector('.js-service-scroller-title');
+                const text = section.querySelector('.js-service-scroller-text');
+                const buttons = section.querySelectorAll('.js-service-scroller-button-wrapper');
 
                 /* Setup timeline */
                 let timeline = tlSetup(sectionInner, serviceScroller.dataset.stCount);
 
-
                 /* Build timeline */
-                let buildTimeline = function() {
-                    /* Add animation for headline reveal */
-                    if(section.querySelector('.js-service-scroller-title')) {
-                        tlTextReveal(section.querySelector('.js-service-scroller-title'), timeline);
-                    }
+                const buildTimeline = () => {
+                    if (title) tlTextReveal(title, timeline);
+                    if (text) tlFadeIn(text, timeline);
+                    if (buttons.length > 0) tlFadeIn(buttons, timeline);
+                };
 
-                    /* Add animation for content reveal */
-                    if(section.querySelector('.js-service-scroller-text')) {
-                        tlFadeIn(section.querySelector('.js-service-scroller-text'), timeline);
-                    }
-
-                    /* Add animation for button reveal (one by one) */
-                    if(section.querySelector('.js-service-scroller-button-wrapper')) {
-                        tlFadeIn(section.querySelectorAll('.js-service-scroller-button-wrapper'), timeline);
-                    }
-                }
-
-                /* Execute once */
                 buildTimeline();
 
+                /* Clear and rebuild timeline on resize */
+                callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
 
-                /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-                callAfterResize(function() {
-                    buildTlAfterResize(timeline, buildTimeline);
-                });
-
-
-
-
-                /* Add IDs to specific sections and items */
-                if(section.querySelector('.js-service-scroller-title')) {
-                    /* Section */
-                    let sectionTitle = section.querySelector('.js-service-scroller-title'),
-                        sectionTitleText = sectionTitle.textContent,
-                        itemID = createValidHtmlId(sectionTitleText);
-
-                    /* Set section ID */
+                /* Add IDs to sections */
+                if (title) {
+                    const itemID = createValidHtmlId(title.textContent);
                     section.setAttribute('id', itemID);
-
-
-                    /* Navigation */
-                    const navItems = serviceScroller.querySelectorAll('.js-service-scroller-nav-list-item-link');
-
-                    /* Set item attributes */
                     navItems.item(i).setAttribute('data-service-scroller-item', itemID);
-                    navItems.item(i).href = '#'+itemID;
+                    navItems.item(i).href = `#${itemID}`;
                 }
+
+                /* Set active slide logic */
+                const setActiveSlide = () => {
+                    const activeNavItem = nav.querySelector(`.js-service-scroller-nav-list-item-link[data-service-scroller-item="${section.id}"]`);
+                    const navItemHeight = navItems.item(i).offsetHeight;
+
+                    gsap.to(navBullet, {
+                        duration: 0.45,
+                        y: activeNavItem.offsetTop + (navItemHeight / 2)
+                    });
+
+                    gsap.to(navTracker, {
+                        duration: 0.45,
+                        height: activeNavItem.offsetTop + (navItemHeight / 2)
+                    });
+
+                    gsap.set(navItems, {
+                        color: (index, target) => (target.getAttribute('data-service-scroller-item') === section.id ? 'inherit' : 'var(--plain-text-color)')
+                    });
+                };
+
+                /* ScrollTrigger for each section */
+                ScrollTrigger.create({
+                    trigger: sectionInner,
+                    start: "top center",
+                    scrub: true,
+                    onEnter: setActiveSlide,
+                    onEnterBack: setActiveSlide
+                });
             });
 
-
-
-
-            /* Add logic for navigation */
-            if(serviceScroller.querySelector('.js-service-scroller-nav')) {
-                const nav = serviceScroller.querySelector('.js-service-scroller-nav');
-
-                /* Setup scrollTrigger */
+            /* Navigation pin and fade logic */
+            if (nav) {
                 ScrollTrigger.create({
                     trigger: serviceScroller,
                     start: "top top",
                     end: "bottom bottom",
-                    invalidateOnRefresh: true,
-                    refreshPriority: serviceScroller.dataset.stCount,
                     scrub: true,
                     pin: nav,
                     pinSpacing: false
                 });
 
-                /* Fade out navigational element */
                 gsap.to(nav, {
                     scrollTrigger: {
                         trigger: serviceScroller,
                         start: "bottom bottom",
-                        end: 'bottom center',
-                        scrub: true,
-                        refreshPriority: serviceScroller.dataset.stCount
+                        end: "bottom center",
+                        scrub: true
                     },
                     autoAlpha: 0
-                });
-
-                /* Move tracker and bullet */
-                sections.forEach(section => {
-                    const sectionInner = section.querySelector('.js-service-scroller-inner');
-
-                    function setActiveSlide() {
-                        const navBullet = nav.querySelector('.js-service-scroller-nav-bullet');
-                        const navTracker = nav.querySelector('.js-service-scroller-nav-tracker');
-                        const navItem = nav.querySelector('.js-service-scroller-nav-list-item-link');
-                        const navItems = nav.querySelectorAll('.js-service-scroller-nav-list-item-link');
-
-                        /* Slide bullet */
-                        gsap.to(navBullet, {
-                            duration: .45,
-                            immediateRender:false,
-                            y: () => {
-                                return nav.querySelector('.js-service-scroller-nav-list-item-link[data-service-scroller-item="'+section.id+'"]').offsetTop + (navItem.offsetHeight / 2);
-                            }
-                        });
-
-                        /* Grow tracker */
-                        gsap.to(navTracker, {
-                            duration: .45,
-                            immediateRender:false,
-                            height: () => {
-                                return nav.querySelector('.js-service-scroller-nav-list-item-link[data-service-scroller-item="'+section.id+'"]').offsetTop + (navItem.offsetHeight / 2);
-                            }
-                        });
-
-                        /* Set active item */
-                        gsap.set(navItems, {
-                            color: (index, target) => {
-                                if(target.getAttribute('data-service-scroller-item') === section.id) {
-                                    return 'inherit';
-                                } else {
-                                    return 'var(--plain-text-color)'
-                                }
-                            },
-                            duration:0,
-                            immediateRender: false
-                        });
-                    }
-
-                    /* Create scrolltrigger */
-                    ScrollTrigger.create({
-                        trigger: sectionInner,
-                        start: "top center",
-                        scrub: true,
-                        onEnter:() => {
-                            setActiveSlide();
-                        },
-                        onEnterBack:() => {
-                            setActiveSlide();
-                        }
-                    });
                 });
             }
         });

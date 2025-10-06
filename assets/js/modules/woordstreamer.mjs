@@ -1,34 +1,29 @@
 /* Initialize */
-export function init(gsap, callAfterResize, ScrollTrigger){
-    if(document.querySelector('.js-woordstreamer')) {
-        const woordStreamers = gsap.utils.toArray('.js-woordstreamer');
+export function init(gsap, callAfterResize, ScrollTrigger) {
+    const woordStreamers = gsap.utils.toArray('.js-woordstreamer');
 
-        /* Loop over woordstreamer instances */
+    if (woordStreamers.length > 0) {
         woordStreamers.forEach(woordStreamer => {
-            const woordStreamerInner = woordStreamer.querySelector('.js-woordstreamer-inner'),
-                woordStreamerRows = woordStreamer.querySelectorAll('.js-woordstreamer-row');
+            const woordStreamerInner = woordStreamer.querySelector('.js-woordstreamer-inner');
+            const woordStreamerRows = woordStreamer.querySelectorAll('.js-woordstreamer-row');
 
             let woordStreamerRowSmallestWidth;
 
-            /* Determine dimensions (on resize) */
-            let determineDimensions;
-            (determineDimensions = function(){
+            /* Determine dimensions */
+            const determineDimensions = () => {
                 let woordStreamerHeight = 0;
+                woordStreamerRowSmallestWidth = Number.MAX_SAFE_INTEGER;
 
-                woordStreamerRowSmallestWidth = 9999999;
-
-                /* Loop over rows to determine sizes */
                 woordStreamerRows.forEach(woordStreamerRow => {
-                    let woordStreamerRowHeight = gsap.getProperty(woordStreamerRow, "height"),
-                        woordStreamerRowMargin = gsap.getProperty(woordStreamerRow, "margin-bottom"),
+                    const woordStreamerRowHeight = gsap.getProperty(woordStreamerRow, "height");
+                    const woordStreamerRowMargin = gsap.getProperty(woordStreamerRow, "margin-bottom");
+                    const woordStreamerRowWidth = woordStreamerRow.offsetWidth;
 
-                        woordStreamerRowWidth = woordStreamerRow.offsetWidth;
+                    /* Calculate total height */
+                    woordStreamerHeight += woordStreamerRowHeight + woordStreamerRowMargin;
 
-                    /* Combined height */
-                    woordStreamerHeight = woordStreamerHeight + woordStreamerRowHeight + woordStreamerRowMargin;
-
-                    /* Smallest width */
-                    if(woordStreamerRowWidth < woordStreamerRowSmallestWidth) {
+                    /* Find the smallest width */
+                    if (woordStreamerRowWidth < woordStreamerRowSmallestWidth) {
                         woordStreamerRowSmallestWidth = woordStreamerRowWidth;
                     }
                 });
@@ -36,17 +31,15 @@ export function init(gsap, callAfterResize, ScrollTrigger){
                 /* Set inner height */
                 gsap.set(woordStreamerInner, {
                     height: woordStreamerHeight,
-                    onComplete:() => {
-                        ScrollTrigger.refresh();
-                    }
+                    onComplete: ScrollTrigger.refresh
                 });
-            })();
+            };
 
+            /* Execute on load and resize */
+            determineDimensions();
             callAfterResize(determineDimensions);
 
-
-
-            /* Loop over rows to set up scrolltriggers */
+            /* Setup scroll triggers for each row */
             woordStreamerRows.forEach(woordStreamerRow => {
                 gsap.to(woordStreamerRow, {
                     scrollTrigger: {
@@ -56,25 +49,15 @@ export function init(gsap, callAfterResize, ScrollTrigger){
                         scrub: 0.75,
                         invalidateOnRefresh: true,
                         refreshPriority: woordStreamer.dataset.stCount,
-                        onEnter:() => {
-                            woordStreamerRow.style.willChange = 'transform';
-                        },
-                        onEnterBack:() => {
-                            woordStreamerRow.style.willChange = 'transform';
-                        },
-                        onLeave:() => {
-                            woordStreamerRow.style.willChange = 'auto';
-                        },
-                        onLeaveBack:() => {
-                            woordStreamerRow.style.willChange = 'auto';
-                        }
+                        onEnter: () => woordStreamerRow.style.willChange = 'transform',
+                        onEnterBack: () => woordStreamerRow.style.willChange = 'transform',
+                        onLeave: () => woordStreamerRow.style.willChange = 'auto',
+                        onLeaveBack: () => woordStreamerRow.style.willChange = 'auto'
                     },
                     x: (index, target) => {
-                        if(target.classList.contains('js-woordstreamer-row-rtl')) {
-                            return Math.min(woordStreamerRowSmallestWidth - window.outerWidth, window.outerWidth / 2) * -1;
-                        } else {
-                            return Math.min(woordStreamerRowSmallestWidth - window.outerWidth, window.outerWidth / 2);
-                        }
+                        const isRTL = target.classList.contains('js-woordstreamer-row-rtl');
+                        const maxX = Math.min(woordStreamerRowSmallestWidth - window.outerWidth, window.outerWidth / 2);
+                        return isRTL ? -maxX : maxX;
                     },
                     ease: 'none'
                 });

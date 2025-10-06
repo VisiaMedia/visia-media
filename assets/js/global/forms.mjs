@@ -36,7 +36,6 @@ export function init(gsap, ScrollTrigger, getNextSibling, getPreviousSibling){
                 });
             });
 
-
             /* Initially hide all validation messages */
             let validationMessages = form.querySelectorAll('.js-form-validation-message');
 
@@ -50,21 +49,19 @@ export function init(gsap, ScrollTrigger, getNextSibling, getPreviousSibling){
                 });
             });
 
-
-
             /* Suppress the default bubbles */
             form.addEventListener("invalid", function(e) {
                 e.preventDefault();
             }, true);
 
-            /* Support suppressing for shitty browsers */
+            /* Support suppressing for older browsers */
             form.addEventListener("submit", function(e) {
                 if(!this.checkValidity() ) {
                     e.preventDefault();
                 }
             });
 
-            /* Add validation logic to click button event */
+            /* Add validation logic to the submit button event */
             let submitButton = form.querySelector('.js-form-submit-button');
 
             submitButton.addEventListener("click", function() {
@@ -95,14 +92,13 @@ export function init(gsap, ScrollTrigger, getNextSibling, getPreviousSibling){
                     });
                 });
 
-                /* If any errors, focus on first invalid field */
+                /* If any errors, focus on the first invalid field */
                 if (invalidFields.length > 0) {
                     invalidFields[0].focus();
                 }
             });
         });
     }
-
 
     if(document.querySelector('.js-big-form')) {
         const bigForms = document.querySelectorAll('.js-big-form');
@@ -150,8 +146,6 @@ export function init(gsap, ScrollTrigger, getNextSibling, getPreviousSibling){
                             nextBorder.classList.remove('js-focus');
                         }
                     });
-
-
 
                     /* Validation */
                     bigFormFieldInput.addEventListener('input', function () {

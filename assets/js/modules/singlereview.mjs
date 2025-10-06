@@ -1,39 +1,28 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
-    if(document.querySelector('.js-single-review')) {
-        const reviewBlocks = gsap.utils.toArray('.js-single-review');
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+    const reviewBlocks = gsap.utils.toArray('.js-single-review');
 
+    if (reviewBlocks.length > 0) {
         /* Loop over instances */
         reviewBlocks.forEach(reviewBlock => {
+            const thumbnail = reviewBlock.querySelector('.js-single-review-thumbnail');
+            const details = reviewBlock.querySelector('.js-single-review-details');
+            const reviewText = reviewBlock.querySelector('.js-single-review-text');
+
+            /* Setup timeline */
             let timeline = tlSetup(reviewBlock, reviewBlock.dataset.stCount);
 
-
             /* Build timeline */
-            let buildTimeline = function() {
-                /* Add animation for thumbnail */
-                if(reviewBlock.querySelector('.js-single-review-thumbnail')) {
-                    tlFadeIn(reviewBlock.querySelector('.js-single-review-thumbnail'), timeline);
-                }
+            const buildTimeline = () => {
+                if (thumbnail) tlFadeIn(thumbnail, timeline);
+                if (details) tlFadeIn(details, timeline);
+                if (reviewText) tlFadeIn(reviewText, timeline);
+            };
 
-                /* Add animation for details */
-                if(reviewBlock.querySelector('.js-single-review-details')) {
-                    tlFadeIn(reviewBlock.querySelector('.js-single-review-details'), timeline);
-                }
+            buildTimeline(); // Execute once
 
-                /* Add animation for review */
-                if (reviewBlock.querySelector('.js-single-review-text')) {
-                    tlFadeIn(reviewBlock.querySelector('.js-single-review-text'), timeline);
-                }
-            }
-
-            /* Execute once */
-            buildTimeline();
-
-
-            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
-                buildTlAfterResize(timeline, buildTimeline);
-            });
+            /* Clear and rebuild timeline on resize */
+            callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
         });
     }
 }

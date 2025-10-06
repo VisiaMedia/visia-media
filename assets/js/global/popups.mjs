@@ -1,6 +1,6 @@
 /* Initialize */
-export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll){
-    if(document.querySelector('.js-popup-container')) {
+export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll) {
+    if (document.querySelector('.js-popup-container')) {
         const popupContainers = document.querySelectorAll('.js-popup-container');
         const focusableSelectors = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]';
         const mainBodyContainer = document.querySelector('.js-main-body-container');
@@ -11,161 +11,109 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
             const closeButton = popupContainer.querySelector('.js-close');
             const overlay = popupContainer.querySelector('.js-overlay');
 
-
             /* Initially hide elements */
-            gsap.set([popupContainer, singlePopup, overlay], {
-                autoAlpha:0
-            });
-
-            gsap.set(popupContainer, {
-                display: "flex"
-            });
-
-            gsap.set(singlePopup, {
-                display: "none"
-            });
-
-
+            gsap.set([popupContainer, singlePopup, overlay], { autoAlpha: 0 });
+            gsap.set(popupContainer, { display: "flex" });
+            gsap.set(singlePopup, { display: "none" });
 
             /* Set Blobity radius on close button */
-            let setBlobityRadius = function() {
-                closeButton.setAttribute("data-blobity-offset-x", 0);
-                closeButton.setAttribute("data-blobity-offset-y", 0);
-
-                const closeButtonRadius = closeButton.offsetWidth / 2;
-                closeButton.setAttribute("data-blobity-radius", closeButtonRadius.toString());
-            }
-
-            /* Execute on resize */
+            const setBlobityRadius = () => {
+                if(blobity) {
+                    const closeButtonRadius = closeButton.offsetWidth / 2;
+                    closeButton.setAttribute("data-blobity-radius", closeButtonRadius.toString());
+                    closeButton.setAttribute("data-blobity-offset-x", 0);
+                    closeButton.setAttribute("data-blobity-offset-y", 0);
+                }
+            };
             callAfterResize(setBlobityRadius);
 
-
-            /* Function for closing the popup */
-            function closePopup() {
-                if(popupContainer.classList.contains('js-active')) {
+            /* Function to close the popup */
+            const closePopup = () => {
+                if (popupContainer.classList.contains('js-active')) {
                     gsap.to(popupContainer, {
-                        autoAlpha:0,
-                        onStart:() => {
+                        autoAlpha: 0,
+                        onStart: () => {
                             const focusableElements = mainBodyContainer.querySelectorAll(focusableSelectors);
                             focusableElements.forEach(el => el.removeAttribute('tabindex'));
 
-                            /* Add negative tabindex to all elements inside popup */
                             const popupFocusableElements = singlePopup.querySelectorAll(focusableSelectors);
                             popupFocusableElements.forEach(el => el.setAttribute('tabindex', '-1'));
 
-                            /* Update screenreader focus */
                             singlePopup.setAttribute('aria-hidden', 'true');
                             mainBodyContainer.setAttribute('aria-hidden', 'false');
 
-                            /* Update blobity */
-                            blobity.updateOptions({
-                                zIndex:50,
-                                color:gsap.getProperty(document.querySelector('body'), 'color')
-                            });
+                            if(blobity) {
+                                blobity.updateOptions({
+                                    zIndex: 50,
+                                    color: gsap.getProperty(document.querySelector('body'), 'color')
+                                });
+                            }
 
-                            /* Enable scrolling */
                             enableScroll();
                         },
-                        onComplete:() => {
-                            /* Hide popups and overlay */
-                            gsap.set([singlePopup, overlay], {
-                                autoAlpha:0
-                            });
-
-                            gsap.set(singlePopup, {
-                                display: "none"
-                            });
-
-                            /* Remove active class from container */
+                        onComplete: () => {
+                            gsap.set([singlePopup, overlay], { autoAlpha: 0 });
+                            gsap.set(singlePopup, { display: "none" });
                             popupContainer.classList.remove('js-active');
                         }
                     });
                 }
-            }
+            };
 
-
-            /* Function for triggering the popup */
-            if(document.querySelector('.js-popup-trigger[data-popup='+popupName+']')) {
-                const popupTriggers = document.querySelectorAll('.js-popup-trigger[data-popup='+popupName+']');
-
+            /* Function to trigger the popup */
+            const popupTriggers = document.querySelectorAll(`.js-popup-trigger[data-popup='${popupName}']`);
+            if (popupTriggers.length > 0) {
                 popupTriggers.forEach(popupTrigger => {
-                    let popupTL = gsap.timeline({
+                    const popupTL = gsap.timeline({
                         paused: true,
-                        onStart:() => {
-                            /* Focus on first element inside the popup */
-                            singlePopup.querySelector(focusableSelectors).focus();
+                        onStart: () => {
+                            const firstFocusableElement = singlePopup.querySelector(focusableSelectors);
+                            if (firstFocusableElement) firstFocusableElement.focus();
 
-                            /* Set negative tabindex for all elements inside main body */
                             const focusableElements = mainBodyContainer.querySelectorAll(focusableSelectors);
                             focusableElements.forEach(el => el.setAttribute('tabindex', '-1'));
 
-                            /* Remove (negative) tabindex for all elements inside popup */
                             const popupFocusableElements = singlePopup.querySelectorAll(focusableSelectors);
                             popupFocusableElements.forEach(el => el.removeAttribute('tabindex'));
 
-
-                            /* Set aria visibility on popup and main body */
                             singlePopup.setAttribute('aria-hidden', 'false');
                             mainBodyContainer.setAttribute('aria-hidden', 'true');
-
-                            /* Disable scrolling */
                             disableScroll();
                         },
-                        onComplete:() => {
-                            blobity.updateOptions({
-                                zIndex: 815,
-                                color: '#000'
-                            });
-
-                            blobity.reset();
+                        onComplete: () => {
+                            if(blobity) {
+                                blobity.updateOptions({zIndex: 815, color: '#000'});
+                                blobity.reset();
+                            }
                         }
                     });
 
-                    /* Show popup container */
-                    popupTL.set(popupContainer, {
-                        autoAlpha:1
-                    });
+                    /* Show popup container and fade in */
+                    popupTL.set(popupContainer, { autoAlpha: 1 })
+                        .to(overlay, { autoAlpha: 1 })
+                        .to(singlePopup, {
+                            autoAlpha: 1,
+                            display: "block",
+                            onComplete: () => setBlobityRadius()
+                        });
 
-                    /* Fade in overlay */
-                    popupTL.to(overlay, {
-                        autoAlpha:1
-                    });
-
-                    /* Fade in popup */
-                    popupTL.to(singlePopup, {
-                        autoAlpha:1,
-                        display:"block",
-                        onComplete:() => {
-                            setBlobityRadius();
-                        }
-                    });
-
-                    /* Create event listener */
-                    popupTrigger.addEventListener("click", function(event) {
+                    popupTrigger.addEventListener("click", event => {
                         event.preventDefault();
-
                         popupContainer.classList.add("js-active");
-
-                        popupTL.time(0);
-
-                        /* Play animations */
-                        popupTL.play();
+                        popupTL.time(0).play();
                     });
 
-                    /* Add event listener to close button */
+                    /* Close popup on close button click */
                     closeButton.addEventListener("click", closePopup);
                 });
             }
 
-
             /* Add event listener to overlay */
             overlay.addEventListener("click", closePopup);
 
-            /* Add event listener to escape button */
-            document.addEventListener("keydown", function(event) {
-                const key = event.key;
-
-                if(key === "Escape") {
+            /* Add event listener to escape key */
+            document.addEventListener("keydown", event => {
+                if (event.key === "Escape") {
                     closePopup();
                 }
             });
@@ -174,6 +122,4 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
 }
 
 /* Export init and unload functions */
-export default {
-    init
-};
+export default { init };

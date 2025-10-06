@@ -1,27 +1,26 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal){
-    if(document.querySelector('.js-textcarousel')) {
-        const textCarousels = gsap.utils.toArray('.js-textcarousel');
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal) {
+    const textCarousels = gsap.utils.toArray('.js-textcarousel');
 
+    if (textCarousels.length > 0) {
         /* Loop over instances */
         textCarousels.forEach(textCarousel => {
+            const verticalTextReveal = textCarousel.querySelector('.js-textcarousel-vertical-text-reveal');
+            const textCarouselContainer = textCarousel.querySelector('.js-textcarousel-container');
+            const textCarouselCounter = textCarousel.querySelector('.js-textcarousel-counter');
+            const textCarouselItems = textCarousel.querySelectorAll('.js-textcarousel-item');
+            const textCarouselCounterList = textCarousel.querySelector('.js-textcarousel-counter-list');
             let timeline = tlSetup(textCarousel, textCarousel.dataset.stCount);
 
-
             /* Build timeline */
-            let buildTimeline = function() {
-                /* Add animation for headline reveal */
-                if(textCarousel.querySelector('.js-textcarousel-vertical-text-reveal')) {
-                    tlTextReveal(textCarousel.querySelector('.js-textcarousel-vertical-text-reveal'), timeline);
+            const buildTimeline = function() {
+                if (verticalTextReveal) {
+                    tlTextReveal(verticalTextReveal, timeline);
                 }
 
-
-                /* Add animation for item reveal */
-                if(textCarousel.querySelector('.js-textcarousel-container')) {
-                    let textCarouselContainer = textCarousel.querySelectorAll('.js-textcarousel-container');
-
+                if (textCarouselContainer) {
                     gsap.set(textCarouselContainer, {
-                        autoAlpha:0,
+                        autoAlpha: 0,
                         immediateRender: true
                     });
 
@@ -29,30 +28,20 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
                         autoAlpha: 1
                     });
                 }
-            }
+            };
 
             /* Execute once */
             buildTimeline();
 
-
             /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
+            callAfterResize(() => {
                 buildTlAfterResize(timeline, buildTimeline);
             });
-
-
-
-
-            /* Animate scrolling */
-            const textCarouselContainer = textCarousel.querySelector('.js-textcarousel-container');
-            const textCarouselCounter = textCarousel.querySelector('.js-textcarousel-counter');
 
             /* Set counter initial position */
             const textCarouselFirstItem = textCarousel.querySelector('.js-textcarousel-item');
             gsap.set(textCarouselCounter, {
-                y:() => {
-                    return (textCarouselFirstItem.offsetHeight / 2) - (textCarouselCounter.offsetHeight / 2)
-                }
+                y: () => (textCarouselFirstItem.offsetHeight / 2) - (textCarouselCounter.offsetHeight / 2)
             });
 
             /* Pin counter element */
@@ -61,80 +50,44 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
                 start: "center center",
                 pin: true,
                 endTrigger: textCarouselContainer,
-                end:() => {
-                    return "bottom-="+ textCarousel.querySelector('.js-textcarousel-item:last-child').offsetHeight / 2 +"px center";
-                },
+                end: () => "bottom-=" + textCarouselItems[textCarouselItems.length - 1].offsetHeight / 2 + "px center",
                 refreshPriority: textCarousel.dataset.stCount
             });
 
             /* Set individual items opacity */
-            const textCarouselItems = textCarousel.querySelectorAll('.js-textcarousel-item');
-
-            gsap.set(textCarouselItems, {
-                autoAlpha: .125
-            });
-
+            gsap.set(textCarouselItems, { autoAlpha: 0.125 });
 
             /* Check if mobile or desktop */
-            let isDesktop = true;
-
-            if(window.matchMedia("(pointer: coarse)").matches) {
-                isDesktop = false;
-            }
+            const isDesktop = !window.matchMedia("(pointer: coarse)").matches;
 
             /* Increase opacity on scroll */
-            textCarouselItems.forEach(function (textCarouselItem, i) {
-                let textCarouselItemTl = gsap.timeline({
+            textCarouselItems.forEach((textCarouselItem, i) => {
+                const textCarouselItemTl = gsap.timeline({
                     scrollTrigger: {
                         trigger: textCarouselItem,
-                        start:() => {
-                            if (window.outerWidth > 810) {
-                                return "top center";
-                            } else {
-                                return "top 66.666666%";
-                            }
-                        },
+                        start: () => (window.outerWidth > 810 ? "top center" : "top 66.666666%"),
                         end: "bottom center",
                         scrub: true,
                         refreshPriority: textCarousel.dataset.stCount,
                         snap: isDesktop ? "labels" : false,
-                        onEnter:() => {
-                            const textCarouselCounterList = textCarousel.querySelector('.js-textcarousel-counter-list');
-
-                            gsap.to(textCarouselCounterList, {
-                                duration: .45,
-                                immediateRender:false,
-                                y:() => {
-                                    return (textCarouselCounter.offsetHeight * i) * -1;
-                                }
-                            });
-                        },
-                        onEnterBack:() => {
-                            const textCarouselCounterList = textCarousel.querySelector('.js-textcarousel-counter-list');
-
-                            gsap.to(textCarouselCounterList, {
-                                duration: .45,
-                                immediateRender:false,
-                                y:() => {
-                                    return (textCarouselCounter.offsetHeight * i) * -1;
-                                }
-                            });
-                        }
+                        onEnter: () => updateCounterPosition(i),
+                        onEnterBack: () => updateCounterPosition(i)
                     }
                 });
 
-                textCarouselItemTl.to(textCarouselItem, {
-                    autoAlpha: 1,
-                    duration: .5
-                });
+                textCarouselItemTl.to(textCarouselItem, { autoAlpha: 1, duration: 0.5 });
 
-                textCarouselItemTl.addLabel("fadedIn", ">");
-
-                textCarouselItemTl.to(textCarouselItem, {
-                    autoAlpha: 1,
-                    duration: .5
-                });
+                textCarouselItemTl.addLabel("fadedIn", ">").to(textCarouselItem, { autoAlpha: 1, duration: 0.5 });
             });
+
+            /* Function to update counter position */
+            function updateCounterPosition(i) {
+                gsap.to(textCarouselCounterList, {
+                    duration: 0.45,
+                    immediateRender: false,
+                    y: () => textCarouselCounter.offsetHeight * i * -1
+                });
+            }
         });
     }
 }

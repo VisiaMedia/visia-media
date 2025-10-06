@@ -1,78 +1,60 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings){
-    if(document.querySelector('.js-recent-posts')) {
-        const recentPostsSections = gsap.utils.toArray('.js-recent-posts');
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings) {
+    const recentPostsSections = gsap.utils.toArray('.js-recent-posts');
 
+    if (recentPostsSections.length > 0) {
         /* Loop over instances */
         recentPostsSections.forEach(recentPostsSection => {
-            let timeline = tlSetup(recentPostsSection, recentPostsSection.dataset.stCount),
-                recentPostItems = recentPostsSection.querySelectorAll('.js-recent-posts-item');
+            const recentPostItems = recentPostsSection.querySelectorAll('.js-recent-posts-item');
+            const recentPostsTitle = recentPostsSection.querySelector('.js-recent-posts-title');
 
+            /* Setup timeline */
+            let timeline = tlSetup(recentPostsSection, recentPostsSection.dataset.stCount);
 
             /* Build timeline */
-            let buildTimeline = function() {
-                /* Add animation for headline reveal */
-                if(recentPostsSection.querySelector('.js-recent-posts-title')) {
-                    tlTextReveal(recentPostsSection.querySelector('.js-recent-posts-title'), timeline);
+            const buildTimeline = () => {
+                /* Animate title reveal */
+                if (recentPostsTitle) {
+                    tlTextReveal(recentPostsTitle, timeline);
                 }
 
-                /* Add animation for showing items */
-                tlFadeIn(recentPostsSection.querySelectorAll('.js-recent-posts-item'), timeline);
-            }
+                /* Animate items reveal */
+                tlFadeIn(recentPostItems, timeline);
+            };
 
-            /* Execute once */
-            buildTimeline();
+            buildTimeline(); // Execute once
 
+            /* Clear and rebuild timeline on resize */
+            callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
 
-            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
-                buildTlAfterResize(timeline, buildTimeline);
-            });
-
-
-
-            /* Set relative date via dayjs */
+            /* Set relative dates via Day.js */
             recentPostItems.forEach(recentPostItem => {
-                let postDateElem = recentPostItem.querySelector('.js-recent-posts-item-from-now'),
-                    postDate = postDateElem.getAttribute('datetime'),
-                    postFromNow = dayjs(postDate).fromNow();
+                const postDateElem = recentPostItem.querySelector('.js-recent-posts-item-from-now');
+                const postDate = postDateElem.getAttribute('datetime');
+                const postFromNow = dayjs(postDate).fromNow();
 
                 /* Set text for date element */
                 postDateElem.textContent = postFromNow;
             });
 
-
-
-            /* Setup event listeners */
-            if(window.matchMedia("(pointer: fine)").matches) {
+            /* Setup hover interactions for fine pointer devices (e.g., mouse) */
+            if (window.matchMedia("(pointer: fine)").matches) {
                 recentPostItems.forEach(recentPostItem => {
-                    const recentPostItemTitle = recentPostItem.querySelector('.js-recent-posts-item-title'),
-                        recentPostItemSiblings = getSiblings(recentPostItem);
+                    const recentPostItemTitle = recentPostItem.querySelector('.js-recent-posts-item-title');
+                    const recentPostItemSiblings = getSiblings(recentPostItem);
 
                     /* Prepare element for hover state */
-                    gsap.set(recentPostItemTitle, {
-                        paddingRight: '0.5em'
+                    gsap.set(recentPostItemTitle, { paddingRight: '0.5em' });
+
+                    /* Hover event listeners */
+                    recentPostItem.addEventListener("mouseenter", () => {
+                        gsap.to(recentPostItemTitle, { x: "0.5em" });
+                        gsap.to(recentPostItemSiblings, { autoAlpha: 0.25 });
                     });
 
-                    /* Event listeners */
-                    recentPostItem.addEventListener("mouseenter", function() {
-                        gsap.to(recentPostItemTitle, {
-                            x: "0.5em"
-                        });
-
-                        gsap.to(recentPostItemSiblings, {
-                            autoAlpha: .25
-                        });
-                    });
-
-                    recentPostItem.addEventListener("mouseleave", function() {
-                        gsap.to(recentPostItemTitle, {
-                            x: "0"
-                        });
-
-                        gsap.to(recentPostItemSiblings, {
-                            autoAlpha: 1
-                        });
+                    recentPostItem.addEventListener("mouseleave", () => {
+                        gsap.to(recentPostItemTitle, { x: "0" });
+                        gsap.to(recentPostItemSiblings, { autoAlpha: 1 });
                     });
                 });
             }

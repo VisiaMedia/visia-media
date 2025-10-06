@@ -1,41 +1,33 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
-    if(document.querySelector('.js-project-slider')) {
-        /* Get all project grid slider as array */
-        const projectSliders = gsap.utils.toArray('.js-project-slider');
+export function init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+    const projectSliders = gsap.utils.toArray('.js-project-slider');
 
+    if (projectSliders.length > 0) {
         /* Loop over project slider instances */
         projectSliders.forEach(projectSlider => {
-            let projectSliderInner = projectSlider.querySelector('.js-project-slider-inner'),
-                projectSliderList = projectSlider.querySelector('.js-project-slider-list'),
-                projectSliderListItems = projectSliderList.querySelectorAll('.js-project-slider-list-item');
-
+            const projectSliderInner = projectSlider.querySelector('.js-project-slider-inner');
+            const projectSliderList = projectSlider.querySelector('.js-project-slider-list');
+            const projectSliderListItems = projectSliderList.querySelectorAll('.js-project-slider-list-item');
+            const projectSliderTitle = projectSlider.querySelector('.js-project-slider-title');
 
             /* Setup timeline */
             let timeline = tlSetup(projectSlider, projectSlider.dataset.stCount);
 
-
             /* Build timeline */
-            let buildTimeline = function() {
+            const buildTimeline = () => {
                 /* Add animation for headline reveal */
-                if(projectSlider.querySelector('.js-project-slider-title')) {
-                    tlTextReveal(projectSlider.querySelector('.js-project-slider-title'), timeline);
+                if (projectSliderTitle) {
+                    tlTextReveal(projectSliderTitle, timeline);
                 }
 
                 /* Show items one by one */
                 tlFadeIn(projectSliderListItems, timeline);
-            }
+            };
 
-            /* Execute once */
-            buildTimeline();
+            buildTimeline(); // Execute once
 
-
-            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
-                buildTlAfterResize(timeline, buildTimeline);
-            });
-
-
+            /* Clear and rebuild timeline on resize */
+            callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
 
             /* Setup draggable slider */
             Draggable.create(projectSliderList, {
@@ -43,45 +35,29 @@ export function init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAft
                 cursor: 'inherit',
                 type: "x",
                 inertia: true,
-                dragResistance: () => {
-                    if(window.outerWidth > 810) {
-                        return .25;
-                    } else {
-                        return .125;
-                    }
-                },
-                edgeResistance: () => {
-                    if(window.outerWidth > 810) {
-                        return .25;
-                    } else {
-                        return .125;
-                    }
-                },
+                dragResistance: window.outerWidth > 810 ? 0.25 : 0.125,
+                edgeResistance: window.outerWidth > 810 ? 0.25 : 0.125,
                 bounds: projectSliderInner,
                 overshootTolerance: 0
             });
+
+            /* Add logic for hovering items if pointer is fine (e.g., mouse devices) */
+            if (window.matchMedia("(pointer: fine)").matches) {
+                projectSliderListItems.forEach(item => {
+                    const itemLink = item.querySelector('.js-project-slider-list-item-link');
+                    const itemVisual = item.querySelector('.js-project-slider-list-item-visual');
+
+                    /* Hover event listeners */
+                    itemLink.addEventListener("mouseenter", () => {
+                        gsap.to(itemVisual, { scale: 1.1 });
+                    });
+
+                    itemLink.addEventListener("mouseleave", () => {
+                        gsap.to(itemVisual, { scale: 1 });
+                    });
+                });
+            }
         });
-
-        /* Add logic for hovering items */
-        if(window.matchMedia("(pointer: fine)").matches) {
-            gsap.utils.toArray('.js-project-slider-list-item').forEach(projectSliderListItem => {
-                const projectSliderListItemLink = projectSliderListItem.querySelector('.js-project-slider-list-item-link');
-                const projectSliderListItemVisual = projectSliderListItem.querySelector('.js-project-slider-list-item-visual');
-
-                /* Event listeners */
-                projectSliderListItemLink.addEventListener("mouseenter", function() {
-                    gsap.to(projectSliderListItemVisual, {
-                        scale: 1.1
-                    });
-                });
-
-                projectSliderListItemLink.addEventListener("mouseleave", function() {
-                    gsap.to(projectSliderListItemVisual, {
-                        scale: 1
-                    });
-                });
-            });
-        }
     }
 }
 

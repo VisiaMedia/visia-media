@@ -1,8 +1,9 @@
 /* Initialize */
-export function init(gsap, stFadeIn, ScrollTrigger, Masonry){
-    if(document.querySelector('.js-perspective-gallery')) {
-        const perspectiveGalleries = document.querySelectorAll('.js-perspective-gallery');
+export function init(gsap, stFadeIn, ScrollTrigger, Masonry) {
+    const perspectiveGalleries = document.querySelectorAll('.js-perspective-gallery');
 
+    if (perspectiveGalleries.length > 0) {
+        /* Loop over instances */
         perspectiveGalleries.forEach(perspectiveGallery => {
             const perspectiveGalleryList = perspectiveGallery.querySelector('.js-perspective-gallery-list');
 
@@ -81,10 +82,9 @@ export function init(gsap, stFadeIn, ScrollTrigger, Masonry){
     }
 }
 
-
 /* Unload */
 export function unload(Masonry) {
-    if(document.querySelector('.js-perspective-gallery')) {
+    if (document.querySelector('.js-perspective-gallery')) {
         const perspectiveGalleries = document.querySelectorAll('.js-perspective-gallery');
 
         perspectiveGalleries.forEach(perspectiveGallery => {
@@ -92,14 +92,15 @@ export function unload(Masonry) {
             const masonry = Masonry.data(perspectiveGalleryList);
 
             /* Destroy the grid */
-            masonry.destroy();
+            if (masonry) {
+                masonry.destroy();
+            }
         });
     }
 }
-
 
 /* Export init and unload functions */
 export default {
     init,
     unload
-}
+};

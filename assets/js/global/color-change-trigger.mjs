@@ -1,17 +1,12 @@
 /* Initialize */
-export function init(gsap, blobity, ScrollTrigger){
-    if(document.querySelector('.js-global-color-change-trigger')) {
+export function init(gsap, blobity, ScrollTrigger) {
+    const colorChangeTriggers = document.querySelectorAll('.js-global-color-change-trigger');
+    if (colorChangeTriggers.length > 0) {
         ScrollTrigger.clearScrollMemory("manual");
 
-        let oldColor,
-            oldBackground,
-            oldPlainText,
-            oldLightBorder,
-            oldDarkBorder,
-            oldDropshadow,
-            oldImgFilter;
+        let oldColor, oldBackground, oldPlainText, oldLightBorder, oldDarkBorder, oldDropshadow, oldImgFilter;
 
-        gsap.utils.toArray(".js-global-color-change-trigger").forEach(function (globalColorChangeTrigger, i) {
+        colorChangeTriggers.forEach((trigger, i) => {
             let colorReverse = oldColor,
                 backgroundReverse = oldBackground,
                 plainTextReverse = oldPlainText,
@@ -20,54 +15,50 @@ export function init(gsap, blobity, ScrollTrigger){
                 dropShadowReverse = oldDropshadow,
                 imgFilterReverse = oldImgFilter;
 
-            /* Set initial values for first iteration */
-            if(i === 0) {
+            /* Set initial values for the first trigger */
+            if (i === 0) {
                 gsap.set("html", {
-                    "--current-color": globalColorChangeTrigger.dataset.text,
-                    "--current-background": globalColorChangeTrigger.dataset.background,
-                    "--plain-text-color": globalColorChangeTrigger.dataset.plaintext,
-                    "--light-border-color": globalColorChangeTrigger.dataset.lightBorder,
-                    "--dark-border-color": globalColorChangeTrigger.dataset.darkBorder,
-                    "--dropshadow-color": globalColorChangeTrigger.dataset.dropShadow,
-                    "--visual-img-filter": globalColorChangeTrigger.dataset.visualFilter,
-                    onComplete:() => {
-                        blobity.updateOptions({
-                            color: globalColorChangeTrigger.dataset.text
-                        });
-
-                        /* Bounce blobity */
-                        blobity.bounce();
-                    },
+                    "--current-color": trigger.dataset.text,
+                    "--current-background": trigger.dataset.background,
+                    "--plain-text-color": trigger.dataset.plaintext,
+                    "--light-border-color": trigger.dataset.lightBorder,
+                    "--dark-border-color": trigger.dataset.darkBorder,
+                    "--dropshadow-color": trigger.dataset.dropShadow,
+                    "--visual-img-filter": trigger.dataset.visualFilter,
+                    onComplete: () => {
+                        if(blobity) {
+                            blobity.updateOptions({color: trigger.dataset.text});
+                            blobity.bounce(); // Bounce Blobity after setting colors
+                        }
+                    }
                 });
             } else {
+                /* Create ScrollTrigger for subsequent color change triggers */
                 ScrollTrigger.create({
-                    trigger: globalColorChangeTrigger,
+                    trigger: trigger,
                     start: "top center",
                     invalidateOnRefresh: true,
-                    refreshPriority: globalColorChangeTrigger.dataset.stCount,
-                    markers:false,
+                    refreshPriority: trigger.dataset.stCount,
                     preventOverlaps: "global-color-change-trigger",
-                    onEnter:() => {
+                    onEnter: () => {
                         gsap.to("html", {
-                            "--current-color": globalColorChangeTrigger.dataset.text,
-                            "--current-background": globalColorChangeTrigger.dataset.background,
-                            "--plain-text-color": globalColorChangeTrigger.dataset.plaintext,
-                            "--light-border-color": globalColorChangeTrigger.dataset.lightBorder,
-                            "--dark-border-color": globalColorChangeTrigger.dataset.darkBorder,
-                            "--dropshadow-color": globalColorChangeTrigger.dataset.dropShadow,
-                            "--visual-img-filter": globalColorChangeTrigger.dataset.visualFilter,
+                            "--current-color": trigger.dataset.text,
+                            "--current-background": trigger.dataset.background,
+                            "--plain-text-color": trigger.dataset.plaintext,
+                            "--light-border-color": trigger.dataset.lightBorder,
+                            "--dark-border-color": trigger.dataset.darkBorder,
+                            "--dropshadow-color": trigger.dataset.dropShadow,
+                            "--visual-img-filter": trigger.dataset.visualFilter,
                             overwrite: true,
-                            onComplete:() => {
-                                blobity.updateOptions({
-                                    color: globalColorChangeTrigger.dataset.text
-                                });
-
-                                /* Bounce blobity */
-                                blobity.bounce();
+                            onComplete: () => {
+                                if(blobity) {
+                                    blobity.updateOptions({color: trigger.dataset.text});
+                                    blobity.bounce(); // Bounce Blobity on color change
+                                }
                             }
                         });
                     },
-                    onLeaveBack:() => {
+                    onLeaveBack: () => {
                         gsap.to("html", {
                             "--current-color": colorReverse,
                             "--current-background": backgroundReverse,
@@ -77,31 +68,30 @@ export function init(gsap, blobity, ScrollTrigger){
                             "--dropshadow-color": dropShadowReverse,
                             "--visual-img-filter": imgFilterReverse,
                             overwrite: true,
-                            onComplete:() => {
-                                blobity.updateOptions({
-                                    color: colorReverse,
-                                });
-
-                                /* Bounce blobity */
-                                blobity.bounce();
+                            onComplete: () => {
+                                if(blobity) {
+                                    blobity.updateOptions({color: colorReverse});
+                                    blobity.bounce(); // Bounce Blobity when reverting colors
+                                }
                             }
                         });
                     }
                 });
             }
 
-            oldColor = globalColorChangeTrigger.dataset.text;
-            oldBackground = globalColorChangeTrigger.dataset.background;
-            oldPlainText = globalColorChangeTrigger.dataset.plaintext;
-            oldLightBorder = globalColorChangeTrigger.dataset.lightBorder;
-            oldDarkBorder = globalColorChangeTrigger.dataset.darkBorder;
-            oldDropshadow = globalColorChangeTrigger.dataset.dropShadow;
-            oldImgFilter = globalColorChangeTrigger.dataset.visualFilter;
+            /* Cache old values for reverse transitions */
+            oldColor = trigger.dataset.text;
+            oldBackground = trigger.dataset.background;
+            oldPlainText = trigger.dataset.plaintext;
+            oldLightBorder = trigger.dataset.lightBorder;
+            oldDarkBorder = trigger.dataset.darkBorder;
+            oldDropshadow = trigger.dataset.dropShadow;
+            oldImgFilter = trigger.dataset.visualFilter;
         });
     }
 }
 
-/* Export init and unload functions */
+/* Export init function */
 export default {
     init
 };

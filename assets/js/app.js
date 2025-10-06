@@ -1,4 +1,4 @@
-/* Importing dependencies */
+/* Core imports */
 import Swup from 'swup';
 import SwupA11yPlugin from '@swup/a11y-plugin';
 import SwupBodyClassPlugin from '@swup/body-class-plugin';
@@ -14,19 +14,13 @@ import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText.js";
 import { ScrollTrigger } from "gsap/ScrollTrigger.js";
 import { TextPlugin } from "gsap/TextPlugin.js";
-import { Draggable } from "gsap/Draggable.js";
-import { InertiaPlugin } from "gsap/InertiaPlugin.js";
 
-gsap.registerPlugin(SplitText);
-gsap.registerPlugin(ScrollTrigger);
-gsap.registerPlugin(TextPlugin);
-gsap.registerPlugin(Draggable);
-gsap.registerPlugin(InertiaPlugin);
+gsap.registerPlugin(SplitText, ScrollTrigger, TextPlugin);
 
 /* Set GSAP defaults */
 gsap.defaults({
     ease: "power2.out",
-    duration:.3125
+    duration: .3125
 });
 
 /* Set ScrollTrigger defaults */
@@ -34,47 +28,86 @@ ScrollTrigger.defaults({
     fastScrollEnd: true
 });
 
-/* Day.js */
-import dayjs from 'dayjs';
-import 'dayjs/locale/nl';
-dayjs.extend(require('dayjs/plugin/relativeTime')).locale('nl');
 
-/* Infinite scroll */
-import InfiniteScroll from "infinite-scroll";
 
-/* Masonry */
-import Masonry from "masonry-layout";
+/* Blobity async function (only if desktop) */
+let blobity = null;
 
-/* Images loaded */
-import imagesLoaded from "imagesloaded";
+async function initializeBlobity() {
+    const isDesktop = window.matchMedia("(pointer: coarse)").matches === false;
+    if (!isDesktop) {
+        return Promise.resolve(); // Direct resolve als Blobity niet geladen hoeft te worden
+    }
 
-/* Blobity */
-let isDesktop = true;
+    const { default: Blobity } = await import(/* webpackChunkName: "blobity" */ 'blobity');
 
-if(window.matchMedia("(pointer: coarse)").matches) {
-    isDesktop = false;
+    blobity = new Blobity({
+        licenseKey: 'A5B1423C-7B244787-AC4F5CE3-FECC6E8C',
+        dotColor: 'rgb(234, 44, 118)',
+        size: 40,
+        dotSize: 8,
+        opacity: 0.1,
+        zIndex: 50,
+        focusableElementsOffsetX: 8,
+        focusableElementsOffsetY: 8,
+    });
 }
 
-import Blobity from "blobity";
-let blobity = new Blobity({
-    licenseKey: 'A5B1423C-7B244787-AC4F5CE3-FECC6E8C',
-    dotColor: 'rgb(234, 44, 118)',
-    size: isDesktop ? 40 : 0,
-    dotSize: 8,
-    opacity:.1,
-    zIndex: '50',
-    focusableElementsOffsetX: 8,
-    focusableElementsOffsetY: 8,
-});
+
+/* Dayjs async function */
+async function loadDayjs() {
+    const dayjs = (await import(/* webpackChunkName: "dayjs" */ 'dayjs')).default;
+    await import(/* webpackChunkName: "dayjs" */ 'dayjs/locale/nl');
+    const { default: relativeTime } = await import(/* webpackChunkName: "dayjs" */ 'dayjs/plugin/relativeTime');
+    dayjs.extend(relativeTime);
+    dayjs.locale('nl');
+
+    return dayjs;
+}
+
+
+/* Slider deps async function */
+async function loadSliderDeps() {
+    const DraggableModule = await import(/* webpackChunkName: "draggable-inertia" */ 'gsap/Draggable.js');
+    const InertiaPluginModule = await import(/* webpackChunkName: "draggable-inertia" */ 'gsap/InertiaPlugin.js');
+
+    const Draggable = DraggableModule.default || DraggableModule;
+    const InertiaPlugin = InertiaPluginModule.default || InertiaPluginModule;
+
+    gsap.registerPlugin(Draggable, InertiaPlugin);
+    return { Draggable, InertiaPlugin };
+}
+
+
+/* Masonry async function */
+async function loadMasonry() {
+    const MasonryModule = await import(/* webpackChunkName: "masonry" */ 'masonry-layout');
+    return MasonryModule.default || MasonryModule;
+}
+
+
+/* Infinite Scroll async function */
+async function loadInfiniteScroll() {
+    const InfiniteScrollModule = await import(/* webpackChunkName: "infinite-scroll" */ 'infinite-scroll');
+    return InfiniteScrollModule.default || InfiniteScrollModule;
+}
+
+
+/* ImagesLoaded async function */
+async function loadImagesLoaded() {
+    const ImagesLoadedModule = await import(/* webpackChunkName: "imagesloaded" */ 'imagesloaded');
+    return ImagesLoadedModule.default || ImagesLoadedModule;
+}
+
+
 
 /* Importing helper functions */
 import overscroll from './helpers/overscroll.mjs';
 import imageLoader from './helpers/imageloader.mjs';
-import {callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll} from './helpers/functions.mjs';
+import { callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll } from './helpers/functions.mjs';
 
-/* Importing global / side-wide modules */
+/* Importing global / site-wide modules */
 import main from './global/main.mjs';
-import presentationPlaceholders from './global/presentation-placeholders.mjs';
 import activeMenuItem from './global/active-menu-item.mjs';
 import colorChangeTrigger from './global/color-change-trigger.mjs';
 import buttons from './global/buttons.mjs';
@@ -85,67 +118,40 @@ import forms from './global/forms.mjs';
 import header from './template-parts/header.mjs';
 import footer from './template-parts/footer.mjs';
 
-/* Importing template-parts */
-import statement from './template-parts/statement.mjs';
-import textgrid from './template-parts/textgrid.mjs';
-import textblock from './template-parts/textblock.mjs';
-import images from './template-parts/images.mjs';
-import statistics from './template-parts/statistics.mjs';
-import columnscroller from './template-parts/columnscroller.mjs';
-import fallingimages from './template-parts/fallingimages.mjs';
-import textcarousel from './template-parts/textcarousel.mjs';
-import tabbedcontent from './template-parts/tabbedcontent.mjs';
-import dienstenscroller from './template-parts/dienstenscroller.mjs';
-import procescarousel from './template-parts/procescarousel.mjs';
-import perspectivegallery from './template-parts/perspectivegallery.mjs';
-import logopresentation from './template-parts/logopresentation.mjs';
-import faq from './template-parts/faq.mjs';
-import goalform from './template-parts/goalform.mjs';
 
-/* Modules */
-import reviewslider from './modules/reviewslider.mjs';
-import singlereview from './modules/singlereview.mjs';
-import logos from './modules/logos.mjs';
-import team from './modules/team.mjs';
-import woordstreamer from './modules/woordstreamer.mjs';
-import projectslider from './modules/projectslider.mjs';
-import projectgrid from './modules/projectgrid.mjs';
-import recentposts from './modules/recentposts.mjs';
-import contactform from './modules/contactform.mjs';
-import presentationform from './modules/presentationform.mjs';
-import popunder from './modules/popunder.mjs';
-import linkinbio from './modules/linkinbio.mjs';
+/* Flags */
+let modulesLoaded = false; // Flag to check if all modules are loaded
+let transitionComplete = false; // Flag for initial animation or page transition completion
 
-/* Blog */
-import blogOverview from './blog/overview.mjs';
-import blogSingle from './blog/single.mjs';
-import shortcodes from './blog/shortcodes.mjs';
-
-/* CTA's */
-import ctapresentation from './template-parts/ctapresentation.mjs';
-import ctastreamer from './template-parts/ctastreamer.mjs';
-import ctaleadform from './template-parts/ctaleadform.mjs';
-
-
-
-/* Setup function for listening to reveal animation */
+// /* Setup function for listening to reveal animation */
 let revealAnimationListener = {
     value: false,
-
-    get state() {
-        return this.value;
-    },
+    get state() { return this.value; },
     set state(val) {
         this.value = val;
         this.listener(val);
     },
-    listener: function (val) {},
+    listener: function (val) { },
     registerNewListener: function (externalListenerFunction) {
         this.listener = externalListenerFunction;
     }
 };
 
-/* Creating swup instance */
+/* Enable all disabled ScrollTriggers after reveal is done */
+revealAnimationListener.registerNewListener((val) => {
+    if (val === true) {
+        ScrollTrigger.getAll().forEach(singleScrollTrigger => singleScrollTrigger.enable());
+        ScrollTrigger.refresh(true);
+
+        if (blobity) {
+            blobity.updateOptions({ opacity: 0.1, zIndex: 50 });
+            blobity.bounce();
+        }
+    }
+});
+
+
+/* Creating Swup instance */
 const swup = new Swup({
     containers: ['.js-swap-container'],
     animateHistoryBrowsing: true,
@@ -161,146 +167,75 @@ const swup = new Swup({
                 to: /bedankt(.*)/,
                 in: (next) => {
                     const pageLoader = document.querySelector('.js-thanks-loader');
-
-                    gsap.to(pageLoader, {
-                        autoAlpha: 0,
-                        onComplete: () => {
-                            /* Remove element */
+                    gsap.to(pageLoader, { autoAlpha: 0, onComplete: () => {
                             pageLoader.remove();
-
-                            /* Set animation listener */
-                            revealAnimationListener.state = true;
-
-                            /* Reset blobity */
-                            blobity.reset();
-
-                            /* Init new page content */
+                            transitionComplete = true;
+                            activateRevealListenerIfReady();
+                            if (blobity) blobity.reset();
                             next();
-                        }
-                    });
+                        }});
                 },
                 out: (next) => {
-                    /* Create loader element */
                     let pageLoaderWrapper = document.createElement('div');
                     pageLoaderWrapper.classList.add('loader', 'js-thanks-loader');
-
-                    /* Create Font Awesome spinner */
                     let pageLoaderSpinner = document.createElement('i');
                     pageLoaderSpinner.classList.add('loader__spinner', 'fa-duotone', 'fa-spinner-third', 'fa-spin');
                     pageLoaderSpinner.style.setProperty('--fa-secondary-opacity', '0.25');
-
-                    /* Insert elements into eachother and then into body */
                     pageLoaderWrapper.appendChild(pageLoaderSpinner);
                     document.body.appendChild(pageLoaderWrapper);
-
-                    /* Hide loader at first */
-                    gsap.set(pageLoaderWrapper, {
-                        autoAlpha:0
-                    });
-
-                    /* Animate page-out reveal */
-                    gsap.to(pageLoaderWrapper, {
-                        autoAlpha:1,
-                        onComplete:() => {
-                            setTimeout(function() {
-                                revealAnimationListener.state = false;
-
-                                document.documentElement.scrollTop = document.body.scrollTop = 0;
-                            }, 100);
-
-                            setTimeout(function() {
-                                next();
-                            }, 200);
-                        }
-                    });
+                    gsap.set(pageLoaderWrapper, { autoAlpha: 0 });
+                    gsap.to(pageLoaderWrapper, { autoAlpha: 1, onComplete: () => {
+                            setTimeout(() => { transitionComplete = false; document.documentElement.scrollTop = 0; }, 100);
+                            setTimeout(() => { next(); }, 200);
+                        }});
                 }
-            }, {
+            },
+            {
                 from: '(.*)',
                 to: '(.*)',
                 in: (next) => {
-                    let pageTransitionWrapper = document.querySelector('.js-page-transition'),
-                        pageTransitionTitle = document.querySelector('.js-transition-page-title'),
-                        pageTransitionTitleText = document.querySelector('.js-item-object');
-
+                    const pageTransitionWrapper = document.querySelector('.js-page-transition');
+                    const pageTransitionTitle = document.querySelector('.js-transition-page-title');
+                    const pageTransitionTitleText = document.querySelector('.js-item-object');
                     gsap.to(pageTransitionTitle, {
-                        autoAlpha: 1,
-                        onStart:() => {
-                            document.documentElement.scrollTop = document.body.scrollTop = 0;
-
+                        autoAlpha: 1, onStart: () => {
+                            document.documentElement.scrollTop = 0;
                             pageTransitionTitle.textContent = pageTransitionTitleText.dataset.itemTitle;
                         }
                     });
-
                     gsap.to(pageTransitionWrapper, {
                         height: "0",
                         ease: "power1.out",
                         duration: .625,
                         delay: .625,
                         onComplete: () => {
-                            /* Remove overlay */
                             pageTransitionWrapper.remove();
-
-                            /* Set animation listener */
-                            revealAnimationListener.state = true;
-
-                            /* Reset blobity */
-                            blobity.reset();
-
-                            /* Init new page content */
+                            transitionComplete = true;
+                            activateRevealListenerIfReady();
+                            if (blobity) blobity.reset();
                             next();
                         }
                     });
                 },
                 out: (next) => {
-                    if(document.querySelector('.js-page-transition')) {
-                        const pageTransitions = document.querySelectorAll('.js-page-transition');
-
-                        pageTransitions.forEach(pageTransition => {
-                            pageTransition.parentNode.removeChild(pageTransition);
-                        });
-                    }
-
-                    /* Create top-level element */
                     let pageTransitionWrapper = document.createElement('div');
                     pageTransitionWrapper.className = 'js-page-transition';
-
-                    /* Create title el itself */
                     let pageTransitionTitle = document.createElement('div');
                     pageTransitionTitle.className = 'js-transition-page-title';
-
-                    /* Insert elements into eachother and then into body */
                     pageTransitionWrapper.appendChild(pageTransitionTitle);
                     document.body.appendChild(pageTransitionWrapper);
-
-                    /* Offset wrapper element */
-                    gsap.set(pageTransitionWrapper, {
-                        yPercent:100,
-                        height:"100%"
-                    });
-
-                    /* Initially hide title-text element */
-                    gsap.set(pageTransitionTitle, {
-                        autoAlpha:0
-                    });
-
-                    /* Animate page-out reveal */
+                    gsap.set(pageTransitionWrapper, { yPercent: 100, height: "100%" });
+                    gsap.set(pageTransitionTitle, { autoAlpha: 0 });
                     gsap.to(pageTransitionWrapper, {
-                        yPercent:0,
+                        yPercent: 0,
                         ease: "power1.in",
                         duration: .625,
-                        onComplete: () => {
-                            revealAnimationListener.state = false;
-
-                            next();
-                        }
+                        onComplete: () => { transitionComplete = false; next(); }
                     });
-
                 }
             }
         ]),
-        new SwupHeadPlugin({
-            persistTags: 'style[data-blobity-global-styles]'
-        }),
+        new SwupHeadPlugin({ persistTags: 'style[data-blobity-global-styles]' }),
         new SwupFormsPlugin(),
         new SwupPreloadPlugin(),
         new SwupGtmPlugin(),
@@ -316,88 +251,274 @@ const swup = new Swup({
 });
 
 
+/* Cache loaded modules */
+const loadedModules = {};
 
 /* Initialize functions on load */
-function swupInit() {
-    document.fonts.ready.then(function () {
-        /* Helpers */
-        overscroll.stopOverscroll(gsap);
-        imageLoader.loadImages(ScrollTrigger);
+async function swupInit() {
+    await document.fonts.ready;
 
-        /* Main template */
-        main.init(gsap, blobity, callAfterResize, disableScroll, enableScroll);
-        presentationPlaceholders.init(getCookie);
-        activeMenuItem.init();
+    // Array to keep track of async initiation promises
+    const asyncPromises = [];
 
-        // Globals
-        colorChangeTrigger.init(gsap, blobity, ScrollTrigger);
-        buttons.init(gsap, blobity, callAfterResize);
-        popups.init(gsap, blobity, callAfterResize, disableScroll, enableScroll);
-        forms.init(gsap, ScrollTrigger, getNextSibling, getPreviousSibling);
+    /* Helpers */
+    overscroll.stopOverscroll(gsap);
+    imageLoader.loadImages(ScrollTrigger);
 
-        /* Importing theme parts */
-        header.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        footer.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn, blobity);
+    /* Blobity */
+    if(blobity === null) {
+        await initializeBlobity();
+    }
 
-        /* Template parts */
-        statement.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        textgrid.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        textblock.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        images.init(gsap, stFadeIn);
-        statistics.init(gsap, callAfterResize, buildTlAfterResize, tlSetup);
-        columnscroller.init(gsap, ScrollTrigger, callAfterResize);
-        ctapresentation.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        ctastreamer.init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        ctaleadform.init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        fallingimages.init(gsap, ScrollTrigger, callAfterResize);
-        textcarousel.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
-        procescarousel.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
-        tabbedcontent.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, blobity, tlSetup, tlTextReveal, tlFadeIn);
-        dienstenscroller.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, createValidHtmlId);
-        perspectivegallery.init(gsap, stFadeIn, ScrollTrigger, Masonry);
-        logopresentation.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        faq.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        goalform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+    /* Main template */
+    main.init(gsap, blobity, callAfterResize, disableScroll, enableScroll);
+    activeMenuItem.init();
 
-        /* Modules */
-        reviewslider.init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        singlereview.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        logos.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        team.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        woordstreamer.init(gsap, callAfterResize, ScrollTrigger);
-        projectslider.init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        projectgrid.init(gsap, ScrollTrigger, stFadeIn, blobity, Masonry, InfiniteScroll, imagesLoaded);
-        recentposts.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings);
-        contactform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, getNextSibling, getPreviousSibling);
-        presentationform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        popunder.init(gsap, ScrollTrigger, blobity, callAfterResize);
-        linkinbio.init(gsap, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn);
+    /* Globals */
+    colorChangeTrigger.init(gsap, blobity, ScrollTrigger);
+    buttons.init(gsap, blobity, callAfterResize);
+    popups.init(gsap, blobity, callAfterResize, disableScroll, enableScroll);
+    forms.init(gsap, ScrollTrigger, getNextSibling, getPreviousSibling);
 
-        /* Blog */
-        blogOverview.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, InfiniteScroll);
-        blogSingle.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, getSiblings);
-        shortcodes.init(gsap, ScrollTrigger, createValidHtmlId, getCookie, stFadeIn);
+    /* Theme parts */
+    header.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+    footer.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn, blobity);
 
-        /* Enable all disabled ScrollTriggers after initial reveal is done */
-        revealAnimationListener.registerNewListener((val) => { if(val === true) {
-            ScrollTrigger.getAll().forEach(singleScrollTrigger => {
-                singleScrollTrigger.enable();
-            });
+    /* Template parts */
+    if (document.querySelector('.js-statement')) { // Statement
+        asyncPromises.push(import('./template-parts/statement.mjs').then(({ default: statement }) => {
+            statement.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-textgrid')) { // Textgrid
+        asyncPromises.push(import('./template-parts/textgrid.mjs').then(({ default: textgrid }) => {
+            textgrid.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-textblock')) { // Textblock
+        asyncPromises.push(import('./template-parts/textblock.mjs').then(({ default: textblock }) => {
+            textblock.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-block-images')) { // Images
+        asyncPromises.push(import('./template-parts/images.mjs').then(({ default: images }) => {
+            images.init(gsap, stFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-statistics')) { // Statistics
+        asyncPromises.push(import('./template-parts/statistics.mjs').then(({ default: statistics }) => {
+            statistics.init(gsap, callAfterResize, buildTlAfterResize, tlSetup);
+        }));
+    }
+    if (document.querySelector('.js-column-scroller')) { // Column scroller
+        asyncPromises.push(import('./template-parts/columnscroller.mjs').then(({ default: columnscroller }) => {
+            columnscroller.init(gsap, ScrollTrigger, callAfterResize);
+        }));
+    }
+    if (document.querySelector('.js-falling-images')) { // Falling images
+        asyncPromises.push(import('./template-parts/fallingimages.mjs').then(({ default: fallingimages }) => {
+            fallingimages.init(gsap, ScrollTrigger, callAfterResize);
+        }));
+    }
+    if (document.querySelector('.js-textcarousel')) { // Text carousel
+        asyncPromises.push(import('./template-parts/textcarousel.mjs').then(({ default: textcarousel }) => {
+            textcarousel.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
+        }));
+    }
+    if (document.querySelector('.js-process-carousel')) { // Proces carousel
+        asyncPromises.push(import('./template-parts/procescarousel.mjs').then(({ default: procescarousel }) => {
+            procescarousel.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
+        }));
+    }
+    if (document.querySelector('.js-tabbed-content')) { // Tabbed content
+        asyncPromises.push(import('./template-parts/tabbedcontent.mjs').then(({ default: tabbedcontent }) => {
+            tabbedcontent.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, blobity, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-service-scroller')) { // Dienstenscroller
+        asyncPromises.push(import('./template-parts/dienstenscroller.mjs').then(({ default: dienstenscroller }) => {
+            dienstenscroller.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, createValidHtmlId);
+        }));
+    }
+    if (document.querySelector('.js-perspective-gallery')) { // Perspective gallery
+        asyncPromises.push(
+            Promise.all([
+                import('./template-parts/perspectivegallery.mjs'),
+                loadMasonry()
+            ]).then(([{ default: perspectivegallery }, Masonry]) => {
+                perspectivegallery.init(gsap, stFadeIn, ScrollTrigger, Masonry);
 
-            /* Refresh global ScrollTrigger and bounce Blobity to reset */
-            ScrollTrigger.refresh(true);
+                /* Add to cache with unload function */
+                loadedModules.perspectivegallery = { unload: () => perspectivegallery.unload(Masonry) };
+            })
+        );
+    }
+    if (document.querySelector('.js-logo-presentation')) { // Logo presentation
+        asyncPromises.push(import('./template-parts/logopresentation.mjs').then(({ default: logopresentation }) => {
+            logopresentation.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-faqs')) { // FAQ
+        asyncPromises.push(import('./template-parts/faq.mjs').then(({ default: faq }) => {
+            faq.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-goalform')) { // Goalform
+        asyncPromises.push(import('./template-parts/goalform.mjs').then(({ default: goalform }) => {
+            goalform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
 
-            blobity.updateOptions({
-                opacity:.1,
-                zIndex: '50'
-            });
+    /* CTA's */
+    if (document.querySelector('.js-cta-presentation')) { // CTA Presentation
+        asyncPromises.push(import('./template-parts/ctapresentation.mjs').then(({ default: ctapresentation }) => {
+            ctapresentation.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-cta-streamer')) { // CTA Streamer
+        asyncPromises.push(import('./template-parts/ctastreamer.mjs').then(({ default: ctastreamer }) => {
+            ctastreamer.init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-cta-leadform')) { // CTA Leadform
+        asyncPromises.push(import('./template-parts/ctaleadform.mjs').then(({ default: ctaleadform }) => {
+            ctaleadform.init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
 
-            blobity.bounce();
-        }});
+    /* Modules */
+    if (document.querySelector('.js-presentation-first-name-placeholder') ||
+        document.querySelector('.js-presentation-business-name-placeholder')) { // Presentation placeholders
+        asyncPromises.push(import('./global/presentation-placeholders.mjs').then(({ default: presentationPlaceholders }) => {
+            presentationPlaceholders.init(getCookie);
+        }));
+    }
+    if (document.querySelector('.js-review-slider')) { // Review slider
+        asyncPromises.push(import('./modules/reviewslider.mjs').then(({ default: reviewslider }) => {
+            reviewslider.init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-single-review')) { // Single review
+        asyncPromises.push(import('./modules/singlereview.mjs').then(({ default: singlereview }) => {
+            singlereview.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-logos')) { // Logo's
+        asyncPromises.push(import('./modules/logos.mjs').then(({ default: logos }) => {
+            logos.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-team')) { // Team
+        asyncPromises.push(import('./modules/team.mjs').then(({ default: team }) => {
+            team.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-woordstreamer')) { // Woordstreamer
+        asyncPromises.push(import('./modules/woordstreamer.mjs').then(({ default: woordstreamer }) => {
+            woordstreamer.init(gsap, callAfterResize, ScrollTrigger);
+        }));
+    }
+    if (document.querySelector('.js-project-slider')) { // Project slider
+        asyncPromises.push(
+            Promise.all([
+                import('./modules/projectslider.mjs'),
+                loadSliderDeps()
+            ]).then(([{ default: projectslider }, { Draggable, InertiaPlugin }]) => {
+
+                projectslider.init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+            })
+        );
+    }
+    if (document.querySelector('.js-project-grid')) { // Project grid
+        asyncPromises.push(
+            Promise.all([
+                import('./modules/projectgrid.mjs'),
+                loadMasonry(),
+                loadInfiniteScroll(),
+                loadImagesLoaded()
+            ]).then(([{ default: projectgrid }, Masonry, InfiniteScroll, imagesLoaded]) => {
+                projectgrid.init(gsap, ScrollTrigger, stFadeIn, Masonry, InfiniteScroll, imagesLoaded);
+
+                /* Add to cache with unload function */
+                loadedModules.projectgrid = { unload: () => projectgrid.unload(gsap, Masonry, InfiniteScroll) };
+            })
+        );
+    }
+    if (document.querySelector('.js-recent-posts')) { // Recent posts
+        asyncPromises.push(import('./modules/recentposts.mjs').then(async ({ default: recentposts }) => {
+            const dayjs = await loadDayjs();
+
+            recentposts.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings);
+        }));
+    }
+    if (document.querySelector('.js-contact-form')) { // Contact form
+        asyncPromises.push(import('./modules/contactform.mjs').then(({ default: contactform }) => {
+            contactform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, getNextSibling, getPreviousSibling);
+        }));
+    }
+    if (document.querySelector('.js-presentation-form')) { // Presentation form
+        asyncPromises.push(import('./modules/presentationform.mjs').then(({ default: presentationform }) => {
+            presentationform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+        }));
+    }
+    if (document.querySelector('.js-popunder')) { // Popunder
+        asyncPromises.push(import('./modules/popunder.mjs').then(({ default: popunder }) => {
+            popunder.init(gsap, ScrollTrigger, blobity, callAfterResize);
+        }));
+    }
+    if (document.querySelector('.js-link-in-bio')) { // Link in bio
+        asyncPromises.push(import('./modules/linkinbio.mjs').then(({ default: linkinbio }) => {
+            linkinbio.init(gsap, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn);
+        }));
+    }
+
+    /* Blog related */
+    if (document.querySelector('.js-blog-home')) { // Blog overview
+        asyncPromises.push(
+            Promise.all([
+                import('./blog/overview.mjs'),
+                loadInfiniteScroll(),
+                loadDayjs()
+            ]).then(([{ default: blogOverview }, InfiniteScroll, dayjs]) => {
+                blogOverview.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, InfiniteScroll);
+
+                /* Add to cache with unload function */
+                loadedModules.blogOverview = { unload: () => blogOverview.unload(gsap, InfiniteScroll) };
+            })
+        );
+    }
+    if (document.querySelector('.js-blog-single') || document.querySelector('.js-related-posts') || document.querySelector('.js-tag-list')) { // Blog single
+        asyncPromises.push(
+            Promise.all([
+                import('./blog/single.mjs'),
+                loadDayjs()
+            ]).then(([{ default: blogSingle }, dayjs]) => {
+                blogSingle.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, getSiblings);
+            })
+        );
+    }
+    if (
+        document.querySelector('.js-blog-download') ||
+        (document.querySelector('.js-blog-single-content') && document.querySelector('.js-table-of-contents')) ||
+        document.querySelector('.js-blockquote') ||
+        document.querySelector('.js-checklist')
+    ) { // Shortcodes
+        asyncPromises.push(import('./blog/shortcodes.mjs').then(({ default: shortcodes }) => {
+            shortcodes.init(gsap, ScrollTrigger, createValidHtmlId, getCookie, stFadeIn);
+        }));
+    }
+
+
+
+    // Once all async imports and initializations are done, set modulesLoaded to true
+    Promise.all(asyncPromises).then(() => {
+        modulesLoaded = true;
+        activateRevealListenerIfReady();
     });
-} swup.hooks.on('content:replace', swupInit);
+}
+swup.hooks.on('content:replace', swupInit);
 
-if(document.readyState === 'complete') {
+if (document.readyState === 'complete') {
     swupInit();
 } else {
     document.addEventListener('DOMContentLoaded', () => {
@@ -405,15 +526,22 @@ if(document.readyState === 'complete') {
     });
 }
 
+/* Function to trigger revealAnimationListener when both conditions are true */
+function activateRevealListenerIfReady() {
+    if (modulesLoaded && transitionComplete) {
+        revealAnimationListener.state = true; // Both conditions are true, activate revealAnimationListener
+    }
+}
 
 
 /* Kill functions on content replace */
 function swupUnload() {
+    modulesLoaded = false;
+
     /* Kill individual timelines */
     gsap.globalTimeline.getChildren(true, false).forEach(timeline => {
         /* Unset properties */
         const targets = timeline.getChildren(true, true, false);
-
         for(let i = 0; i < targets.length; i++) {
             if(targets[i].targets().length) {
                 gsap.set(targets[i].targets(), {
@@ -421,71 +549,58 @@ function swupUnload() {
                 });
             }
         }
-
         /* Kill timeline */
         timeline.kill();
     });
 
-    /* Kill all scrollTriggers */
-    //ScrollTrigger.killAll();
-    ScrollTrigger.getAll().forEach(t => {
-        t.scroll(0);
-        t.kill(true);
-    });
+    /* Kill all ScrollTriggers */
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
 
-    /* Main template */
+    /* Main template unload */
     main.unload(gsap, enableScroll);
 
-    /* Other templates */
-    projectgrid.unload(gsap, Masonry, InfiniteScroll);
-    perspectivegallery.unload(Masonry);
-    blogOverview.unload(gsap, InfiniteScroll);
-} swup.hooks.before('content:replace', swupUnload);
+    /* Other templates unload */
+    for (const moduleName in loadedModules) {
+        if (typeof loadedModules[moduleName].unload === 'function') {
+            loadedModules[moduleName].unload();
+        }
+    }
 
+    /* Clear the loadedModules cache after unloading */
+    for (const key in loadedModules) {
+        delete loadedModules[key];
+    }
+}
+swup.hooks.before('content:replace', swupUnload);
 
 
 /* Bounce Blobity and refresh ScrollTrigger on resize */
-let resetColoring;
-
-(resetColoring = function(){
-    blobity.bounce();
-
+callAfterResize(() => {
+    if (blobity) blobity.bounce();
     ScrollTrigger.refresh(true);
-})();
-
-callAfterResize(resetColoring);
-
+});
 
 
 /* Initial loader reveal */
-document.addEventListener("readystatechange", (event) => {
-    if(document.readyState === 'complete' && document.querySelector('.js-loader')) {
-        const loader = document.querySelector('.js-loader'),
-            topBar = document.querySelector(".js-top-bar");
-
-        gsap.set(topBar, {
-            yPercent: -100
-        });
-
+document.addEventListener("readystatechange", () => {
+    if (document.readyState === 'complete' && document.querySelector('.js-loader')) {
+        const loader = document.querySelector('.js-loader');
+        const topBar = document.querySelector(".js-top-bar");
+        gsap.set(topBar, { yPercent: -100 });
         gsap.to(loader, {
             autoAlpha: 0,
             onComplete: () => {
                 loader.remove();
-
-                revealAnimationListener.state = true;
-
-                gsap.to(topBar, {
-                    duration: .5,
-                    yPercent: 0
-                });
+                transitionComplete = true;
+                activateRevealListenerIfReady();
+                gsap.to(topBar, { duration: .5, yPercent: 0 });
             }
         });
     }
 });
 
 
-
 /* Prevent browser from trying to restore scroll position from history */
-if(history.scrollRestoration) {
+if (history.scrollRestoration) {
     history.scrollRestoration = "manual";
 }

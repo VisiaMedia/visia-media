@@ -1,133 +1,107 @@
 /* Initialize */
-export function init(gsap, blobity, callAfterResize){
-    if(document.querySelector('.js-global-button')) {
-        gsap.utils.toArray(".js-global-button").forEach(globalButton => {
-            const globalButtonIcon = globalButton.querySelector('.js-global-button-icon'),
-                globalButtonFill = globalButton.querySelector('.js-global-button-fill');
+export function init(gsap, blobity, callAfterResize) {
+    const globalButtons = document.querySelectorAll('.js-global-button');
+    const roundedButtons = document.querySelectorAll('.js-rounded-button');
 
-            let isBoxedContent;
-
-            if(globalButton.classList.contains('js-boxed-content-button')) {
-                isBoxedContent = true;
-            } else {
-                isBoxedContent = false;
-            }
+    /* Global Buttons */
+    if (globalButtons.length > 0) {
+        globalButtons.forEach(globalButton => {
+            const globalButtonIcon = globalButton.querySelector('.js-global-button-icon');
+            const globalButtonFill = globalButton.querySelector('.js-global-button-fill');
+            const isBoxedContent = globalButton.classList.contains('js-boxed-content-button');
 
             /* Set Blobity data-attribute on buttons */
-            let setBlobityRadius;
+            const setBlobityRadius = () => {
+                if(blobity) {
+                    globalButtonFill.setAttribute('data-blobity-radius', ((globalButtonFill.offsetWidth * 2) + 16) / 2);
+                }
+            };
 
-            (setBlobityRadius = function(){
-                globalButtonFill.setAttribute('data-blobity-radius', ((globalButtonFill.offsetWidth * 2) + 16) / 2);
-            })();
-
+            setBlobityRadius();
             callAfterResize(setBlobityRadius);
-
-
 
             /* Setup timeline */
             let globalButtonTl = gsap.timeline({
                 paused: true,
                 yoyo: true,
                 onStart: () => {
-                    blobity.focusElement(globalButtonFill);
-                    blobity.updateOptions({
-                        zIndex: isBoxedContent ? 25 : 1
-                    });
+                    if(blobity) {
+                        blobity.focusElement(globalButtonFill);
+                        blobity.updateOptions({zIndex: isBoxedContent ? 25 : 1});
+                    }
                 },
                 onComplete: () => {
-                    blobity.focusElement(globalButtonFill);
-                    blobity.updateOptions({
-                        zIndex: isBoxedContent ? 25 : 1
-                    });
+                    if(blobity) {
+                        blobity.focusElement(globalButtonFill);
+                        blobity.updateOptions({zIndex: isBoxedContent ? 25 : 1});
+                    }
                 },
                 onReverseComplete: () => {
-                    gsap.set([globalButtonIcon, globalButtonFill], {
-                        clearProps: "all"
-                    });
-
-                    blobity.updateOptions({
-                        zIndex: 50
-                    });
+                    gsap.set([globalButtonIcon, globalButtonFill], { clearProps: "all" });
+                    if (blobity) blobity.updateOptions({ zIndex: 50 });
                 }
             });
 
-            globalButtonTl.to(globalButtonIcon, {
-                color: "#ffffff"
-            }, '<');
+            globalButtonTl.to(globalButtonIcon, { color: "#ffffff" }, '<')
+                .to(globalButtonFill, {
+                    background: '#ea2c76',
+                    borderColor: '#ea2c76',
+                    scale: 2
+                }, '<');
 
-            globalButtonTl.to(globalButtonFill, {
-                background: '#ea2c76',
-                borderColor: '#ea2c76',
-                scale: 2
-            }, '<');
-
-            /* Add event functions and listeners */
-            globalButton.addEventListener("mouseenter", function() {
-                if(window.matchMedia("(pointer: fine)").matches) {
+            /* Event listeners */
+            const handleMouseEnter = () => {
+                if (window.matchMedia("(pointer: fine)").matches) {
                     globalButtonTl.play(0);
                 }
-            });
-            globalButton.addEventListener("mouseleave", function() {
-                if(window.matchMedia("(pointer: fine)").matches) {
-                    blobity.reset();
+            };
 
+            const handleMouseLeave = () => {
+                if (window.matchMedia("(pointer: fine)").matches) {
+                    if (blobity) blobity.reset();
                     globalButtonTl.reverse(0);
-
-                    blobity.bounce();
+                    if (blobity) blobity.bounce();
                 }
-            });
-            globalButton.addEventListener("click", function() {
-                if(window.matchMedia("(pointer: coarse)").matches) {
-                    globalButtonTl.play(0).then(function() {
-                        setTimeout(function(){
-                            globalButtonTl.reverse(0);
-                        }, 125);
+            };
+
+            const handleClick = () => {
+                if (window.matchMedia("(pointer: coarse)").matches) {
+                    globalButtonTl.play(0).then(() => {
+                        setTimeout(() => globalButtonTl.reverse(0), 125);
                     });
                 }
-            });
+            };
+
+            globalButton.addEventListener("mouseenter", handleMouseEnter);
+            globalButton.addEventListener("mouseleave", handleMouseLeave);
+            globalButton.addEventListener("click", handleClick);
 
             /* Invalidate timeline after resize */
-            callAfterResize(function() {
-                globalButtonTl.seek(0).invalidate();
-            });
+            callAfterResize(() => globalButtonTl.seek(0).invalidate());
         });
     }
 
-
-    /* Rounded buttons */
-    if(document.querySelector('.js-rounded-button')) {
-        const roundedButtons = document.querySelectorAll('.js-rounded-button');
-
+    /* Rounded Buttons */
+    if (roundedButtons.length > 0) {
         roundedButtons.forEach(roundedButton => {
             const roundedButtonOutline = roundedButton.querySelector('.js-rounded-button-outline');
 
-            /* Add event listeners */
-            roundedButton.addEventListener("mouseenter", function() {
-                if(window.matchMedia("(pointer: fine)").matches) {
-                    blobity.updateOptions({
-                        opacity: 0
-                    });
-
-                    /* Show outline */
-                    gsap.to(roundedButtonOutline, {
-                        duration:.225,
-                        inset: '-8px'
-                    });
+            const handleMouseEnter = () => {
+                if (window.matchMedia("(pointer: fine)").matches) {
+                    if (blobity) blobity.updateOptions({ opacity: 0 });
+                    gsap.to(roundedButtonOutline, { duration: 0.225, inset: '-8px' });
                 }
-            });
-            roundedButton.addEventListener("mouseleave", function() {
-                if(window.matchMedia("(pointer: fine)").matches) {
-                    blobity.updateOptions({
-                        opacity:0.1
-                    });
+            };
 
-                    /* Hide outline */
-                    gsap.to(roundedButtonOutline, {
-                        duration:.225,
-                        inset: '0px'
-                    });
+            const handleMouseLeave = () => {
+                if (window.matchMedia("(pointer: fine)").matches) {
+                    if (blobity) blobity.updateOptions({ opacity: 0.1 });
+                    gsap.to(roundedButtonOutline, { duration: 0.225, inset: '0px' });
                 }
-            });
+            };
+
+            roundedButton.addEventListener("mouseenter", handleMouseEnter);
+            roundedButton.addEventListener("mouseleave", handleMouseLeave);
         });
     }
 }

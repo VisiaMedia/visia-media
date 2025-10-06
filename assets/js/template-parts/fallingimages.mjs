@@ -1,19 +1,17 @@
 /* Initialize */
 import {callAfterResize} from "../helpers/functions.mjs";
 
-export function init(gsap, ScrollTrigger, callAfterResize){
-    if(document.querySelector('.js-falling-images')) {
+export function init(gsap, ScrollTrigger) {
+    const imagefallers = gsap.utils.toArray('.js-falling-images');
 
-        /* Get all instances as array */
-        const imagefallers = gsap.utils.toArray('.js-falling-images');
-
-        /* Loop over faller instances */
+    if (imagefallers.length > 0) {
         imagefallers.forEach(imagefaller => {
             const imagefallerList = imagefaller.querySelector('.js-falling-images-list');
+            const imagefallerItems = imagefaller.querySelectorAll('.js-falling-images-item');
 
-            /* Setup */
-            let setupSizes = function() {
-                const firstItem = imagefaller.querySelector('.js-falling-images-item');
+            /* Setup function for sizes */
+            const setupSizes = () => {
+                const firstItem = imagefallerItems[0];
                 const offsetSize = (window.outerHeight - firstItem.offsetHeight) / 2;
 
                 /* Position list to vertically center first row */
@@ -21,37 +19,25 @@ export function init(gsap, ScrollTrigger, callAfterResize){
                     y: offsetSize
                 });
 
-                /* Make up for new offset */
+                /* Adjust padding to accommodate new offset */
                 gsap.set(imagefaller, {
                     paddingBottom: offsetSize,
-                    onComplete:() => {
+                    onComplete: () => {
                         ScrollTrigger.refresh();
                     }
                 });
-            }
+            };
 
             /* Execute once */
             setupSizes();
 
             /* Rebuild on resize */
-            callAfterResize(function() {
-                setupSizes();
-            });
+            callAfterResize(setupSizes);
 
-
-
-            /* Parallax (desktop only) */
-            const imagefallerItems = imagefaller.querySelectorAll('.js-falling-images-item');
-
-            /* Add will-change functions */
-            function addWillChange(item) {
-                item.style.willChange = 'transform';
-            }
-            function removeWillChange(item) {
-                item.style.willChange = 'auto'
-            }
-
+            /* Parallax effect */
             imagefallerItems.forEach(imagefallerItem => {
+                const randomOffset = () => "-=" + (gsap.getProperty(imagefallerItem, 'paddingTop') * Math.random() * 0.9 + 0.1);
+
                 gsap.to(imagefallerItem, {
                     scrollTrigger: {
                         trigger: imagefallerItem,
@@ -59,22 +45,12 @@ export function init(gsap, ScrollTrigger, callAfterResize){
                         end: 'bottom top',
                         scrub: 1,
                         refreshPriority: imagefaller.dataset.stCount,
-                        onEnter:() => {
-                            addWillChange(imagefallerItem);
-                        },
-                        onEnterBack:() => {
-                            addWillChange(imagefallerItem);
-                        },
-                        onLeave:() => {
-                            removeWillChange(imagefallerItem);
-                        },
-                        onLeaveBack:() => {
-                            removeWillChange(imagefallerItem);
-                        }
+                        onEnter: () => imagefallerItem.style.willChange = 'transform',
+                        onEnterBack: () => imagefallerItem.style.willChange = 'transform',
+                        onLeave: () => imagefallerItem.style.willChange = 'auto',
+                        onLeaveBack: () => imagefallerItem.style.willChange = 'auto',
                     },
-                    y:() => {
-                        return "-=" + (gsap.getProperty(imagefallerItem, 'paddingTop') * Math.random() * (1 - 0.1) + 0.1);
-                    }
+                    y: randomOffset
                 });
             });
         });

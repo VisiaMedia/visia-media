@@ -211,35 +211,24 @@ function getSiblings (elem) {
 
 
 
-/* Get first siblings of an element, with class */
-const getNextSibling = function (elem, selector) {
-    // Get the next sibling element
-    var sibling = elem.nextElementSibling;
-
-    // If there's no selector, return the first sibling
-    if (!selector) return sibling;
-
-    // If the sibling matches our selector, use it
-    // If not, jump to the next sibling and continue the loop
+/* Get next sibling with optional selector */
+const getNextSibling = (elem, selector = '') => {
+    let sibling = elem.nextElementSibling;
     while (sibling) {
-        if (sibling.matches(selector)) return sibling;
-        sibling = sibling.nextElementSibling
+        if (!selector || sibling.matches(selector)) return sibling;
+        sibling = sibling.nextElementSibling;
     }
+    return null; // Return null if no matching sibling found
 };
 
-const getPreviousSibling = function (elem, selector) {
-    // Get the next sibling element
-    var sibling = elem.previousElementSibling;
-
-    // If there's no selector, return the first sibling
-    if (!selector) return sibling;
-
-    // If the sibling matches our selector, use it
-    // If not, jump to the next sibling and continue the loop
+/* Get previous sibling with optional selector */
+const getPreviousSibling = (elem, selector = '') => {
+    let sibling = elem.previousElementSibling;
     while (sibling) {
-        if (sibling.matches(selector)) return sibling;
+        if (!selector || sibling.matches(selector)) return sibling;
         sibling = sibling.previousElementSibling;
     }
+    return null; // Return null if no matching sibling found
 };
 
 

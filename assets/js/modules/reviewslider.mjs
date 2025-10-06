@@ -1,209 +1,157 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
-    if(document.querySelector('.js-review-slider')) {
-        const reviewSliders = gsap.utils.toArray('.js-review-slider');
+export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+    const reviewSliders = gsap.utils.toArray('.js-review-slider');
 
-        /* Loop over instances */
+    if (reviewSliders.length > 0) {
         reviewSliders.forEach(reviewSlider => {
-            let currentSlide = 0,
-                reviewSliderList = reviewSlider.querySelector('.js-review-slider-list'),
-                reviewSliderItems = reviewSlider.querySelectorAll('.js-review-slider-list-item'),
-                reviewSliderNavItems = reviewSlider.querySelectorAll('.js-review-slider-nav-item'),
-                timeline = tlSetup(reviewSlider, reviewSlider.dataset.stCount);
+            let currentSlide = 0;
+            const reviewSliderList = reviewSlider.querySelector('.js-review-slider-list');
+            const reviewSliderItems = reviewSlider.querySelectorAll('.js-review-slider-list-item');
+            const reviewSliderNavItems = reviewSlider.querySelectorAll('.js-review-slider-nav-item');
+            const timeline = tlSetup(reviewSlider, reviewSlider.dataset.stCount);
 
             /* Build timeline */
-            let buildTimeline = function() {
-                /* Set stage for each slide */
-                reviewSliderItems.forEach(function(reviewSliderItem, i) {
-                    if(i === currentSlide) {
+            const buildTimeline = () => {
+                reviewSliderItems.forEach((reviewSliderItem, i) => {
+                    if (i === currentSlide) {
                         gsap.to(reviewSliderItem, {
-                            autoAlpha:1,
-                            immediateRender:false
+                            autoAlpha: 1,
+                            immediateRender: false
                         });
 
-                        /* Add animation for thumbnail */
-                        if(reviewSliderItem.querySelector('.js-review-slider-list-item-thumbnail')) {
-                            tlFadeIn(reviewSliderItem.querySelector('.js-review-slider-list-item-thumbnail'), timeline);
-                        }
+                        /* Add animation for thumbnail, details, and review */
+                        const thumbnail = reviewSliderItem.querySelector('.js-review-slider-list-item-thumbnail');
+                        const details = reviewSliderItem.querySelector('.js-review-slider-list-item-details');
+                        const review = reviewSliderItem.querySelector('.js-review-slider-list-item-review');
 
-                        /* Add animation for details */
-                        if(reviewSliderItem.querySelector('.js-review-slider-list-item-details')) {
-                            tlFadeIn(reviewSliderItem.querySelector('.js-review-slider-list-item-details'), timeline);
-                        }
-
-                        /* Add animation for review */
-                        if (reviewSliderItem.querySelector('.js-review-slider-list-item-review')) {
-                            tlFadeIn(reviewSliderItem.querySelector('.js-review-slider-list-item-review'), timeline);
-                        }
+                        if (thumbnail) tlFadeIn(thumbnail, timeline);
+                        if (details) tlFadeIn(details, timeline);
+                        if (review) tlFadeIn(review, timeline);
 
                         /* Add animation for navigation */
-                        if(reviewSlider.querySelector('.js-review-slider-nav')) {
-                            tlFadeIn(reviewSlider.querySelector('.js-review-slider-nav'), timeline);
-                        }
+                        const nav = reviewSlider.querySelector('.js-review-slider-nav');
+                        if (nav) tlFadeIn(nav, timeline);
                     } else {
                         gsap.set(reviewSliderItem, {
-                            autoAlpha:0,
+                            autoAlpha: 0,
                             immediateRender: false,
                             overwrite: true
                         });
                     }
                 });
-            }
+            };
 
-            /* Execute once */
-            buildTimeline();
-
+            buildTimeline(); // Execute once
 
             /* Set slider height */
-            let setSliderHeight = function() {
+            const setSliderHeight = () => {
                 gsap.to(reviewSliderList, {
-                    height: () => {
-                        return reviewSliderItems[currentSlide].offsetHeight + 'px';
-                    },
-                    onComplete:() => {
-                        ScrollTrigger.refresh();
-                    }
-                });
-            }
-
-            /* Execute once */
-            setSliderHeight();
-
-
-            /* Set blobity radius */
-            let setBlobityRadius = function(){
-                reviewSliderNavItems.forEach(reviewSliderNavItem => {
-                    let reviewSliderNavItemFill = reviewSliderNavItem.querySelector('.js-review-slider-nav-item-fill');
-
-                    reviewSliderNavItemFill.setAttribute('data-blobity-radius', ((reviewSliderNavItemFill.offsetWidth * 2) + 16) / 2);
+                    height: reviewSliderItems[currentSlide].offsetHeight + 'px',
+                    onComplete: ScrollTrigger.refresh
                 });
             };
 
-            /* Execute once */
-            setBlobityRadius();
+            setSliderHeight(); // Execute once
 
+            /* Set blobity radius */
+            const setBlobityRadius = () => {
+                if(blobity) {
+                    reviewSliderNavItems.forEach(reviewSliderNavItem => {
+                        const reviewSliderNavItemFill = reviewSliderNavItem.querySelector('.js-review-slider-nav-item-fill');
+                        reviewSliderNavItemFill.setAttribute('data-blobity-radius', ((reviewSliderNavItemFill.offsetWidth * 2) + 16) / 2);
+                    });
+                }
+            };
 
-            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
+            setBlobityRadius(); // Execute once
+
+            /* Clear and rebuild timeline on resize */
+            callAfterResize(() => {
                 buildTlAfterResize(timeline, buildTimeline);
-
-                setBlobityRadius();
-
+                if(blobity) setBlobityRadius();
                 setSliderHeight();
             });
 
-
-
-
             /* Set current slide */
-            function setCurrentSlide() {
+            const setCurrentSlide = () => {
                 setSliderHeight();
-
-                reviewSliderItems.forEach(function(reviewSliderItem, i) {
-                    if(i === currentSlide) {
-                        gsap.to(reviewSliderItem, {
-                            delay:.25,
-                            autoAlpha: 1
-                        });
-                    } else {
-                        gsap.to(reviewSliderItem, {
-                            autoAlpha: 0,
-                            overwrite:true
-                        });
-                    }
+                gsap.to(reviewSliderItems, {
+                    autoAlpha: 0,
+                    overwrite: true
                 });
-            }
-
+                gsap.to(reviewSliderItems[currentSlide], {
+                    delay: 0.25,
+                    autoAlpha: 1
+                });
+            };
 
             /* Setup button behavior */
             reviewSliderNavItems.forEach(reviewSliderNavItem => {
-                let reviewSliderNavItemFill = reviewSliderNavItem.querySelector('.js-review-slider-nav-item-fill'),
-                    reviewSliderNavItemIcon = reviewSliderNavItem.querySelector('.js-review-slider-nav-item-icon'),
-                    reviewSliderNavItemTL = gsap.timeline({
-                        paused: true,
-                        yoyo: true,
-                        onStart: () => {
+                const reviewSliderNavItemFill = reviewSliderNavItem.querySelector('.js-review-slider-nav-item-fill');
+                const reviewSliderNavItemIcon = reviewSliderNavItem.querySelector('.js-review-slider-nav-item-icon');
+                const reviewSliderNavItemTL = gsap.timeline({
+                    paused: true,
+                    yoyo: true,
+                    onStart: () => {
+                        if(blobity) {
                             blobity.focusElement(reviewSliderNavItemFill);
-                            blobity.updateOptions({
-                                zIndex: 1
-                            });
-                        },
-                        onComplete: () => {
-                            blobity.focusElement(reviewSliderNavItemFill);
-                            blobity.updateOptions({
-                                zIndex: 1
-                            });
-                        },
-                        onReverseComplete: () => {
-                            gsap.set([reviewSliderNavItemIcon, reviewSliderNavItemFill], {
-                                clearProps: "all"
-                            });
-
-                            blobity.updateOptions({
-                                zIndex: 50
-                            });
+                            blobity.updateOptions({zIndex: 1});
                         }
-                    });
+                    },
+                    onComplete: () => {
+                        if(blobity) {
+                            blobity.focusElement(reviewSliderNavItemFill);
+                            blobity.updateOptions({zIndex: 1});
+                        }
+                    },
+                    onReverseComplete: () => {
+                        gsap.set([reviewSliderNavItemIcon, reviewSliderNavItemFill], { clearProps: "all" });
+                        if (blobity) blobity.updateOptions({ zIndex: 50 });
+                    }
+                });
 
-                reviewSliderNavItemTL.to(reviewSliderNavItemIcon, {
-                    color: "#ffffff"
-                }, '<');
+                reviewSliderNavItemTL.to(reviewSliderNavItemIcon, { color: "#ffffff" }, '<');
+                reviewSliderNavItemTL.to(reviewSliderNavItemFill, { background: '#ea2c76', borderColor: '#ea2c76', scale: 2 }, '<');
 
-                reviewSliderNavItemTL.to(reviewSliderNavItemFill, {
-                    background: '#ea2c76',
-                    borderColor: '#ea2c76',
-                    scale: 2
-                }, '<');
-
-                /* Add event functions and listeners */
-                reviewSliderNavItem.addEventListener("mouseenter", function() {
-                    if(window.matchMedia("(pointer: fine)").matches) {
+                /* Event functions and listeners */
+                reviewSliderNavItem.addEventListener("mouseenter", () => {
+                    if (window.matchMedia("(pointer: fine)").matches) {
                         reviewSliderNavItemTL.play(0);
                     }
                 });
-                reviewSliderNavItem.addEventListener("mouseleave", function() {
-                    if(window.matchMedia("(pointer: fine)").matches) {
-                        blobity.reset();
 
+                reviewSliderNavItem.addEventListener("mouseleave", () => {
+                    if (window.matchMedia("(pointer: fine)").matches) {
+                        if (blobity) blobity.reset();
                         reviewSliderNavItemTL.reverse(0);
                     }
                 });
-                reviewSliderNavItem.addEventListener("click", function(event) {
+
+                reviewSliderNavItem.addEventListener("click", (event) => {
                     event.preventDefault();
 
                     /* Show button animation */
-                    if(window.matchMedia("(pointer: coarse)").matches) {
-                        reviewSliderNavItemTL.play(0).then(function() {
-                            setTimeout(function(){
-                                blobity.reset();
-
+                    if (window.matchMedia("(pointer: coarse)").matches) {
+                        reviewSliderNavItemTL.play(0).then(() => {
+                            setTimeout(() => {
+                                if (blobity) blobity.reset();
                                 reviewSliderNavItemTL.reverse(0);
                             }, 125);
                         });
                     }
 
                     /* Toggle slide */
-                    if(reviewSliderNavItem.dataset.direction === 'prev') {
-                        if(currentSlide === 0) {
-                            currentSlide = (reviewSliderItems.length - 1);
-                        } else {
-                            currentSlide--;
-                        }
+                    if (reviewSliderNavItem.dataset.direction === 'prev') {
+                        currentSlide = currentSlide === 0 ? reviewSliderItems.length - 1 : currentSlide - 1;
                     } else {
-                        if(currentSlide === (reviewSliderItems.length - 1)) {
-                            currentSlide = 0;
-                        } else {
-                            currentSlide++;
-                        }
+                        currentSlide = currentSlide === reviewSliderItems.length - 1 ? 0 : currentSlide + 1;
                     }
 
                     setCurrentSlide();
                 });
 
-
-
                 /* Invalidate timeline after resize */
-                callAfterResize(function() {
+                callAfterResize(() => {
                     reviewSliderNavItemTL.seek(0).invalidate();
                 });
             });
@@ -214,4 +162,4 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfter
 /* Export init function */
 export default {
     init
-}
+};

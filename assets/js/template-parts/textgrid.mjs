@@ -1,41 +1,35 @@
 /* Initialize */
-import {tlFadeIn} from "../helpers/functions.mjs";
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+    const textgrids = gsap.utils.toArray('.js-textgrid');
 
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
-    if(document.querySelector('.js-textgrid')) {
-        const textgrids = gsap.utils.toArray('.js-textgrid');
-
+    if (textgrids.length > 0) {
         /* Loop over instances */
         textgrids.forEach(textgrid => {
+            const verticalTextReveal = textgrid.querySelector('.js-textgrid-vertical-text-reveal');
+            const textgridItems = textgrid.querySelectorAll('.js-textgrid-item');
+            const buttonWrapper = textgrid.querySelector('.js-textgrid-button-wrapper');
             let timeline = tlSetup(textgrid, textgrid.dataset.stCount);
 
-
             /* Build timeline */
-            let buildTimeline = function() {
-                /* Add animation for headline reveal */
-                if(textgrid.querySelector('.js-textgrid-vertical-text-reveal')) {
-                    tlTextReveal(textgrid.querySelector('.js-textgrid-vertical-text-reveal'), timeline);
+            const buildTimeline = function () {
+                if (verticalTextReveal) {
+                    tlTextReveal(verticalTextReveal, timeline);
                 }
 
-
-                /* Add animation for item reveal */
-                if(textgrid.querySelector('.js-textgrid-item')) {
-                    tlFadeIn(textgrid.querySelectorAll('.js-textgrid-item'), timeline);
+                if (textgridItems.length > 0) {
+                    tlFadeIn(textgridItems, timeline);
                 }
 
-
-                /* Add animation for button reveal */
-                if(textgrid.querySelector('.js-textgrid-button-wrapper')) {
-                    tlFadeIn(textgrid.querySelector('.js-textgrid-button-wrapper'), timeline);
+                if (buttonWrapper) {
+                    tlFadeIn(buttonWrapper, timeline);
                 }
-            }
+            };
 
             /* Execute once */
             buildTimeline();
 
-
             /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
+            callAfterResize(() => {
                 buildTlAfterResize(timeline, buildTimeline);
             });
         });

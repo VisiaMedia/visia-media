@@ -1,41 +1,28 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn){
-    if(document.querySelector('.js-cta-presentation')) {
-        const presentationCtas = gsap.utils.toArray('.js-cta-presentation');
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+    const presentationCtas = gsap.utils.toArray('.js-cta-presentation');
 
+    if (presentationCtas.length > 0) {
         /* Loop over instances */
         presentationCtas.forEach(presentationCta => {
+            const title = presentationCta.querySelector('.js-cta-presentation-title');
+            const buttonWrapper = presentationCta.querySelector('.js-cta-presentation-button-wrapper');
+            const links = presentationCta.querySelector('.js-cta-presentation-links');
+
+            /* Setup timeline */
             let timeline = tlSetup(presentationCta, presentationCta.dataset.stCount);
 
-
             /* Build timeline */
-            let buildTimeline = function() {
-                /* Add animation for headline reveal */
-                if(presentationCta.querySelector('.js-cta-presentation-title')) {
-                    tlTextReveal(presentationCta.querySelector('.js-cta-presentation-title'), timeline);
-                }
+            const buildTimeline = () => {
+                if (title) tlTextReveal(title, timeline);
+                if (buttonWrapper) tlFadeIn(buttonWrapper, timeline);
+                if (links) tlFadeIn(links, timeline);
+            };
 
+            buildTimeline(); // Execute once
 
-                /* Add animation for button reveal */
-                if(presentationCta.querySelector('.js-cta-presentation-button-wrapper')) {
-                    tlFadeIn(presentationCta.querySelector('.js-cta-presentation-button-wrapper'), timeline);
-                }
-
-
-                /* Add animation for list reveal */
-                if(presentationCta.querySelector('.js-cta-presentation-links')) {
-                    tlFadeIn(presentationCta.querySelector('.js-cta-presentation-links'), timeline);
-                }
-            }
-
-            /* Execute once */
-            buildTimeline();
-
-
-            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
-                buildTlAfterResize(timeline, buildTimeline);
-            });
+            /* Clear and rebuild timeline on resize */
+            callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
         });
     }
 }

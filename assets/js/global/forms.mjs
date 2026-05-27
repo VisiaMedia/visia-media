@@ -13,11 +13,13 @@ export function init(gsap, ScrollTrigger, getNextSibling, getPreviousSibling){
             formInputs.forEach(formInput => {
                 formInput.autocomplete = 'off';
                 formInput.setAttribute('autocomplete', 'off');
+                formInput.setAttribute('aria-invalid', 'false');
                 formInput.classList.remove("css-is-valid");
 
                 /* Validation */
                 formInput.addEventListener('input', function () {
                     if(formInput.checkValidity()) {
+                        formInput.setAttribute('aria-invalid', 'false');
                         formInput.classList.add("css-is-valid");
 
                         const parent = formInput.parentNode;
@@ -31,6 +33,7 @@ export function init(gsap, ScrollTrigger, getNextSibling, getPreviousSibling){
                             }
                         });
                     } else {
+                        formInput.setAttribute('aria-invalid', 'true');
                         formInput.classList.remove("css-is-valid");
                     }
                 });
@@ -76,10 +79,13 @@ export function init(gsap, ScrollTrigger, getNextSibling, getPreviousSibling){
                     });
                 });
 
+                formInputs.forEach(formInput => formInput.setAttribute('aria-invalid', 'false'));
+
                 /* Loop over invalid fields and display error messages */
                 let invalidFields = form.querySelectorAll(':invalid');
 
                 invalidFields.forEach(invalidField => {
+                    invalidField.setAttribute('aria-invalid', 'true');
                     const parent = invalidField.parentNode;
                     const fieldMessage = parent.querySelector('.js-form-validation-message');
 

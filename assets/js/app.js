@@ -11,11 +11,10 @@ import SwupGtmPlugin from '@swup/gtm-plugin';
 
 /* GSAP */
 import { gsap } from "gsap";
-import { SplitText } from "gsap/SplitText.js";
 import { ScrollTrigger } from "gsap/ScrollTrigger.js";
 import { TextPlugin } from "gsap/TextPlugin.js";
 
-gsap.registerPlugin(SplitText, ScrollTrigger, TextPlugin);
+gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
 /* Set GSAP defaults */
 gsap.defaults({
@@ -50,6 +49,7 @@ async function initializeBlobity() {
         zIndex: 50,
         focusableElementsOffsetX: 8,
         focusableElementsOffsetY: 8,
+        mode: 'bouncy'
     });
 }
 
@@ -79,6 +79,23 @@ async function loadSliderDeps() {
 }
 
 
+/* Panorama slider deps async function */
+async function loadPanoramaSliderDeps() {
+    const SwiperModule = await import(/* webpackChunkName: "swiper" */ 'swiper');
+    const SwiperModules = await import(/* webpackChunkName: "swiper" */ 'swiper/modules');
+    const EffectPanoramaModule = await import(
+        /* webpackChunkName: "panorama-slider" */
+        './vendor/panorama/effect-panorama.esm.js'
+        );
+
+    return {
+        Swiper: SwiperModule.default || SwiperModule,
+        Autoplay: SwiperModules.Autoplay,
+        EffectPanorama: EffectPanoramaModule.default || EffectPanoramaModule
+    };
+}
+
+
 /* Masonry async function */
 async function loadMasonry() {
     const MasonryModule = await import(/* webpackChunkName: "masonry" */ 'masonry-layout');
@@ -104,7 +121,7 @@ async function loadImagesLoaded() {
 /* Importing helper functions */
 import overscroll from './helpers/overscroll.mjs';
 import imageLoader from './helpers/imageloader.mjs';
-import { callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll } from './helpers/functions.mjs';
+import { callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn, tlSectionReveal, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll } from './helpers/functions.mjs';
 
 /* Importing global / site-wide modules */
 import main from './global/main.mjs';
@@ -122,6 +139,20 @@ import footer from './template-parts/footer.mjs';
 /* Flags */
 let modulesLoaded = false; // Flag to check if all modules are loaded
 let transitionComplete = false; // Flag for initial animation or page transition completion
+
+function getTopBarItems() {
+    return [document.querySelector(".js-top-bar"), document.querySelector(".js-middle-menu"), document.querySelector(".js-middle-menu-bg")].filter(Boolean);
+}
+
+function getTopBarHiddenY(index, target) {
+    return -target.getBoundingClientRect().bottom;
+}
+
+function setInitialTopBarPosition() {
+    if (document.querySelector('.js-loader')) {
+        gsap.set(getTopBarItems(), { y: getTopBarHiddenY });
+    }
+}
 
 // /* Setup function for listening to reveal animation */
 let revealAnimationListener = {
@@ -272,6 +303,7 @@ async function swupInit() {
 
     /* Main template */
     main.init(gsap, blobity, callAfterResize, disableScroll, enableScroll);
+    setInitialTopBarPosition();
     activeMenuItem.init();
 
     /* Globals */
@@ -280,26 +312,27 @@ async function swupInit() {
     popups.init(gsap, blobity, callAfterResize, disableScroll, enableScroll);
     forms.init(gsap, ScrollTrigger, getNextSibling, getPreviousSibling);
 
+    /* Section reveals */
+    gsap.utils.toArray('.js-section-reveal').forEach(sectionReveal => {
+        const scrollTriggerParent = sectionReveal.closest('[data-st-count]');
+        let timeline = tlSetup(sectionReveal, scrollTriggerParent ? scrollTriggerParent.dataset.stCount : 0);
+
+        const buildTimeline = () => {
+            tlSectionReveal(sectionReveal, timeline);
+        };
+
+        buildTimeline();
+
+        callAfterResize(() => {
+            buildTlAfterResize(timeline, buildTimeline);
+        });
+    });
+
     /* Theme parts */
-    header.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+    header.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn);
     footer.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn, blobity);
 
     /* Template parts */
-    if (document.querySelector('.js-statement')) { // Statement
-        asyncPromises.push(import('./template-parts/statement.mjs').then(({ default: statement }) => {
-            statement.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        }));
-    }
-    if (document.querySelector('.js-textgrid')) { // Textgrid
-        asyncPromises.push(import('./template-parts/textgrid.mjs').then(({ default: textgrid }) => {
-            textgrid.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        }));
-    }
-    if (document.querySelector('.js-textblock')) { // Textblock
-        asyncPromises.push(import('./template-parts/textblock.mjs').then(({ default: textblock }) => {
-            textblock.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        }));
-    }
     if (document.querySelector('.js-block-images')) { // Images
         asyncPromises.push(import('./template-parts/images.mjs').then(({ default: images }) => {
             images.init(gsap, stFadeIn);
@@ -322,22 +355,22 @@ async function swupInit() {
     }
     if (document.querySelector('.js-textcarousel')) { // Text carousel
         asyncPromises.push(import('./template-parts/textcarousel.mjs').then(({ default: textcarousel }) => {
-            textcarousel.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
+            textcarousel.init(gsap, ScrollTrigger);
         }));
     }
     if (document.querySelector('.js-process-carousel')) { // Proces carousel
         asyncPromises.push(import('./template-parts/procescarousel.mjs').then(({ default: procescarousel }) => {
-            procescarousel.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal);
+            procescarousel.init(gsap, ScrollTrigger);
         }));
     }
     if (document.querySelector('.js-tabbed-content')) { // Tabbed content
         asyncPromises.push(import('./template-parts/tabbedcontent.mjs').then(({ default: tabbedcontent }) => {
-            tabbedcontent.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, blobity, tlSetup, tlTextReveal, tlFadeIn);
+            tabbedcontent.init(gsap, ScrollTrigger, callAfterResize, blobity);
         }));
     }
     if (document.querySelector('.js-service-scroller')) { // Dienstenscroller
         asyncPromises.push(import('./template-parts/dienstenscroller.mjs').then(({ default: dienstenscroller }) => {
-            dienstenscroller.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, createValidHtmlId);
+            dienstenscroller.init(gsap, ScrollTrigger, createValidHtmlId);
         }));
     }
     if (document.querySelector('.js-perspective-gallery')) { // Perspective gallery
@@ -353,38 +386,13 @@ async function swupInit() {
             })
         );
     }
-    if (document.querySelector('.js-logo-presentation')) { // Logo presentation
-        asyncPromises.push(import('./template-parts/logopresentation.mjs').then(({ default: logopresentation }) => {
-            logopresentation.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        }));
-    }
     if (document.querySelector('.js-faqs')) { // FAQ
         asyncPromises.push(import('./template-parts/faq.mjs').then(({ default: faq }) => {
-            faq.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        }));
-    }
-    if (document.querySelector('.js-goalform')) { // Goalform
-        asyncPromises.push(import('./template-parts/goalform.mjs').then(({ default: goalform }) => {
-            goalform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+            faq.init(gsap, ScrollTrigger);
         }));
     }
 
     /* CTA's */
-    if (document.querySelector('.js-cta-presentation')) { // CTA Presentation
-        asyncPromises.push(import('./template-parts/ctapresentation.mjs').then(({ default: ctapresentation }) => {
-            ctapresentation.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        }));
-    }
-    if (document.querySelector('.js-cta-streamer')) { // CTA Streamer
-        asyncPromises.push(import('./template-parts/ctastreamer.mjs').then(({ default: ctastreamer }) => {
-            ctastreamer.init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        }));
-    }
-    if (document.querySelector('.js-cta-leadform')) { // CTA Leadform
-        asyncPromises.push(import('./template-parts/ctaleadform.mjs').then(({ default: ctaleadform }) => {
-            ctaleadform.init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        }));
-    }
 
     /* Modules */
     if (document.querySelector('.js-presentation-first-name-placeholder') ||
@@ -395,22 +403,7 @@ async function swupInit() {
     }
     if (document.querySelector('.js-review-slider')) { // Review slider
         asyncPromises.push(import('./modules/reviewslider.mjs').then(({ default: reviewslider }) => {
-            reviewslider.init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        }));
-    }
-    if (document.querySelector('.js-single-review')) { // Single review
-        asyncPromises.push(import('./modules/singlereview.mjs').then(({ default: singlereview }) => {
-            singlereview.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        }));
-    }
-    if (document.querySelector('.js-logos')) { // Logo's
-        asyncPromises.push(import('./modules/logos.mjs').then(({ default: logos }) => {
-            logos.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
-        }));
-    }
-    if (document.querySelector('.js-team')) { // Team
-        asyncPromises.push(import('./modules/team.mjs').then(({ default: team }) => {
-            team.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+            reviewslider.init(gsap, ScrollTrigger, blobity, callAfterResize);
         }));
     }
     if (document.querySelector('.js-woordstreamer')) { // Woordstreamer
@@ -425,7 +418,21 @@ async function swupInit() {
                 loadSliderDeps()
             ]).then(([{ default: projectslider }, { Draggable, InertiaPlugin }]) => {
 
-                projectslider.init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+                projectslider.init(gsap, Draggable);
+            })
+        );
+    }
+    if (document.querySelector('.js-arch-project-slider')) { // Arched project slider
+        asyncPromises.push(
+            Promise.all([
+                import('./modules/archedprojectslider.mjs'),
+                loadPanoramaSliderDeps()
+            ]).then(([{ default: archedprojectslider }, { Swiper, Autoplay, EffectPanorama }]) => {
+                archedprojectslider.init(gsap, Swiper, Autoplay, EffectPanorama, ScrollTrigger, callAfterResize);
+
+                loadedModules.archedprojectslider = {
+                    unload: () => archedprojectslider.unload()
+                };
             })
         );
     }
@@ -448,17 +455,17 @@ async function swupInit() {
         asyncPromises.push(import('./modules/recentposts.mjs').then(async ({ default: recentposts }) => {
             const dayjs = await loadDayjs();
 
-            recentposts.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings);
+            recentposts.init(gsap, dayjs, getSiblings);
         }));
     }
     if (document.querySelector('.js-contact-form')) { // Contact form
         asyncPromises.push(import('./modules/contactform.mjs').then(({ default: contactform }) => {
-            contactform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, getNextSibling, getPreviousSibling);
+            contactform.init(gsap, callAfterResize);
         }));
     }
     if (document.querySelector('.js-presentation-form')) { // Presentation form
         asyncPromises.push(import('./modules/presentationform.mjs').then(({ default: presentationform }) => {
-            presentationform.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn);
+            presentationform.init();
         }));
     }
     if (document.querySelector('.js-popunder')) { // Popunder
@@ -480,7 +487,7 @@ async function swupInit() {
                 loadInfiniteScroll(),
                 loadDayjs()
             ]).then(([{ default: blogOverview }, InfiniteScroll, dayjs]) => {
-                blogOverview.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, InfiniteScroll);
+                blogOverview.init(gsap, ScrollTrigger, stFadeIn, dayjs, InfiniteScroll);
 
                 /* Add to cache with unload function */
                 loadedModules.blogOverview = { unload: () => blogOverview.unload(gsap, InfiniteScroll) };
@@ -493,7 +500,7 @@ async function swupInit() {
                 import('./blog/single.mjs'),
                 loadDayjs()
             ]).then(([{ default: blogSingle }, dayjs]) => {
-                blogSingle.init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, getSiblings);
+                blogSingle.init(gsap, ScrollTrigger, stFadeIn, dayjs, getSiblings);
             })
         );
     }
@@ -585,15 +592,14 @@ callAfterResize(() => {
 document.addEventListener("readystatechange", () => {
     if (document.readyState === 'complete' && document.querySelector('.js-loader')) {
         const loader = document.querySelector('.js-loader');
-        const topBar = document.querySelector(".js-top-bar");
-        gsap.set(topBar, { yPercent: -100 });
+        const topBarItems = getTopBarItems();
         gsap.to(loader, {
             autoAlpha: 0,
             onComplete: () => {
                 loader.remove();
                 transitionComplete = true;
                 activateRevealListenerIfReady();
-                gsap.to(topBar, { duration: .5, yPercent: 0 });
+                gsap.to(topBarItems, { duration: .5, y: 0 });
             }
         });
     }

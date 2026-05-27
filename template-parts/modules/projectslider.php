@@ -15,15 +15,42 @@ if($cases = get_posts(array(
 ))) {
 	global $scrollTriggerCount;
 
+	$title = get_sub_field('titel');
+	$sectionID = wp_unique_id('project-slider-');
+	$titleID = $sectionID.'-title';
+	$caseSchemaItems = array();
+
+	foreach($cases as $casePost) {
+		$caseItem = array(
+			'@type' => 'CreativeWork',
+			'name' => get_the_title($casePost),
+			'url' => get_permalink($casePost)
+		);
+
+		if($caseStatement = get_field('case_statement', $casePost->ID)) {
+			$caseItem['description'] = visia_schema_text($caseStatement);
+		}
+
+		if(has_post_thumbnail($casePost)) {
+			$caseItem['image'] = get_the_post_thumbnail_url($casePost, 'project-slider-use-retina');
+		}
+
+		$caseSchemaItems[] = array(
+			'@type' => 'ListItem',
+			'position' => count($caseSchemaItems) + 1,
+			'item' => $caseItem
+		);
+	}
+
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst'));
 
 	$caseCount = count($cases); ?>
 
-	<section class="project-slider js-project-slider" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
+	<section class="project-slider js-project-slider" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo $title ? ' aria-labelledby="'.esc_attr($titleID).'"' : ''; ?>>
 		<div class="project-slider__scroller">
-			<div class="project-slider__scroller__inner js-project-slider-inner css-max-text-width">
-                <?php if($title = get_sub_field('titel')) {
-                    echo '<h1 class="project-slider__scroller__title css-title--normal-size css-title js-project-slider-title">'.$title.'</h1>';
+			<div class="project-slider__scroller__inner js-project-slider-inner css-max-text-width js-section-reveal">
+                <?php if($title) {
+                    echo '<h1 id="'.esc_attr($titleID).'" class="project-slider__scroller__title css-title--normal-size css-title js-project-slider-title">'.$title.'</h1>';
                 } ?>
 
 				<ul class="project-slider__scroller__list js-project-slider-list">
@@ -50,4 +77,20 @@ if($cases = get_posts(array(
 			</div>
 		</div>
 	</section>
-<?php } ?>
+
+	<?php if($caseSchemaItems) {
+		$caseSchema = array(
+			'@context' => 'https://schema.org',
+			'@type' => 'ItemList',
+			'@id' => get_permalink().'#'.$sectionID,
+			'numberOfItems' => count($caseSchemaItems),
+			'itemListElement' => $caseSchemaItems
+		);
+
+		if($title) {
+			$caseSchema['name'] = visia_schema_text($title);
+		}
+
+		visia_schema_script($caseSchema);
+	}
+} ?>

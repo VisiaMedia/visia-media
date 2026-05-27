@@ -10,6 +10,7 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
             const popupName = singlePopup.dataset.popup;
             const closeButton = popupContainer.querySelector('.js-close');
             const overlay = popupContainer.querySelector('.js-overlay');
+            const popupTriggers = document.querySelectorAll(`.js-popup-trigger[data-popup='${popupName}']`);
 
             /* Initially hide elements */
             gsap.set([popupContainer, singlePopup, overlay], { autoAlpha: 0 });
@@ -39,6 +40,7 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                             const popupFocusableElements = singlePopup.querySelectorAll(focusableSelectors);
                             popupFocusableElements.forEach(el => el.setAttribute('tabindex', '-1'));
 
+                            popupTriggers.forEach(popupTrigger => popupTrigger.setAttribute('aria-expanded', 'false'));
                             singlePopup.setAttribute('aria-hidden', 'true');
                             mainBodyContainer.setAttribute('aria-hidden', 'false');
 
@@ -61,7 +63,6 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
             };
 
             /* Function to trigger the popup */
-            const popupTriggers = document.querySelectorAll(`.js-popup-trigger[data-popup='${popupName}']`);
             if (popupTriggers.length > 0) {
                 popupTriggers.forEach(popupTrigger => {
                     const popupTL = gsap.timeline({
@@ -76,6 +77,7 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                             const popupFocusableElements = singlePopup.querySelectorAll(focusableSelectors);
                             popupFocusableElements.forEach(el => el.removeAttribute('tabindex'));
 
+                            popupTrigger.setAttribute('aria-expanded', 'true');
                             singlePopup.setAttribute('aria-hidden', 'false');
                             mainBodyContainer.setAttribute('aria-hidden', 'true');
                             disableScroll();
@@ -97,10 +99,18 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                             onComplete: () => setBlobityRadius()
                         });
 
-                    popupTrigger.addEventListener("click", event => {
+                    const openPopup = event => {
                         event.preventDefault();
                         popupContainer.classList.add("js-active");
                         popupTL.time(0).play();
+                    };
+
+                    popupTrigger.addEventListener("click", openPopup);
+
+                    popupTrigger.addEventListener("keydown", event => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            openPopup(event);
+                        }
                     });
 
                     /* Close popup on close button click */

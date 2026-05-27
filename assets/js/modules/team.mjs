@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn) {
     const teamSections = gsap.utils.toArray('.js-team');
 
     if (teamSections.length > 0) {
@@ -14,7 +14,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
             /* Build timeline */
             const buildTimeline = () => {
                 if (verticalTextReveal) {
-                    tlTextReveal(verticalTextReveal, timeline);
                 }
                 if (teamMembers.length > 0) {
                     tlFadeIn(teamMembers, timeline);

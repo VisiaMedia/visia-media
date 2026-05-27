@@ -1,4 +1,4 @@
-@import './assets/css/reset/core';
+@use './reset/core' as *;
 
 .column-scroller {
   padding:0 var(--offset-side);

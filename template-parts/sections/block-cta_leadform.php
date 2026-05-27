@@ -1,12 +1,16 @@
 <?php if(get_sub_field('bedanktpagina') && get_sub_field('formulier_naam')) {
 	global $scrollTriggerCount;
 
+	$title = get_sub_field('titel');
+	$sectionID = wp_unique_id('cta-leadform-');
+	$titleID = $sectionID.'-title';
+
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
-    <aside class="cta-leadform js-cta-leadform" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo ($sectionID = get_sub_field('formulier_ID')) ? ' id="'.$sectionID.'"' : ''; ?>>
-        <div class="cta-leadform__inner js-cta-leadform-inner">
+    <aside class="cta-leadform js-cta-leadform" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo ($fieldSectionID = get_sub_field('formulier_ID')) ? ' id="'.$fieldSectionID.'"' : ''; ?><?php echo $title ? ' aria-labelledby="'.esc_attr($titleID).'"' : ''; ?>>
+        <div class="cta-leadform__inner js-cta-leadform-inner js-section-reveal">
             <div class="css-max-text-width">
-                <?php if($title = get_sub_field('titel')) {
-                    echo '<h1 class="cta-leadform__title css-title--normal-size css-title js-cta-leadform-title">'.$title.'</h1>';
+                <?php if($title) {
+                    echo '<h1 id="'.esc_attr($titleID).'" class="cta-leadform__title css-title--normal-size css-title js-cta-leadform-title">'.$title.'</h1>';
                 }
 
                 if($content = get_sub_field('content')) {
@@ -27,7 +31,7 @@
                                     <span aria-label="required">*</span>
                                 </label>
 
-                                <input class="css-form-input--solid css-form-input css-boxed-content" type="text" name="full-name" id="<?php esc_attr_e($formID); ?>-full-name" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formID); ?>-full-name-error" placeholder="<?php esc_attr_e('Full name', 'visia'); ?> *">
+                                <input class="css-form-input--solid css-form-input css-boxed-content" type="text" name="full-name" id="<?php esc_attr_e($formID); ?>-full-name" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formID); ?>-full-name-error" aria-errormessage="<?php esc_attr_e($formID); ?>-full-name-error" aria-invalid="false" placeholder="<?php esc_attr_e('Full name', 'visia'); ?> *">
 
                                 <span class="css-form-input-validation-message js-form-validation-message" id="<?php esc_attr_e($formID); ?>-full-name-error"><?php _e('Please enter your full name', 'visia'); ?></span>
                             </p>
@@ -38,7 +42,7 @@
                                     <span aria-label="required">*</span>
                                 </label>
 
-                                <input class="css-form-input--solid css-form-input css-boxed-content" type="text" name="business" id="<?php esc_attr_e($formID); ?>-business" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formID); ?>-business-error" placeholder="<?php esc_attr_e('Business name', 'visia'); ?> *">
+                                <input class="css-form-input--solid css-form-input css-boxed-content" type="text" name="business" id="<?php esc_attr_e($formID); ?>-business" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formID); ?>-business-error" aria-errormessage="<?php esc_attr_e($formID); ?>-business-error" aria-invalid="false" placeholder="<?php esc_attr_e('Business name', 'visia'); ?> *">
 
                                 <span class="css-form-input-validation-message js-form-validation-message" id="<?php esc_attr_e($formID); ?>-business-error"><?php _e('Please enter your business\' name', 'visia'); ?></span>
                             </p>
@@ -50,14 +54,14 @@
                                 <span aria-label="required">*</span>
                             </label>
 
-                            <input class="css-form-input--solid css-form-input css-boxed-content" type="email" name="email-address" id="<?php esc_attr_e($formID); ?>-email-address" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formID); ?>-email-error" placeholder="<?php esc_attr_e('Email address', 'visia'); ?> *">
+                            <input class="css-form-input--solid css-form-input css-boxed-content" type="email" name="email-address" id="<?php esc_attr_e($formID); ?>-email-address" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formID); ?>-email-error" aria-errormessage="<?php esc_attr_e($formID); ?>-email-error" aria-invalid="false" placeholder="<?php esc_attr_e('Email address', 'visia'); ?> *">
 
                             <span class="css-form-input-validation-message js-form-validation-message" id="<?php esc_attr_e($formID); ?>-email-error"><?php _e('Please enter your email address', 'visia'); ?></span>
                         </p>
 
                         <div class="css-form-footer">
                             <label class="css-form-label-privacy" for="<?php esc_attr_e($formID); ?>-privacy">
-                                <input type="checkbox" class="js-form-field-privacy-checkbox" name="privacy-checkbox" id="<?php esc_attr_e($formID); ?>-privacy" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formID); ?>-privacy-error">
+                                <input type="checkbox" class="js-form-field-privacy-checkbox" name="privacy-checkbox" id="<?php esc_attr_e($formID); ?>-privacy" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formID); ?>-privacy-error" aria-errormessage="<?php esc_attr_e($formID); ?>-privacy-error" aria-invalid="false">
 
                                 <span class="css-form-label-privacy-text"><?php printf(__('I agree to the storage and processing of my data as stated in the %1$sprivacy statement%2$s*', 'visia'), '<a href="'.get_privacy_policy_url().'" target="_blank">', '</a>'); ?></span>
 

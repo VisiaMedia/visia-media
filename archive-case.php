@@ -31,10 +31,31 @@
 
 <main>
 	<?php if(have_posts()) { ?>
-		<section class="project-grid js-project-grid">
+		<?php $caseSchemaItems = array(); ?>
+
+		<section class="project-grid js-project-grid" aria-label="<?php esc_attr_e('Cases', 'visia'); ?>">
 			<div class="css-max-text-width">
-				<ul class="project-grid__list js-project-grid-list">
-					<?php while(have_posts()) { the_post(); ?>
+				<ul id="case-archive-list" class="project-grid__list js-project-grid-list">
+					<?php while(have_posts()) { the_post();
+						$caseItem = array(
+							'@type' => 'CreativeWork',
+							'name' => get_the_title(),
+							'url' => get_permalink()
+						);
+
+						if($caseStatement = get_field('case_statement')) {
+							$caseItem['description'] = visia_schema_text($caseStatement);
+						}
+
+						if(has_post_thumbnail()) {
+							$caseItem['image'] = get_the_post_thumbnail_url(get_the_ID(), 'project-grid-use-retina');
+						}
+
+						$caseSchemaItems[] = array(
+							'@type' => 'ListItem',
+							'position' => count($caseSchemaItems) + 1,
+							'item' => $caseItem
+						); ?>
 						<li class="project-grid__list__item js-project-grid-item">
 							<a class="project-grid__list__item__link js-project-grid-item-link" href="<?php the_permalink(); ?>" rel="bookmark" data-no-blobity>
 								<div class="project-grid__list__item__visual">
@@ -65,6 +86,16 @@
                 } ?>
 			</div>
 		</section>
+
+		<?php if($caseSchemaItems) {
+			visia_schema_script(array(
+				'@context' => 'https://schema.org',
+				'@type' => 'ItemList',
+				'@id' => get_pagenum_link().'#case-archive-list',
+				'numberOfItems' => count($caseSchemaItems),
+				'itemListElement' => $caseSchemaItems
+			));
+		} ?>
 	<?php } ?>
 </main>
 

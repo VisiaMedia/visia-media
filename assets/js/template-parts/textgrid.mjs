@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn) {
     const textgrids = gsap.utils.toArray('.js-textgrid');
 
     if (textgrids.length > 0) {
@@ -13,7 +13,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
             /* Build timeline */
             const buildTimeline = function () {
                 if (verticalTextReveal) {
-                    tlTextReveal(verticalTextReveal, timeline);
                 }
 
                 if (textgridItems.length > 0) {

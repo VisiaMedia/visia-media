@@ -15,7 +15,7 @@ if(have_posts()) {
 	        $headline = get_the_archive_title(); ?>
 
             <header class="blog-home__archive-header">
-                <div class="css-max-text-width">
+                <div class="css-max-text-width js-section-reveal">
 			        <?php if (is_category()) {
 				        $title = __('Category', 'visia');
 			        } elseif (is_tag()) {
@@ -37,7 +37,7 @@ if(have_posts()) {
         <main>
             <section>
                 <div class="css-max-text-width">
-                    <ul class="blog-home__items js-blog-home-list <?php echo ($infiniteScroll) ? 'js-infinite-scroll-container' : ''; ?>">
+                    <ul class="blog-home__items js-blog-home-list js-section-reveal <?php echo ($infiniteScroll) ? 'js-infinite-scroll-container' : ''; ?>">
 				        <?php while(have_posts()) { the_post(); ?>
                             <li class="blog-home__items__item js-blog-home-item">
                                 <a class="blog-home__items__item__link js-blog-home-link" rel="bookmark" href="<?php the_permalink(); ?>" data-no-blobity="true">

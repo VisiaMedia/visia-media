@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn) {
     const ctaLeadforms = document.querySelectorAll('.js-cta-leadform');
 
     if (ctaLeadforms.length > 0) {
@@ -14,7 +14,6 @@ export function init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal,
 
             /* Build timeline */
             const buildTimeline = () => {
-                if (ctaLeadformTitle) tlTextReveal(ctaLeadformTitle, timeline);
                 if (ctaLeadformText) tlFadeIn(ctaLeadformText, timeline);
                 if (ctaLeadformForm) tlFadeIn(ctaLeadformForm, timeline);
             };

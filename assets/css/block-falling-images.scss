@@ -1,4 +1,4 @@
-@import './assets/css/reset/core';
+@use './reset/core' as *;
 
 .falling-images {
   padding:0 var(--offset-side);

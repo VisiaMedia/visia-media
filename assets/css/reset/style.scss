@@ -1,6 +1,8 @@
-@import 'core';
-@import 'reset';
-@import 'components';
-@import 'layout';
-@import 'header';
-@import 'footer';
+@use 'core' as *;
+@use 'fonts';
+@use 'reset';
+@use 'components';
+@use 'layout';
+@use 'header';
+@use 'footer';
+@use "../../../node_modules/swiper/swiper";

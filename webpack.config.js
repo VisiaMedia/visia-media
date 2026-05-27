@@ -2,6 +2,7 @@ const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const isAnalyze = process.env.ANALYZE === 'true';
 
 module.exports = {
     mode: 'production',
@@ -91,24 +92,29 @@ module.exports = {
                     enforce: true,
                     priority: 10,
                     chunks: 'all'
-                }
+                },
+                swiper: {
+                    test: /[\\/]node_modules[\\/](swiper)[\\/]/,
+                    name: 'swiper',
+                    priority: 20,
+                    chunks: 'async'
+                },
             }
         }
     },
     module: {
         rules: [
             {
-                test: /\.(png|jpg|gif|svg|woff|woff2|eot|ttf|otf)$/,
-                use: [
-                    {
-                        loader: 'url-loader',
-                        options: {
-                            limit: 8192,
-                            name: '[name].[hash:7].[ext]',
-                            outputPath: 'assets',
-                        },
+                test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf|otf)$/i,
+                type: 'asset',
+                parser: {
+                    dataUrlCondition: {
+                        maxSize: 8 * 1024,
                     },
-                ],
+                },
+                generator: {
+                    filename: 'assets/[name].[contenthash:7][ext]',
+                },
             },
         ],
     },
@@ -117,6 +123,6 @@ module.exports = {
             cleanOnceBeforeBuildPatterns: ['**/*', '!*.css'],
             cleanAfterEveryBuildPatterns: ['!*.css']
         }),
-        new BundleAnalyzerPlugin() // Voor analysedoeleinden
-    ],
+        isAnalyze && new BundleAnalyzerPlugin()
+    ].filter(Boolean),
 };

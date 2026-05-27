@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn) {
     const presentationCtas = gsap.utils.toArray('.js-cta-presentation');
 
     if (presentationCtas.length > 0) {
@@ -14,7 +14,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
 
             /* Build timeline */
             const buildTimeline = () => {
-                if (title) tlTextReveal(title, timeline);
                 if (buttonWrapper) tlFadeIn(buttonWrapper, timeline);
                 if (links) tlFadeIn(links, timeline);
             };

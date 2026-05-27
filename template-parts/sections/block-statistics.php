@@ -2,7 +2,7 @@
 	global $scrollTriggerCount;
 
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
-	<aside class="statistics js-statistics" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
+	<aside class="statistics js-statistics" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>" aria-label="<?php esc_attr_e('Statistics', 'visia'); ?>">
 		<div class="css-max-text-width">
 			<ul class="statistics__list">
 				<?php foreach($statistics as $statistic) {

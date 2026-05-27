@@ -1,11 +1,15 @@
 <?php if($textItems = get_sub_field('items')) {
 	global $scrollTriggerCount;
 
+	$title = get_sub_field('titel');
+	$sectionID = wp_unique_id('textcarousel-');
+	$titleID = $sectionID.'-title';
+
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
-	<section class="textcarousel js-textcarousel" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
-		<div class="css-max-text-width">
-			<?php if($title = get_sub_field('titel')) {
-				echo '<h1 class="textcarousel__title css-title--normal-size css-title js-textcarousel-vertical-text-reveal">'.$title.'</h1>';
+	<section class="textcarousel js-textcarousel" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo $title ? ' aria-labelledby="'.esc_attr($titleID).'"' : ''; ?>>
+		<div class="css-max-text-width js-section-reveal">
+			<?php if($title) {
+				echo '<h1 id="'.esc_attr($titleID).'" class="textcarousel__title css-title--normal-size css-title js-textcarousel-vertical-text-reveal">'.$title.'</h1>';
 			} ?>
 
 			<div class="textcarousel__container js-textcarousel-container">

@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn) {
     if (document.querySelector('.js-logo-presentation')) {
         const logoPresentations = document.querySelectorAll('.js-logo-presentation');
 
@@ -15,7 +15,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
             let buildTimeline = function() {
                 /* Animate title */
                 if (title) {
-                    tlTextReveal(title, timeline);
                 }
 
                 /* Animate intro */
@@ -28,8 +27,7 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
                     gsap.set(items, { autoAlpha: 0 });
 
                     timeline.to(items, {
-                        autoAlpha: 1,
-                        stagger: 0.2
+                        autoAlpha: 1
                     });
                 }
 

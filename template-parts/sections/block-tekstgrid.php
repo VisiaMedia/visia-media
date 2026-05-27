@@ -1,12 +1,16 @@
 <?php if($gridItems = get_sub_field('grid_items')) {
 	global $scrollTriggerCount;
 
+	$title = get_sub_field('titel');
+	$sectionID = wp_unique_id('textgrid-');
+	$titleID = $sectionID.'-title';
+
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
-    <section class="textgrid js-textgrid" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
+    <section class="textgrid js-textgrid" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo $title ? ' aria-labelledby="'.esc_attr($titleID).'"' : ''; ?>>
         <div class="css-max-text-width">
-            <div class="<?php echo(($format = get_sub_field('format')) ? 'textgrid__inner--'.$format.' ' : ''); ?>textgrid__inner">
-                <?php if($title = get_sub_field('titel')) {
-                    echo '<h1 class="'.(($format = get_sub_field('format')) ? 'textgrid__title--'.$format.' ' : '').'textgrid__title css-title--normal-size css-title js-textgrid-vertical-text-reveal">'.$title.'</h1>';
+            <div class="<?php echo(($format = get_sub_field('format')) ? 'textgrid__inner--'.$format.' ' : ''); ?>textgrid__inner js-section-reveal">
+                <?php if($title) {
+                    echo '<h1 id="'.esc_attr($titleID).'" class="'.(($format = get_sub_field('format')) ? 'textgrid__title--'.$format.' ' : '').'textgrid__title css-title--normal-size css-title js-textgrid-vertical-text-reveal">'.$title.'</h1>';
                 } ?>
 
                 <ul class="<?php echo(($format = get_sub_field('format')) ? 'textgrid__grid--'.$format.' ' : ''); ?>textgrid__grid">

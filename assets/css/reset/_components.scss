@@ -1,3 +1,6 @@
+@use 'sass:color';
+@use 'core' as *;
+
 ::selection {
   background: $pink;
   color: $white;
@@ -8,7 +11,7 @@
   inset:0;
   z-index:9999;
   display:flex;
-  background: darken($blue, 7.5%);
+  background: color.adjust($blue, $lightness: -7.5%);
   clip-path: inset(0% 0% 0% 0%);
 
   &__spinner {

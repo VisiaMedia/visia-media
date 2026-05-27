@@ -1,28 +1,8 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, InfiniteScroll) {
+export function init(gsap, ScrollTrigger, stFadeIn, dayjs, InfiniteScroll) {
     const blogHome = document.querySelector('.js-blog-home');
 
     if (!blogHome) return;
-
-    let timeline = tlSetup(blogHome, blogHome.dataset.stCount);
-
-    /* Build timeline */
-    const buildTimeline = () => {
-        const title = blogHome.querySelector('.js-blog-home-title');
-        const headline = blogHome.querySelector('.js-blog-home-headline');
-        const postList = blogHome.querySelector('.js-blog-home-list');
-
-        /* Add animation for title, headline and posts reveal */
-        if (title) tlFadeIn(title, timeline);
-        if (headline) tlTextReveal(headline, timeline);
-        if (postList) tlFadeIn(postList, timeline);
-    };
-
-    /* Execute once */
-    buildTimeline();
-
-    /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-    callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
 
     /* Animate individual items */
     const blogHomeItems = blogHome.querySelectorAll('.js-blog-home-item');

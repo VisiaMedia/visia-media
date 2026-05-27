@@ -1,31 +1,11 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, dayjs, getSiblings) {
+export function init(gsap, dayjs, getSiblings) {
     const recentPostsSections = gsap.utils.toArray('.js-recent-posts');
 
     if (recentPostsSections.length > 0) {
         /* Loop over instances */
         recentPostsSections.forEach(recentPostsSection => {
             const recentPostItems = recentPostsSection.querySelectorAll('.js-recent-posts-item');
-            const recentPostsTitle = recentPostsSection.querySelector('.js-recent-posts-title');
-
-            /* Setup timeline */
-            let timeline = tlSetup(recentPostsSection, recentPostsSection.dataset.stCount);
-
-            /* Build timeline */
-            const buildTimeline = () => {
-                /* Animate title reveal */
-                if (recentPostsTitle) {
-                    tlTextReveal(recentPostsTitle, timeline);
-                }
-
-                /* Animate items reveal */
-                tlFadeIn(recentPostItems, timeline);
-            };
-
-            buildTimeline(); // Execute once
-
-            /* Clear and rebuild timeline on resize */
-            callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
 
             /* Set relative dates via Day.js */
             recentPostItems.forEach(recentPostItem => {

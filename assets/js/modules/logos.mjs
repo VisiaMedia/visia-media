@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn) {
     const logoGrids = gsap.utils.toArray('.js-logos');
 
     if (logoGrids.length > 0) {
@@ -15,7 +15,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
 
                 /* Add animation for headline reveal */
                 if (verticalTextReveal) {
-                    tlTextReveal(verticalTextReveal, timeline);
                 }
 
                 /* Add animation for item reveal */

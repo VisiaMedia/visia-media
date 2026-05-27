@@ -1,15 +1,18 @@
 <?php if($images = get_sub_field('afbeeldingen')) {
     $imageCount = count($images);
     $imageCounter = 0;
+	$title = get_sub_field('titel');
+	$sectionID = wp_unique_id('logo-presentation-');
+	$titleID = $sectionID.'-title';
 
 	global $scrollTriggerCount;
 
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
 
-	<section class="logo-presentation js-logo-presentation" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
-		<div class="css-max-text-width">
-            <?php if($title = get_sub_field('titel')) {
-                echo '<h1 class="logo-presentation__title css-title--normal-size css-title js-title">'.do_shortcode($title).'</h1>';
+	<section class="logo-presentation js-logo-presentation" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo $title ? ' aria-labelledby="'.esc_attr($titleID).'"' : ''; ?>>
+		<div class="css-max-text-width js-section-reveal">
+            <?php if($title) {
+                echo '<h1 id="'.esc_attr($titleID).'" class="logo-presentation__title css-title--normal-size css-title js-title">'.do_shortcode($title).'</h1>';
             }
 
             if($text = get_sub_field('omschrijving')) {
@@ -27,7 +30,7 @@
                     </li>
 
                     <?php if(get_sub_field('tekens') && $imageCount != $imageCounter) { ?>
-                        <li class="logo-presentation__list__item--sign logo-presentation__list__item js-item-sign">
+                        <li class="logo-presentation__list__item--sign logo-presentation__list__item js-item-sign" aria-hidden="true">
                             <span class="logo-presentation__list__item__sign"><?php echo ($imageCounter == ($imageCount - 1)) ? '=' : '+'; ?></span>
                         </li>
 	                <?php }

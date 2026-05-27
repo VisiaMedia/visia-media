@@ -3,7 +3,7 @@
 
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
 
-	<div class="woordstreamer js-woordstreamer" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
+	<div class="woordstreamer js-woordstreamer" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>" aria-hidden="true">
 		<?php $allWords = ''; shuffle($words); foreach($words as $word) {
 			if($word['woord']) {
 				$allWords .= $word['woord'];

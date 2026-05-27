@@ -1,4 +1,4 @@
-@import './assets/css/reset/core';
+@use './reset/core' as *;
 
 .textblock {
   padding:var(--offset-vertical) var(--offset-side);

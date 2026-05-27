@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn) {
     const ctaStreamers = document.querySelectorAll('.js-cta-streamer');
 
     if (ctaStreamers.length > 0) {
@@ -14,7 +14,6 @@ export function init(callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal,
 
             /* Build timeline */
             const buildTimeline = () => {
-                if (title) tlTextReveal(title, timeline);
                 if (buttonWrapper) tlFadeIn(buttonWrapper, timeline);
             };
 

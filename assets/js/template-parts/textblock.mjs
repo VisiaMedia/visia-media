@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn) {
     const textblocks = gsap.utils.toArray('.js-textblock');
 
     if (textblocks.length > 0) {
@@ -12,7 +12,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
             /* Build timeline */
             const buildTimeline = function() {
                 if (textblockTitle) {
-                    tlTextReveal(textblockTitle, timeline);
                 }
 
                 if (textblockText) {

@@ -1,11 +1,15 @@
 <?php if($logos = get_field('optie_logos', 'option')) {
 	global $scrollTriggerCount;
 
+	$title = get_sub_field('titel');
+	$sectionID = wp_unique_id('logos-');
+	$titleID = $sectionID.'-title';
+
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
-	<section class="logos js-logos" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
-		<div class="css-max-text-width">
-			<?php if($title = get_sub_field('titel')) {
-				echo '<h1 class="logos__title css-title--normal-size css-title js-logos-vertical-text-reveal">'.$title.'</h1>';
+	<section class="logos js-logos" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo $title ? ' aria-labelledby="'.esc_attr($titleID).'"' : ''; ?>>
+		<div class="css-max-text-width js-section-reveal">
+			<?php if($title) {
+				echo '<h1 id="'.esc_attr($titleID).'" class="logos__title css-title--normal-size css-title js-logos-vertical-text-reveal">'.$title.'</h1>';
 			}
 
 			echo '<ul class="logos__list js-logos-list">';

@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(gsap, ScrollTrigger, blobity, callAfterResize) {
     const reviewSliders = gsap.utils.toArray('.js-review-slider');
 
     if (reviewSliders.length > 0) {
@@ -8,40 +8,31 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfter
             const reviewSliderList = reviewSlider.querySelector('.js-review-slider-list');
             const reviewSliderItems = reviewSlider.querySelectorAll('.js-review-slider-list-item');
             const reviewSliderNavItems = reviewSlider.querySelectorAll('.js-review-slider-nav-item');
-            const timeline = tlSetup(reviewSlider, reviewSlider.dataset.stCount);
+            const focusableSelectors = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]';
 
-            /* Build timeline */
-            const buildTimeline = () => {
-                reviewSliderItems.forEach((reviewSliderItem, i) => {
-                    if (i === currentSlide) {
-                        gsap.to(reviewSliderItem, {
-                            autoAlpha: 1,
-                            immediateRender: false
-                        });
+            const setSlideState = (slide, isActive) => {
+                slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
 
-                        /* Add animation for thumbnail, details, and review */
-                        const thumbnail = reviewSliderItem.querySelector('.js-review-slider-list-item-thumbnail');
-                        const details = reviewSliderItem.querySelector('.js-review-slider-list-item-details');
-                        const review = reviewSliderItem.querySelector('.js-review-slider-list-item-review');
-
-                        if (thumbnail) tlFadeIn(thumbnail, timeline);
-                        if (details) tlFadeIn(details, timeline);
-                        if (review) tlFadeIn(review, timeline);
-
-                        /* Add animation for navigation */
-                        const nav = reviewSlider.querySelector('.js-review-slider-nav');
-                        if (nav) tlFadeIn(nav, timeline);
+                slide.querySelectorAll(focusableSelectors).forEach(focusableElement => {
+                    if (isActive) {
+                        if (focusableElement.dataset.originalTabindex) {
+                            focusableElement.setAttribute('tabindex', focusableElement.dataset.originalTabindex);
+                            delete focusableElement.dataset.originalTabindex;
+                        } else {
+                            focusableElement.removeAttribute('tabindex');
+                        }
                     } else {
-                        gsap.set(reviewSliderItem, {
-                            autoAlpha: 0,
-                            immediateRender: false,
-                            overwrite: true
-                        });
+                        if (focusableElement.hasAttribute('tabindex')) {
+                            focusableElement.dataset.originalTabindex = focusableElement.getAttribute('tabindex');
+                        }
+                        focusableElement.setAttribute('tabindex', '-1');
                     }
                 });
             };
 
-            buildTimeline(); // Execute once
+            gsap.set(reviewSliderItems, { autoAlpha: 0 });
+            gsap.set(reviewSliderItems[currentSlide], { autoAlpha: 1 });
+            reviewSliderItems.forEach((item, index) => setSlideState(item, index === currentSlide));
 
             /* Set slider height */
             const setSliderHeight = () => {
@@ -67,7 +58,6 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfter
 
             /* Clear and rebuild timeline on resize */
             callAfterResize(() => {
-                buildTlAfterResize(timeline, buildTimeline);
                 if(blobity) setBlobityRadius();
                 setSliderHeight();
             });
@@ -75,6 +65,9 @@ export function init(gsap, ScrollTrigger, blobity, callAfterResize, buildTlAfter
             /* Set current slide */
             const setCurrentSlide = () => {
                 setSliderHeight();
+                reviewSliderItems.forEach((item, index) => {
+                    setSlideState(item, index === currentSlide);
+                });
                 gsap.to(reviewSliderItems, {
                     autoAlpha: 0,
                     overwrite: true

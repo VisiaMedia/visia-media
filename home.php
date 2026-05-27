@@ -11,9 +11,9 @@ if(have_posts()) {
 
     <div class="blog-home js-blog-home" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
         <main>
-            <section>
+            <section aria-label="<?php esc_attr_e('Blog posts', 'visia'); ?>">
                 <div class="css-max-text-width">
-                    <ul class="blog-home__items js-blog-home-list <?php echo ($infiniteScroll) ? 'js-infinite-scroll-container' : ''; ?>">
+                    <ul class="blog-home__items js-blog-home-list js-section-reveal <?php echo ($infiniteScroll) ? 'js-infinite-scroll-container' : ''; ?>">
 				        <?php while(have_posts()) { the_post(); ?>
                             <li class="blog-home__items__item js-blog-home-item">
                                 <a class="blog-home__items__item__link js-blog-home-link" rel="bookmark" href="<?php the_permalink(); ?>" data-no-blobity="true">
@@ -40,8 +40,8 @@ if(have_posts()) {
                     </ul>
 
 	                <?php if($infiniteScroll) { ?>
-                        <div class="blog-home__status js-blog-home-status">
-                            <i class="blog-home__status__item infinite-scroll-request fa-duotone fa-spinner-third fa-spin" style="--fa-secondary-opacity: 0.25;"></i>
+                        <div class="blog-home__status js-blog-home-status" role="status" aria-live="polite">
+                            <i class="blog-home__status__item infinite-scroll-request fa-duotone fa-spinner-third fa-spin" style="--fa-secondary-opacity: 0.25;" aria-hidden="true"></i>
                         </div>
 
                         <div class="blog-home__nav js-blog-home-nav">

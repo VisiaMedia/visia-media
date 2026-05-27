@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal) {
+export function init(gsap, ScrollTrigger) {
     const procesCarousels = gsap.utils.toArray('.js-process-carousel');
 
     if (procesCarousels.length > 0) {
@@ -10,32 +10,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
             const procesCarouselLabelsList = procesCarousel.querySelector('.js-process-carousel-labels-list');
             const procesCarouselItems = procesCarousel.querySelectorAll('.js-process-carousel-item');
             const procesCarouselFirstItem = procesCarouselItems[0];
-
-            let timeline = tlSetup(procesCarousel, procesCarousel.dataset.stCount);
-
-            /* Build timeline */
-            const buildTimeline = function() {
-                /* Add animation for headline reveal */
-                const verticalTextReveal = procesCarousel.querySelector('.js-process-carousel-vertical-text-reveal');
-                if (verticalTextReveal) {
-                    tlTextReveal(verticalTextReveal, timeline);
-                }
-
-                /* Add animation for container reveal */
-                if (procesCarouselContainer) {
-                    gsap.set(procesCarouselContainer, { autoAlpha: 0, immediateRender: true });
-
-                    timeline.to(procesCarouselContainer, { autoAlpha: 1 });
-                }
-            }
-
-            /* Execute once */
-            buildTimeline();
-
-            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(function() {
-                buildTlAfterResize(timeline, buildTimeline);
-            });
 
             /* Animate scrolling */
             if (procesCarouselFirstItem && procesCarouselLabels) {

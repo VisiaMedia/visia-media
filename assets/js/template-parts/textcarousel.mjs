@@ -1,42 +1,14 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal) {
+export function init(gsap, ScrollTrigger) {
     const textCarousels = gsap.utils.toArray('.js-textcarousel');
 
     if (textCarousels.length > 0) {
         /* Loop over instances */
         textCarousels.forEach(textCarousel => {
-            const verticalTextReveal = textCarousel.querySelector('.js-textcarousel-vertical-text-reveal');
             const textCarouselContainer = textCarousel.querySelector('.js-textcarousel-container');
             const textCarouselCounter = textCarousel.querySelector('.js-textcarousel-counter');
             const textCarouselItems = textCarousel.querySelectorAll('.js-textcarousel-item');
             const textCarouselCounterList = textCarousel.querySelector('.js-textcarousel-counter-list');
-            let timeline = tlSetup(textCarousel, textCarousel.dataset.stCount);
-
-            /* Build timeline */
-            const buildTimeline = function() {
-                if (verticalTextReveal) {
-                    tlTextReveal(verticalTextReveal, timeline);
-                }
-
-                if (textCarouselContainer) {
-                    gsap.set(textCarouselContainer, {
-                        autoAlpha: 0,
-                        immediateRender: true
-                    });
-
-                    timeline.to(textCarouselContainer, {
-                        autoAlpha: 1
-                    });
-                }
-            };
-
-            /* Execute once */
-            buildTimeline();
-
-            /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-            callAfterResize(() => {
-                buildTlAfterResize(timeline, buildTimeline);
-            });
 
             /* Set counter initial position */
             const textCarouselFirstItem = textCarousel.querySelector('.js-textcarousel-item');

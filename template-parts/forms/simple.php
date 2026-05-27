@@ -13,7 +13,7 @@
                     <span aria-label="required">*</span>
                 </label>
 
-                <input class="css-form-input--simple css-form-input" type="text" name="first-name" id="<?php esc_attr_e($formID); ?>-first-name" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formID); ?>-first-name-error" placeholder="<?php esc_attr_e('First name', 'visia'); ?> *">
+                <input class="css-form-input--simple css-form-input" type="text" name="first-name" id="<?php esc_attr_e($formID); ?>-first-name" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formID); ?>-first-name-error" aria-errormessage="<?php esc_attr_e($formID); ?>-first-name-error" aria-invalid="false" placeholder="<?php esc_attr_e('First name', 'visia'); ?> *">
 
                 <span class="css-form-input-validation-message js-form-validation-message" id="<?php esc_attr_e($formID); ?>-first-name-error"><?php _e('Please enter your first name', 'visia'); ?></span>
             </p>
@@ -24,14 +24,14 @@
                     <span aria-label="required">*</span>
                 </label>
 
-                <input class="css-form-input--simple css-form-input" type="email" name="email-address" id="<?php esc_attr_e($formID); ?>-email-address" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formID); ?>-email-error" placeholder="<?php esc_attr_e('Email address', 'visia'); ?> *">
+                <input class="css-form-input--simple css-form-input" type="email" name="email-address" id="<?php esc_attr_e($formID); ?>-email-address" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formID); ?>-email-error" aria-errormessage="<?php esc_attr_e($formID); ?>-email-error" aria-invalid="false" placeholder="<?php esc_attr_e('Email address', 'visia'); ?> *">
 
                 <span class="css-form-input-validation-message js-form-validation-message" id="<?php esc_attr_e($formID); ?>-email-error"><?php _e('Please enter your email address', 'visia'); ?></span>
             </p>
 
             <div class="css-form-footer">
                 <label class="css-form-label-privacy" for="<?php esc_attr_e($formID); ?>-privacy">
-                    <input type="checkbox" class="js-form-field-privacy-checkbox" name="privacy-checkbox" id="<?php esc_attr_e($formID); ?>-privacy" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formID); ?>-privacy-error">
+                    <input type="checkbox" class="js-form-field-privacy-checkbox" name="privacy-checkbox" id="<?php esc_attr_e($formID); ?>-privacy" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formID); ?>-privacy-error" aria-errormessage="<?php esc_attr_e($formID); ?>-privacy-error" aria-invalid="false">
 
                     <span class="css-form-label-privacy-text"><?php printf(__('I agree to the storage and processing of my data as stated in the %1$sprivacy statement%2$s*', 'visia'), '<a href="'.get_privacy_policy_url().'" target="_blank">', '</a>'); ?></span>
 

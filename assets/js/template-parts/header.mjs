@@ -1,10 +1,9 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn) {
     const header = document.querySelector('.js-header');
 
     if (header) {
         const headerTitle = header.querySelector('.js-header-title');
-        const headerVerticalText = header.querySelector('.js-header-vertical-text-reveal');
         const headerButtonWrapper = header.querySelector('.js-header-button-wrapper');
         const headerCaseMeta = header.querySelector('.js-header-case-meta');
         const headerUsps = header.querySelector('.js-header-usps');
@@ -16,7 +15,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
         /* Build timeline */
         const buildTimeline = () => {
             if (headerTitle) tlFadeIn(headerTitle, timeline);
-            if (headerVerticalText) tlTextReveal(headerVerticalText, timeline);
             if (headerButtonWrapper) tlFadeIn(headerButtonWrapper, timeline);
             if (headerCaseMeta) tlFadeIn(headerCaseMeta, timeline);
 

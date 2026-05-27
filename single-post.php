@@ -8,7 +8,7 @@ if(have_posts()) {
         <div class="blog-single js-blog-single" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
             <header>
                 <div class="css-max-text-width">
-                    <div class="blog-single__hero">
+                    <div class="blog-single__hero js-section-reveal">
 	                    <?php if($headline = get_the_title(get_queried_object_id())) { ?>
                             <h1 class="blog-single__hero__headline css-title--normal-size css-title js-blog-single-header-headline"><?php echo $headline; ?></h1>
 	                    <?php } ?>
@@ -53,7 +53,7 @@ if(have_posts()) {
             <main>
                 <section>
                     <div class="css-max-text-width">
-                        <div class="blog-single__content css-normal-text js-blog-single-content">
+                        <div class="blog-single__content css-normal-text js-blog-single-content js-section-reveal">
                             <?php the_content();
 
                             if(get_the_tag_list()) {
@@ -112,9 +112,11 @@ if(have_posts()) {
 
 	            if($relatedPosts->have_posts()) { ?>
 
-                    <aside class="related-posts js-related-posts" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
-                        <div class="css-max-text-width">
-                            <h1 class="related-posts__title css-title--normal-size css-title js-related-posts-title"><?php _e('Related posts', 'visia'); ?></h1>
+                    <?php $relatedPostsTitleID = wp_unique_id('related-posts-title-'); ?>
+
+                    <aside class="related-posts js-related-posts" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>" aria-labelledby="<?php echo esc_attr($relatedPostsTitleID); ?>">
+                        <div class="css-max-text-width js-section-reveal">
+                            <h1 id="<?php echo esc_attr($relatedPostsTitleID); ?>" class="related-posts__title css-title--normal-size css-title js-related-posts-title"><?php _e('Related posts', 'visia'); ?></h1>
 
                             <ul class="related-posts__list">
 					            <?php while ($relatedPosts->have_posts()) { $relatedPosts->the_post(); ?>

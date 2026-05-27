@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn) {
     const statements = gsap.utils.toArray('.js-statement');
 
     if (statements.length > 0) {
@@ -20,7 +20,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
 
                 /* Add animation for headline reveal */
                 if (verticalTextReveal) {
-                    tlTextReveal(verticalTextReveal, timeline);
                 }
 
                 /* Add animation for button reveal */

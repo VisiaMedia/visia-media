@@ -1,6 +1,8 @@
 <?php if($columns = get_sub_field('kolommen')) {
 	global $scrollTriggerCount;
 
+	$sectionID = wp_unique_id('column-scroller-');
+
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
 	<div class="column-scroller js-column-scroller" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
         <div class="css-max-text-width">
@@ -24,8 +26,11 @@
                 </ul>
 
                 <div class="column-scroller__sections">
-                    <?php foreach($columns as $column) { ?>
-                        <section class="column-scroller__sections__section js-column-scroller-section">
+                    <?php $columnCounter = 0; foreach($columns as $column) {
+						$columnCounter++;
+						$content = $column['content'];
+						$columnTitleID = $sectionID.'-title-'.$columnCounter; ?>
+                        <section class="column-scroller__sections__section js-column-scroller-section"<?php echo (!empty($content['titel'])) ? ' aria-labelledby="'.esc_attr($columnTitleID).'"' : ''; ?>>
                             <div class="column-scroller__sections__section__inner">
                                 <?php if($images = $column['afbeelding_stack']) {
 	                                $imageCount = count($images);
@@ -43,10 +48,10 @@
                                     <?php }
                                 }
 
-                                if($content = $column['content']) { ?>
+                                if($content) { ?>
                                     <div class="column-scroller__sections__section__content">
                                         <?php if($title = $content['titel']) {
-                                            echo '<h1 class="column-scroller__sections__section__content__title css-title">'.do_shortcode($title).'</h1>';
+                                            echo '<h1 id="'.esc_attr($columnTitleID).'" class="column-scroller__sections__section__content__title css-title">'.do_shortcode($title).'</h1>';
                                         }
 
                                         if($text = $content['tekst']) {

@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, createValidHtmlId) {
+export function init(gsap, ScrollTrigger, createValidHtmlId) {
     const serviceScrollers = gsap.utils.toArray('.js-service-scroller');
 
     if (serviceScrollers.length > 0) {
@@ -13,23 +13,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
             sections.forEach((section, i) => {
                 const sectionInner = section.querySelector('.js-service-scroller-inner');
                 const title = section.querySelector('.js-service-scroller-title');
-                const text = section.querySelector('.js-service-scroller-text');
-                const buttons = section.querySelectorAll('.js-service-scroller-button-wrapper');
-
-                /* Setup timeline */
-                let timeline = tlSetup(sectionInner, serviceScroller.dataset.stCount);
-
-                /* Build timeline */
-                const buildTimeline = () => {
-                    if (title) tlTextReveal(title, timeline);
-                    if (text) tlFadeIn(text, timeline);
-                    if (buttons.length > 0) tlFadeIn(buttons, timeline);
-                };
-
-                buildTimeline();
-
-                /* Clear and rebuild timeline on resize */
-                callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
 
                 /* Add IDs to sections */
                 if (title) {
@@ -56,6 +39,14 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
 
                     gsap.set(navItems, {
                         color: (index, target) => (target.getAttribute('data-service-scroller-item') === section.id ? 'inherit' : 'var(--plain-text-color)')
+                    });
+
+                    navItems.forEach(navItem => {
+                        if (navItem.getAttribute('data-service-scroller-item') === section.id) {
+                            navItem.setAttribute('aria-current', 'true');
+                        } else {
+                            navItem.removeAttribute('aria-current');
+                        }
                     });
                 };
 

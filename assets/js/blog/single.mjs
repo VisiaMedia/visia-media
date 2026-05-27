@@ -1,32 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, dayjs, getSiblings) {
-    const blogSingle = document.querySelector('.js-blog-single');
-    if (blogSingle) {
-        /* Setup timeline */
-        let timeline = tlSetup(blogSingle, blogSingle.dataset.stCount);
-
-        /* Build timeline */
-        const buildTimeline = () => {
-            const headline = blogSingle.querySelector('.js-blog-single-header-headline');
-            const blogMeta = blogSingle.querySelector('.js-blog-single-header-blog-meta');
-            const content = blogSingle.querySelector('.js-blog-single-content');
-
-            /* Add animation for headline, blog-meta, and text reveal */
-            if (headline) tlTextReveal(headline, timeline);
-            if (blogMeta) tlFadeIn(blogMeta, timeline);
-            if (content) {
-                gsap.set(content, { autoAlpha: 0 });
-                timeline.to(content, { autoAlpha: 1 });
-            }
-        };
-
-        /* Execute once */
-        buildTimeline();
-
-        /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-        callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
-    }
-
+export function init(gsap, ScrollTrigger, stFadeIn, dayjs, getSiblings) {
     /* Post tags */
     const tagList = document.querySelector('.js-tag-list');
     if (tagList) stFadeIn(tagList, 0);
@@ -39,20 +12,6 @@ export function init(gsap, ScrollTrigger, callAfterResize, buildTlAfterResize, t
     const relatedPostsSection = document.querySelector('.js-related-posts');
     if (relatedPostsSection) {
         const relatedPostItems = relatedPostsSection.querySelectorAll('.js-related-posts-item');
-        let timeline = tlSetup(relatedPostsSection, relatedPostsSection.dataset.stCount);
-
-        /* Build timeline */
-        const buildTimeline = () => {
-            const relatedPostsTitle = relatedPostsSection.querySelector('.js-related-posts-title');
-            if (relatedPostsTitle) tlTextReveal(relatedPostsTitle, timeline);
-            tlFadeIn(relatedPostItems, timeline);
-        };
-
-        /* Execute once */
-        buildTimeline();
-
-        /* Clear and rebuild timeline on resize (only rebuild if not completed) */
-        callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
 
         /* Set relative date via dayjs */
         relatedPostItems.forEach(item => {

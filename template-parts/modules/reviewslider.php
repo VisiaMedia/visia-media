@@ -6,12 +6,12 @@
 	global $scrollTriggerCount;
 
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
-    <aside class="review-slider js-review-slider" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
-        <div class="css-max-text-width">
+    <aside class="review-slider js-review-slider" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>" aria-label="<?php esc_attr_e('Reviews', 'visia'); ?>" aria-roledescription="<?php esc_attr_e('carousel', 'visia'); ?>">
+        <div class="css-max-text-width js-section-reveal">
             <div class="review-slider__inner">
-                <ul class="review-slider__list js-review-slider-list">
+                <ul class="review-slider__list js-review-slider-list" aria-live="polite">
 					<?php $slideCounter = 0; foreach($reviews as $post) { setup_postdata($post); ?>
-                        <li class="review-slider__list__item js-review-slider-list-item" data-slide-count="<?php echo $slideCounter; ?>">
+                        <li class="review-slider__list__item js-review-slider-list-item" data-slide-count="<?php echo $slideCounter; ?>" aria-hidden="<?php echo ($slideCounter == 0) ? 'false' : 'true'; ?>">
 							<?php if(has_post_thumbnail()) { ?>
                                 <div class="review-slider__list__item__thumbnail js-review-slider-list-item-thumbnail">
 									<?php echo wp_get_attachment_image(get_post_thumbnail_id(), 'review-portrait-use-retina', null, array('class' => 'review-slider__list__item__thumbnail__img')); ?>
@@ -39,15 +39,15 @@
 
                 <ul class="review-slider__nav js-review-slider-nav">
                     <li class="review-slider__nav__item">
-                        <button class="review-slider__nav__item__icon-wrapper js-review-slider-nav-item" data-direction="prev">
-                            <i class="review-slider__nav__item__icon-wrapper__icon fa-regular fa-arrow-left js-review-slider-nav-item-icon"></i>
+                        <button class="review-slider__nav__item__icon-wrapper js-review-slider-nav-item" data-direction="prev" aria-label="<?php esc_attr_e('Previous review', 'visia'); ?>">
+                            <i class="review-slider__nav__item__icon-wrapper__icon fa-regular fa-arrow-left js-review-slider-nav-item-icon" aria-hidden="true"></i>
                             <span class="review-slider__nav__item__icon-wrapper__fill js-review-slider-nav-item-fill"></span>
                         </button>
                     </li>
 
                     <li class="review-slider__nav__item">
-                        <button class="review-slider__nav__item__icon-wrapper js-review-slider-nav-item" data-direction="next">
-                            <i class="review-slider__nav__item__icon-wrapper__icon fa-regular fa-arrow-right js-review-slider-nav-item-icon"></i>
+                        <button class="review-slider__nav__item__icon-wrapper js-review-slider-nav-item" data-direction="next" aria-label="<?php esc_attr_e('Next review', 'visia'); ?>">
+                            <i class="review-slider__nav__item__icon-wrapper__icon fa-regular fa-arrow-right js-review-slider-nav-item-icon" aria-hidden="true"></i>
                             <span class="review-slider__nav__item__icon-wrapper__fill js-review-slider-nav-item-fill"></span>
                         </button>
                     </li>

@@ -35,6 +35,7 @@
 	/* Menus */
 	register_nav_menus( array(
 		'main' => __('Main menu', 'visia'),
+		'main_small' => __('Main small menu', 'visia'),
 		'footer_1' => __('Footer menu 1', 'visia'),
 		'footer_2' => __('Footer menu 2', 'visia'),
 		'footer_legal' => __('Legal menu', 'visia'),
@@ -234,6 +235,10 @@
 
 	/* Disabling WordPress lazy-load */
 	add_filter( 'wp_lazy_loading_enabled', '__return_false' );
+
+
+
+    require_once get_template_directory() . '/acf.php';
 
 
     /* Custom menu walker for main menu */
@@ -465,13 +470,15 @@ function visia_scripts(){
 		    } else {
 			    $handle = 'swup-'.$swupCount;
 		    }
-	    } elseif(str_starts_with($filename, 'app')) {
-		    continue;
+        } elseif(str_starts_with($filename, 'app')) {
+            continue;
+        } else {
+            $handle = 'visia-' . sanitize_title(pathinfo($filename, PATHINFO_FILENAME));
         }
 
         /* Register script */
-	    wp_register_script($handle, get_template_directory_uri() .'/dist/'.$filename, null, null, array(
-		        'strategy'  => 'defer',
+        wp_register_script($handle, get_template_directory_uri() .'/dist/'.$filename, array(), null, array(
+                'strategy'  => 'defer',
                 'in_footer' => true
         ));
 
@@ -506,8 +513,9 @@ function visia_inject_inline_css() {
 		return $data;
 	}
 
-    if($resetStyles = minify(file_get_contents('wp-content/themes/visia/dist/reset.min.css'))) {
-	    echo '<style id="inline-visia-reset" type="text/css">'.str_replace("../../fonts/", get_template_directory_uri() . '/assets/fonts/', $resetStyles).'</style>';
+    if($resetStyles = minify(file_get_contents(get_template_directory() . '/dist/reset.min.css'))) {
+        $resetStyles = str_replace('../assets/fonts/', get_template_directory_uri() . '/assets/fonts/', $resetStyles);
+        echo '<style id="inline-visia-reset" type="text/css">' . $resetStyles . '</style>';
     }
 
     if($awesomeStyles = minify(file_get_contents('wp-content/themes/visia/assets/fontawesome-subset/css/all.min.css'))) {
@@ -635,11 +643,19 @@ class Sasser {
 
 
 /* Function for outputting the color change trigger */
-function global_color_change_trigger($colorScheme, $background = null, $text = null) {
+function global_color_change_trigger($colorScheme, $background = null, $text = null, $gradient = false) {
 	global $currBackground, $currText, $scrollTriggerCount;
 
-	if($colorScheme == 'blue') {
-		$background = '#232C48';
+    if($gradient) {
+        $background = 'linear-gradient(180deg, #162967 0%, #182349 75%, #182349 100%)';
+        $text = '#ffffff';
+        $plainText = '#acb0ba';
+        $visualFilter = 'invert(1)';
+        $lightBorderColor = '#ffffff0F';
+        $darkBorderColor = '#ffffff40';
+        $dropShadowColor = '#ffffff0D';
+    } elseif($colorScheme == 'blue') {
+		$background = '#182349';
 		$text = '#ffffff';
 		$plainText = '#acb0ba';
 		$visualFilter = 'invert(1)';
@@ -647,9 +663,9 @@ function global_color_change_trigger($colorScheme, $background = null, $text = n
 		$darkBorderColor = '#ffffff40';
         $dropShadowColor = '#ffffff0D';
 	} elseif($colorScheme == 'white') {
-		$background = '#ffffff';
-		$text = '#212121';
-		$plainText = '#6e6e6e';
+		$background = '#FBFBFB';
+		$text = '#231F20';
+		$plainText = '#3B3B3B';
 		$visualFilter = 'invert(0)';
 		$lightBorderColor = '#2121210F';
 		$darkBorderColor = '#21212140';
@@ -687,18 +703,32 @@ function global_color_change_trigger($colorScheme, $background = null, $text = n
 }
 
 
+/* Function for cleaning schema text */
+function visia_schema_text($content) {
+	return trim(preg_replace('/\s+/', ' ', html_entity_decode(wp_strip_all_tags($content), ENT_QUOTES, get_bloginfo('charset'))));
+}
+
+
+/* Function for outputting section-specific schema */
+function visia_schema_script($schema) {
+	if(!empty($schema)) {
+		echo '<script type="application/ld+json">'.wp_json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).'</script>';
+	}
+}
+
+
 /* Function for outputting the global button */
 function global_button($buttonLabel, $buttonTarget, $buttonLocation = 'internal', $buttonWrapperClasses = null, $buttonClasses = null) {
 	if($buttonLocation == 'internal') {
-		$buttonIcon = '<i class="css-global-button-icon fa-regular fa-arrow-right"></i>';
+		$buttonIcon = '<i class="css-global-button-icon fa-regular fa-arrow-right" aria-hidden="true"></i>';
 	} elseif($buttonLocation == 'external') {
-		$buttonIcon = '<i class="css-global-button-icon fa-regular fa-arrow-up-right"></i>';
+		$buttonIcon = '<i class="css-global-button-icon fa-regular fa-arrow-up-right" aria-hidden="true"></i>';
 	}
 
     $goBack = false;
     if($buttonTarget == 'back') {
 	    $goBack = true;
-	    $buttonIcon = '<i class="css-global-button-icon fa-regular fa-arrow-left"></i>';
+	    $buttonIcon = '<i class="css-global-button-icon fa-regular fa-arrow-left" aria-hidden="true"></i>';
     }
 	echo '<div'.(($buttonWrapperClasses) ? ' class="'.$buttonWrapperClasses.'"' : '').'><a class="css-global-button js-global-button'.(($buttonClasses) ? ' '.$buttonClasses : '').'" '.(($goBack) ? 'onclick="history.back()"' : 'href="'.esc_url($buttonTarget).'"').' '.(($buttonLocation == 'external') ? ' target="_blank"' : '').'><span class="css-global-button-text">'.$buttonLabel.'</span><span class="css-global-button-icon-wrapper js-global-button-icon">'.$buttonIcon.'<span class="css-global-button-fill js-global-button-fill"></span></span></a></div>';
 } ?>

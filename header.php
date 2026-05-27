@@ -102,6 +102,15 @@
     <i class="loader__spinner fa-duotone fa-spinner-third fa-spin" style="--fa-secondary-opacity: 0.25;"></i>
 </div>
 
+<span class="middle-menu-bg js-middle-menu-bg" aria-hidden="true"></span>
+
+<?php wp_nav_menu(array(
+    'theme_location'    => 'main_small',
+    'container'         => false,
+    'items_wrap'        => '<ul class="middle-menu js-middle-menu">%3$s</ul>',
+    'item_spacing'      => 'discard'
+)); ?>
+
 <div class="css-main-body-container js-main-body-container" aria-hidden="false">
 
 <nav class="top-bar js-top-bar">

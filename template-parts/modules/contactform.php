@@ -3,18 +3,21 @@
 
     global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst'));
 
-    $formName = get_sub_field('formuliernaam') ?>
+    $formName = get_sub_field('formuliernaam');
+	$headline = get_sub_field('headline');
+	$sectionID = wp_unique_id('contact-form-');
+	$headlineID = $sectionID.'-headline'; ?>
 
-    <section class="contact-form js-contact-form" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
-        <?php if($headline = get_sub_field('headline')) { ?>
-            <div class="contact-form__intro js-contact-form-intro">
+    <section class="contact-form js-contact-form" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo $headline ? ' aria-labelledby="'.esc_attr($headlineID).'"' : ''; ?>>
+        <?php if($headline) { ?>
+            <div class="contact-form__intro js-contact-form-intro js-section-reveal">
                 <div class="css-max-text-width">
-                    <h1 class="contact-form__intro__title css-title js-contact-form-vertical-text-reveal"><?php echo $headline; ?></h1>
+                    <h1 id="<?php echo esc_attr($headlineID); ?>" class="contact-form__intro__title css-title js-contact-form-vertical-text-reveal"><?php echo $headline; ?></h1>
                 </div>
             </div>
         <?php } ?>
 
-        <div class="contact-form__content js-contact-form-content">
+        <div class="contact-form__content js-contact-form-content js-section-reveal">
             <div class="css-max-text-width">
                 <div class="contact-form__content__inner">
                     <form class="contact-form__content__form css-big-form js-form js-big-form js-contact-form-self" name="<?php esc_attr_e($formName); ?>" method="POST" data-netlify="true" data-swup-form="true" action="<?php echo substr(get_permalink(get_sub_field('bedanktpagina')), strlen(home_url())); ?>">
@@ -23,7 +26,7 @@
                         <label class="css-big-form-label js-big-form-field" for="<?php esc_attr_e($formName); ?>-full-name" data-label-num="01">
                             <span class="css-big-form-label-text js-big-form-field-text"><?php _e('What\'s your name?', 'visia'); ?></span>
 
-                            <input class="css-big-form-input js-big-form-field-input" type="text" name="full-name" id="<?php esc_attr_e($formName); ?>-full-name" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formName); ?>-full-name-error" placeholder="<?php esc_attr_e('First and last name', 'visia'); ?> *">
+                            <input class="css-big-form-input js-big-form-field-input" type="text" name="full-name" id="<?php esc_attr_e($formName); ?>-full-name" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formName); ?>-full-name-error" aria-errormessage="<?php esc_attr_e($formName); ?>-full-name-error" aria-invalid="false" placeholder="<?php esc_attr_e('First and last name', 'visia'); ?> *">
 
                             <span class="css-form-input-validation-message js-form-validation-message" id="<?php esc_attr_e($formName); ?>-full-name-error"><?php _e('Please enter your first and last name', 'visia'); ?></span>
                         </label>
@@ -33,7 +36,7 @@
                         <label class="css-big-form-label js-big-form-field" for="<?php esc_attr_e($formName); ?>-email" data-label-num="02">
                             <span class="css-big-form-label-text js-big-form-field-text"><?php _e('What\'s your email address?', 'visia'); ?></span>
 
-                            <input class="css-big-form-input js-big-form-field-input" type="email" name="email" id="<?php esc_attr_e($formName); ?>-email" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formName); ?>-email-error" placeholder="<?php esc_attr_e('Email address', 'visia'); ?> *">
+                            <input class="css-big-form-input js-big-form-field-input" type="email" name="email" id="<?php esc_attr_e($formName); ?>-email" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formName); ?>-email-error" aria-errormessage="<?php esc_attr_e($formName); ?>-email-error" aria-invalid="false" placeholder="<?php esc_attr_e('Email address', 'visia'); ?> *">
 
                             <span class="css-form-input-validation-message js-form-validation-message" id="<?php esc_attr_e($formName); ?>-email-error"><?php _e('Please enter your email address', 'visia'); ?></span>
                         </label>
@@ -43,7 +46,7 @@
                         <label class="css-big-form-label js-big-form-field" for="<?php esc_attr_e($formName); ?>-business" data-label-num="03">
                             <span class="css-big-form-label-text js-big-form-field-text"><?php _e('What\'s your business\' name?', 'visia'); ?></span>
 
-                            <input class="css-big-form-input js-big-form-field-input" type="text" name="business" id="<?php esc_attr_e($formName); ?>-business" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formName); ?>-business-error" placeholder="<?php esc_attr_e('Business name', 'visia'); ?> *">
+                            <input class="css-big-form-input js-big-form-field-input" type="text" name="business" id="<?php esc_attr_e($formName); ?>-business" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formName); ?>-business-error" aria-errormessage="<?php esc_attr_e($formName); ?>-business-error" aria-invalid="false" placeholder="<?php esc_attr_e('Business name', 'visia'); ?> *">
 
                             <span class="css-form-input-validation-message js-form-validation-message" id="<?php esc_attr_e($formName); ?>-business-error"><?php _e('Please enter your business\' name', 'visia'); ?></span>
                         </label>
@@ -53,7 +56,7 @@
                         <label class="css-big-form-label js-big-form-field" for="<?php esc_attr_e($formName); ?>-message" data-label-num="04">
                             <span class="css-big-form-label-text js-big-form-field-text"><?php _e('Describe the project', 'visia'); ?></span>
 
-                            <textarea class="css-big-form-input js-big-form-field-input" name="message" id="<?php esc_attr_e($formName); ?>-message" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formName); ?>-message-error" placeholder="<?php esc_attr_e('Brief description of the project', 'visia'); ?> *" rows="1"></textarea>
+                            <textarea class="css-big-form-input js-big-form-field-input" name="message" id="<?php esc_attr_e($formName); ?>-message" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formName); ?>-message-error" aria-errormessage="<?php esc_attr_e($formName); ?>-message-error" aria-invalid="false" placeholder="<?php esc_attr_e('Brief description of the project', 'visia'); ?> *" rows="1"></textarea>
 
                             <span class="css-form-input-validation-message js-form-validation-message" id="<?php esc_attr_e($formName); ?>-message-error"><?php _e('Please enter a brief description of the project', 'visia'); ?></span>
                         </label>
@@ -62,7 +65,7 @@
 
                         <div class="css-form-footer css-big-form-footer">
                             <label class="css-form-label-privacy" for="<?php esc_attr_e($formName); ?>-privacy">
-                                <input type="checkbox" class="js-form-field-privacy-checkbox" name="privacy-checkbox" id="<?php esc_attr_e($formName); ?>-privacy" required="true" aria-required="true" aria-errormessage="<?php esc_attr_e($formName); ?>-privacy-error">
+                                <input type="checkbox" class="js-form-field-privacy-checkbox" name="privacy-checkbox" id="<?php esc_attr_e($formName); ?>-privacy" required="true" aria-required="true" aria-describedby="<?php esc_attr_e($formName); ?>-privacy-error" aria-errormessage="<?php esc_attr_e($formName); ?>-privacy-error" aria-invalid="false">
 
                                 <span class="css-form-label-privacy-text"><?php printf(__('I agree to the storage and processing of my data as stated in the %1$sprivacy statement%2$s*', 'visia'), '<a href="'.get_privacy_policy_url().'" target="_blank">', '</a>'); ?></span>
 

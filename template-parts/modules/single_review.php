@@ -2,8 +2,8 @@
 	global $scrollTriggerCount;
 
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
-	<aside class="single-review js-single-review" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
-		<div class="css-max-text-width">
+	<aside class="single-review js-single-review" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>" aria-label="<?php esc_attr_e('Review', 'visia'); ?>">
+		<div class="css-max-text-width js-section-reveal">
 			<?php $post = get_sub_field('review'); setup_postdata($post);
 
 			if(has_post_thumbnail() || get_field('naam') || get_field('bedrijfsnaam')) {

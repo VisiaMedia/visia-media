@@ -1,5 +1,4 @@
 import { gsap } from "gsap";
-import { SplitText } from "gsap/SplitText.js";
 
 /* Registering GSAP resize function (called when resizing stops) */
 function callAfterResize(func, delay) {
@@ -44,7 +43,7 @@ function tlSetup(element, stCount) {
     let timeline = gsap.timeline({
         scrollTrigger: {
             trigger: element,
-            start: "top center",
+            start: "top 75%",
             end: "top top",
             once: true,
             invalidateOnRefresh: true,
@@ -60,49 +59,6 @@ function tlSetup(element, stCount) {
     return timeline;
 }
 
-
-
-/* Registering "text reveal in timeline" function */
-function tlTextReveal(element, timeline) {
-    if(element.querySelectorAll('.css-global-vertical-text-reveal-parent')) {
-        let existingParents = element.querySelectorAll('.css-global-vertical-text-reveal-parent');
-
-        existingParents.forEach(parent => {
-            let child = parent.querySelector('.css-global-vertical-text-reveal-child');
-
-            child.outerHTML = child.innerHTML;
-            parent.outerHTML = parent.innerHTML;
-        });
-    }
-
-    const splitChild = new SplitText(element, {
-        type: "lines",
-        linesClass: "css-global-vertical-text-reveal-child"
-    });
-
-    const splitParent = new SplitText(element, {
-        type: "lines",
-        linesClass: "css-global-vertical-text-reveal-parent"
-    });
-
-    gsap.set(splitChild.lines, {
-        y: '100%',
-        immediateRender: true
-    });
-
-    timeline.to(splitChild.lines, {
-        duration: .45,
-        stagger: .2,
-        y: 0,
-        onComplete: () => {
-            splitParent.revert();
-            splitChild.revert();
-        }
-    });
-}
-
-
-
 /* Registering "fade in in timeline" function */
 function tlFadeIn(element, timeline) {
     gsap.set(element, {
@@ -114,7 +70,6 @@ function tlFadeIn(element, timeline) {
     timeline.to(element, {
         y: "0rem",
         autoAlpha: 1,
-        stagger: .2,
         onStart:() => {
             if(NodeList.prototype.isPrototypeOf(element)) {
                 element.forEach(el => {
@@ -140,6 +95,32 @@ function tlFadeIn(element, timeline) {
                     clearProps: "transform",
                 });
             }
+        }
+    });
+}
+
+
+
+/* Registering "section reveal in timeline" function */
+function tlSectionReveal(element, timeline) {
+    gsap.set(element, {
+        autoAlpha: 0,
+        y: "1.5rem",
+        immediateRender: true
+    });
+
+    timeline.to(element, {
+        y: "0rem",
+        autoAlpha: 1,
+        onStart:() => {
+            element.style.willChange = 'transform, opacity';
+        },
+        onComplete:() => {
+            element.style.willChange = 'auto';
+
+            gsap.set(element, {
+                clearProps: "transform",
+            });
         }
     });
 }
@@ -295,4 +276,4 @@ function enableScroll() {
     window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
 }
 
-export {callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll};
+export {callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn, tlSectionReveal, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll};

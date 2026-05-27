@@ -3,12 +3,16 @@
 
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst'));
 
-    $popupID = wp_unique_id('pricelist-download-'); ?>
+    $sectionID = wp_unique_id('cta-presentation-');
+    $titleID = $sectionID.'-title';
+    $popupID = wp_unique_id('pricelist-download-');
+    $popupTitle = get_field('optie_cta_prijslijst_popup_titel', 'option');
+    $popupTitleID = $popupID.'-title'; ?>
 
-    <section class="cta-presentation js-cta-presentation" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
-        <div class="css-max-text-width">
+    <section class="cta-presentation js-cta-presentation" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo get_sub_field('titel') ? ' aria-labelledby="'.esc_attr($titleID).'"' : ''; ?>>
+        <div class="css-max-text-width js-section-reveal">
             <?php if($title = get_sub_field('titel')) {
-                echo '<h1 class="cta-presentation__title css-title js-cta-presentation-title">'.$title.'</h1>';
+                echo '<h1 id="'.esc_attr($titleID).'" class="cta-presentation__title css-title js-cta-presentation-title">'.$title.'</h1>';
             }
 
             if($contactPageID = get_field('optie_paginalink_contact', 'option')) {
@@ -21,12 +25,12 @@
                 <ul class="cta-presentation__links__list">
                     <?php if($onlinePresentationID = get_field('optie_paginalink_online_presentatie', 'option')) { ?>
                         <li>
-                            <a href="<?php the_permalink($onlinePresentationID); ?>"><i class="fa-light fa-presentation-screen"></i> <?php _e('Online presentation', 'visia'); ?></a>
+                            <a href="<?php the_permalink($onlinePresentationID); ?>"><i class="fa-light fa-presentation-screen" aria-hidden="true"></i> <?php _e('Online presentation', 'visia'); ?></a>
                         </li>
                     <?php } ?>
 
                     <li>
-                        <a class="js-popup-trigger" data-popup="<?php echo $popupID; ?>"><i class="fa-light fa-file-heart"></i> <?php _e('Download the pricelist (PDF)', 'visia'); ?></a>
+                        <a class="js-popup-trigger" data-popup="<?php echo $popupID; ?>" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="<?php echo esc_attr($popupID); ?>" aria-expanded="false"><i class="fa-light fa-file-heart" aria-hidden="true"></i> <?php _e('Download the pricelist (PDF)', 'visia'); ?></a>
                     </li>
                 </ul>
             </div>
@@ -34,16 +38,16 @@
     </section>
 
     <div class="popup-container js-popup-container">
-        <div class="popup-container__popup css-boxed-content js-popup" data-popup="<?php echo $popupID; ?>" aria-hidden="true" role="dialog">
+        <div id="<?php echo esc_attr($popupID); ?>" class="popup-container__popup css-boxed-content js-popup" data-popup="<?php echo $popupID; ?>" aria-hidden="true" role="dialog" aria-modal="true"<?php echo $popupTitle ? ' aria-labelledby="'.esc_attr($popupTitleID).'"' : ''; ?>>
             <div role="document">
-                <button class="popup-container__popup__close js-close" title="<?php esc_attr_e(__('Close popup', 'visia')); ?>">
-                    <span class="popup-container__popup__close__line--left popup-container__popup__close__line"></span>
+                <button class="popup-container__popup__close js-close" title="<?php esc_attr_e(__('Close popup', 'visia')); ?>" aria-label="<?php esc_attr_e('Close popup', 'visia'); ?>">
+                    <span class="popup-container__popup__close__line--left popup-container__popup__close__line" aria-hidden="true"></span>
 
-                    <span class="popup-container__popup__close__line--right popup-container__popup__close__line"></span>
+                    <span class="popup-container__popup__close__line--right popup-container__popup__close__line" aria-hidden="true"></span>
                 </button>
 
-			    <?php if($popupTitle = get_field('optie_cta_prijslijst_popup_titel', 'option')) {
-				    echo '<h1 class="popup-container__popup__title css-title--small-size css-title">'.$popupTitle.'</h1>';
+			    <?php if($popupTitle) {
+				    echo '<h1 id="'.esc_attr($popupTitleID).'" class="popup-container__popup__title css-title--small-size css-title">'.$popupTitle.'</h1>';
 			    }
 
 			    if($popupText = get_field('optie_cta_prijslijst_popup_tekst', 'option')) {

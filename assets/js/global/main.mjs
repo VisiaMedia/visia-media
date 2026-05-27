@@ -1,4 +1,4 @@
-let mainMenuButton, mainMenu, mainMenuRevealTl, mainMenuButtonQuakeTl;
+let mainMenuButton, mainMenu, middleMenu, middleMenuBg, mainMenuRevealTl, mainMenuButtonQuakeTl;
 
 /* Initialize */
 export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll) {
@@ -11,6 +11,31 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
         topBarLogo.addEventListener("mouseenter", () => blobity.updateOptions({ opacity: 0 }));
         topBarLogo.addEventListener("mouseleave", () => blobity.updateOptions({ opacity: 0.1 }));
     }
+
+    middleMenu = document.querySelector('.js-middle-menu');
+    middleMenuBg = document.querySelector('.js-middle-menu-bg');
+
+    const setMiddleMenuBg = () => {
+        if (middleMenu && middleMenuBg) {
+            const middleMenuStyle = getComputedStyle(middleMenu);
+
+            if (middleMenuStyle.display === 'none') {
+                middleMenuBg.style.setProperty('--middle-menu-width', '0px');
+                middleMenuBg.style.setProperty('--middle-menu-height', '0px');
+                return;
+            }
+
+            const middleMenuRect = middleMenu.getBoundingClientRect();
+
+            middleMenuBg.style.setProperty('--middle-menu-top', `${middleMenuRect.top}px`);
+            middleMenuBg.style.setProperty('--middle-menu-left', `${middleMenuRect.left}px`);
+            middleMenuBg.style.setProperty('--middle-menu-width', `${middleMenuRect.width}px`);
+            middleMenuBg.style.setProperty('--middle-menu-height', `${middleMenuRect.height}px`);
+        }
+    };
+
+    setMiddleMenuBg();
+    callAfterResize(setMiddleMenuBg);
 
     /* Main Menu Logic */
     mainMenuButton = document.querySelector('.js-main-menu-button');
@@ -27,11 +52,32 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                 gsap.utils.toArray(".js-main-menu-side-block-icon-link").forEach(iconLink => {
                     iconLink.setAttribute("data-blobity-radius", (iconLink.offsetWidth + 12) / 2);
                 });
+                gsap.utils.toArray(".js-middle-menu .js-button > a").forEach(button => {
+                    const blobityOffsetY = button.getAttribute("data-blobity-offset-y")
+                        ? parseFloat(button.getAttribute("data-blobity-offset-y"))
+                        : blobity.options.focusableElementsOffsetY;
+
+                    button.setAttribute("data-blobity-radius", Math.round((button.getBoundingClientRect().height + (blobityOffsetY * 2)) / 2));
+                });
             }
         };
 
         setBlobityRadius();
         callAfterResize(setBlobityRadius);
+
+        gsap.utils.toArray(".js-middle-menu a").forEach(menuItem => {
+            menuItem.addEventListener("mouseenter", () => {
+                if (window.matchMedia("(pointer: fine)").matches && blobity && mainMenu.classList.contains("js-is-inactive")) {
+                    blobity.updateOptions({ zIndex: 750 });
+                }
+            });
+
+            menuItem.addEventListener("mouseleave", () => {
+                if (window.matchMedia("(pointer: fine)").matches && blobity && mainMenu.classList.contains("js-is-inactive")) {
+                    blobity.updateOptions({ zIndex: 50 });
+                }
+            });
+        });
 
         /* Set menu font-size */
         const setMenuItemSize = () => {
@@ -56,6 +102,41 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
             menuItemSizeTimer = setTimeout(setMenuItemSize, 100);
         };
 
+        let middleMenuClosedColor, middleMenuBgClosedColor;
+        const getMiddleMenuColorTargets = () => [middleMenu, middleMenuBg].filter(Boolean);
+
+        const animateMiddleMenuOpen = () => {
+            const middleMenuColorTargets = getMiddleMenuColorTargets();
+
+            gsap.killTweensOf(middleMenuColorTargets, "color");
+
+            if (!middleMenuClosedColor && middleMenu) {
+                middleMenuClosedColor = gsap.getProperty(middleMenu, "color");
+            }
+
+            if (!middleMenuBgClosedColor && middleMenuBg) {
+                middleMenuBgClosedColor = gsap.getProperty(middleMenuBg, "color");
+            }
+
+            gsap.to(middleMenuColorTargets, { duration: 0.2, color: '#FFFFFF' });
+        };
+
+        const animateMiddleMenuClosed = () => {
+            const middleMenuColorTargets = getMiddleMenuColorTargets();
+
+            gsap.killTweensOf(middleMenuColorTargets, "color");
+
+            gsap.to(middleMenuColorTargets, {
+                duration: 0.2,
+                color: (index, target) => target === middleMenu ? middleMenuClosedColor : middleMenuBgClosedColor,
+                onComplete: () => {
+                    gsap.set(middleMenuColorTargets, { clearProps: "color" });
+                    middleMenuClosedColor = null;
+                    middleMenuBgClosedColor = null;
+                }
+            });
+        };
+
         /* Reset positions for button lines */
         gsap.set(".js-main-menu-button-line-top", { y: "-0.4em" });
         gsap.set(".js-main-menu-button-line-bottom", { y: "0.4em" });
@@ -69,6 +150,8 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
 
         /* Hide top bar on scroll (mobile) */
         const topBar = document.querySelector(".js-top-bar");
+        const topBarItems = [topBar, middleMenu, middleMenuBg].filter(Boolean);
+        const getTopBarHiddenY = (index, target) => -target.getBoundingClientRect().bottom;
         let lastScrollTop = 0, didScroll, delta = 15;
 
         window.onscroll = () => didScroll = true;
@@ -79,9 +162,9 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                 const st = document.documentElement.scrollTop;
                 if (Math.abs(lastScrollTop - st) <= delta) return;
                 if (st > lastScrollTop) {
-                    gsap.to(topBar, { duration: 0.5, yPercent: -100 });
+                    gsap.to(topBarItems, { duration: 0.5, y: getTopBarHiddenY });
                 } else {
-                    gsap.to(topBar, { duration: 0.5, yPercent: 0 });
+                    gsap.to(topBarItems, { duration: 0.5, y: 0 });
                 }
                 lastScrollTop = st;
             }
@@ -118,6 +201,7 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
             .to(".js-main-menu-button", {
                 color: '#FFFFFF',
                 onReverseComplete: () => {
+                    gsap.set(".js-main-menu-button", { clearProps: "color" });
                     gsap.set(".js-main-menu-button-line-bottom", {
                         width: gsap.getProperty('.js-main-menu-button-line-top', 'width', 'px'), // Reset to the top width when reversing
                         autoAlpha: 1 // Ensure visibility
@@ -128,7 +212,8 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                 duration: 0.625,
                 scale: () => (Math.max(window.innerWidth, window.innerHeight) / 10) * 2.4,
                 onStart: () => {
-                    if (blobity) blobity.updateOptions({ color: '#ffffff', zIndex: 650 });
+                    animateMiddleMenuOpen();
+                    if (blobity) blobity.updateOptions({ color: '#ffffff', zIndex: 750 });
                     if (blobity) blobity.bounce();
                     disableScroll();
                 },
@@ -148,7 +233,12 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
             .to(mainMenu, { duration: 0, autoAlpha: 1 })
             .to(".js-main-menu-item-wrapper", { stagger: 0.1, yPercent: 0 })
             .to(".js-main-menu-side-block", { stagger: 0.1, autoAlpha: 1 })
-            .addLabel("end");
+            .addLabel("end")
+            .call(() => {
+                if (mainMenu.classList.contains("js-is-inactive")) {
+                    animateMiddleMenuClosed();
+                }
+            }, null, "startHovered+=0.25");
 
         /* Initialize the quake timeline for the menu button */
         mainMenuButtonQuakeTl = gsap.timeline({
@@ -214,6 +304,17 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
         });
     }
 
+    /* Set top bar height CSS variable */
+    const setTopBarHeightVar = () => {
+        const topBar = document.querySelector('.js-top-bar');
+        if (topBar) {
+            document.documentElement.style.setProperty('--top-bar-height', `${topBar.offsetHeight}px`);
+        }
+    };
+
+    setTopBarHeightVar();
+    callAfterResize(setTopBarHeightVar);
+
     /* Set main menu offset */
     const setMainMenuOffset = () => {
         const topBar = document.querySelector('.js-top-bar');
@@ -237,6 +338,9 @@ export function unload(gsap, enableScroll) {
         mainMenu.classList.add("js-is-inactive");
     }
 
+    /* Clear middle-menu colors */
+    gsap.set(".js-middle-menu, .js-middle-menu-bg", { clearProps: "color" });
+
     /* Remove topbar logo event listeners */
     const topBarLogo = document.querySelector('.js-top-bar-logo');
     if (topBarLogo) {
@@ -250,6 +354,12 @@ export function unload(gsap, enableScroll) {
         mainMenuButton.parentNode.replaceChild(newMainMenuButton, mainMenuButton);
     }
 
+    /* Remove middle-menu event listeners */
+    gsap.utils.toArray(".js-middle-menu a").forEach(menuItem => {
+        const newMenuItem = menuItem.cloneNode(true);
+        menuItem.parentNode.replaceChild(newMenuItem, menuItem);
+    });
+
     /* Remove event listeners from menu items */
     gsap.utils.toArray(".js-main-menu-item").forEach(mainMenuItem => {
         const newMainMenuItem = mainMenuItem.cloneNode(true);
@@ -260,7 +370,7 @@ export function unload(gsap, enableScroll) {
     enableScroll();
 
     /* Clear global variables */
-    mainMenuButton = mainMenu = mainMenuRevealTl = mainMenuButtonQuakeTl = null;
+    mainMenuButton = mainMenu = middleMenu = middleMenuBg = mainMenuRevealTl = mainMenuButtonQuakeTl = null;
 }
 
 /* Export init and unload functions */

@@ -1,4 +1,4 @@
-@import './assets/css/reset/core';
+@use './reset/core' as *;
 
 .perspective-gallery {
   position:relative;

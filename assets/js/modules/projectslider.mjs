@@ -1,5 +1,5 @@
 /* Initialize */
-export function init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAfterResize, tlSetup, tlTextReveal, tlFadeIn) {
+export function init(gsap, Draggable) {
     const projectSliders = gsap.utils.toArray('.js-project-slider');
 
     if (projectSliders.length > 0) {
@@ -8,26 +8,6 @@ export function init(gsap, ScrollTrigger, Draggable, callAfterResize, buildTlAft
             const projectSliderInner = projectSlider.querySelector('.js-project-slider-inner');
             const projectSliderList = projectSlider.querySelector('.js-project-slider-list');
             const projectSliderListItems = projectSliderList.querySelectorAll('.js-project-slider-list-item');
-            const projectSliderTitle = projectSlider.querySelector('.js-project-slider-title');
-
-            /* Setup timeline */
-            let timeline = tlSetup(projectSlider, projectSlider.dataset.stCount);
-
-            /* Build timeline */
-            const buildTimeline = () => {
-                /* Add animation for headline reveal */
-                if (projectSliderTitle) {
-                    tlTextReveal(projectSliderTitle, timeline);
-                }
-
-                /* Show items one by one */
-                tlFadeIn(projectSliderListItems, timeline);
-            };
-
-            buildTimeline(); // Execute once
-
-            /* Clear and rebuild timeline on resize */
-            callAfterResize(() => buildTlAfterResize(timeline, buildTimeline));
 
             /* Setup draggable slider */
             Draggable.create(projectSliderList, {

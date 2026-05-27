@@ -36,7 +36,7 @@ export function init(gsap, blobity, ScrollTrigger) {
                 /* Create ScrollTrigger for subsequent color change triggers */
                 ScrollTrigger.create({
                     trigger: trigger,
-                    start: "top center",
+                    start: "top 75%",
                     invalidateOnRefresh: true,
                     refreshPriority: trigger.dataset.stCount,
                     preventOverlaps: "global-color-change-trigger",

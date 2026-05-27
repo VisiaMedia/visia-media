@@ -1,4 +1,4 @@
-@import './assets/css/reset/core';
+@use './reset/core' as *;
 
 .social-links {
   padding:calc(var(--offset-vertical) * 2) var(--offset-side) var(--offset-vertical);

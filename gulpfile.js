@@ -1,14 +1,14 @@
 const gulp = require('gulp');
 const { src, dest, watch, series, parallel } = require('gulp');
 const concat = require('gulp-concat');
-const dartSass = require('gulp-dart-sass'); // Gebruik gulp-dart-sass
+const sass = require('gulp-sass')(require('sass'));
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
 
 const paths = {
     stylesReset: {
-        src: ['./assets/css/reset/*.scss'],
+        src: ['./assets/css/reset/style.scss'],
         dest: './dist/',
     },
     styles: {
@@ -19,7 +19,7 @@ const paths = {
 
 function compileResetStyles() {
     return src(paths.stylesReset.src)
-        .pipe(dartSass().on('error', dartSass.logError)) // Gebruik dartSass in plaats van sass
+        .pipe(sass().on('error', sass.logError))
         .pipe(postcss([autoprefixer({ flexbox: true }), cssnano()]))
         .pipe(concat('reset.min.css'))
         .pipe(dest(paths.stylesReset.dest));
@@ -27,21 +27,22 @@ function compileResetStyles() {
 
 function compileStyles() {
     return src(paths.styles.src)
-        .pipe(dartSass().on('error', dartSass.logError)) // Gebruik dartSass in plaats van sass
+        .pipe(sass().on('error', sass.logError))
         .pipe(postcss([autoprefixer({ flexbox: true }), cssnano()]))
         .pipe(concat('bundle.min.css'))
         .pipe(dest(paths.styles.dest));
 }
 
 function watcher() {
-    watch(paths.stylesReset.src, parallel(compileResetStyles));
+    watch('./assets/css/reset/**/*.scss', parallel(compileResetStyles, compileStyles));
     watch(paths.styles.src, parallel(compileStyles));
 }
 
 exports.compileStyles = compileStyles;
 exports.watcher = watcher;
-
 exports.default = series(
-    parallel(compileStyles),
+    parallel(compileResetStyles, compileStyles),
     watcher
 );
+
+exports.build = parallel(compileResetStyles, compileStyles);

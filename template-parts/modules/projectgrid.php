@@ -9,6 +9,7 @@
 
 	$sectionID = wp_unique_id('project-grid-');
 	$listID = $sectionID.'-list';
+	$caseArchivePath = wp_parse_url(get_post_type_archive_link('case'), PHP_URL_PATH);
 	$caseSchemaItems = array();
 
 	foreach($cases as $casePost) {
@@ -39,7 +40,7 @@
         $infiniteScroll = true;
     } ?>
 
-	<section class="project-grid js-project-grid" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>" aria-label="<?php esc_attr_e('Cases', 'visia'); ?>">
+	<section class="project-grid js-project-grid" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>" data-case-archive-url="<?php echo esc_attr($caseArchivePath); ?>" aria-label="<?php esc_attr_e('Cases', 'visia'); ?>">
 		<div class="css-max-text-width">
 			<ul id="<?php echo esc_attr($listID); ?>" class="project-grid__list js-project-grid-list">
 				<?php foreach($cases as $post) { setup_postdata($post); ?>

@@ -10,7 +10,7 @@
         <ul class="block-images__list">
             <?php foreach($images as $image) { ?>
                 <li class="block-images__list__item js-item">
-	                <?php echo wp_get_attachment_image($image['ID'], null, 'large', array('class' => 'block-images__list__item__img')); ?>
+	                <?php echo wp_get_attachment_image($image['ID'], 'large', null, array('class' => 'block-images__list__item__img')); ?>
                 </li>
             <?php } ?>
         </ul>

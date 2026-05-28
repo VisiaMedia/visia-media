@@ -1,5 +1,5 @@
 /* Initialize */
-export function init() {
+export function init(gsap) {
     const presentationForms = gsap.utils.toArray('.js-presentation-form');
 
     if (presentationForms.length > 0) {

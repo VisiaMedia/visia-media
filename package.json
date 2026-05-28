@@ -27,6 +27,7 @@
   },
   "scripts": {
     "build": "webpack --mode production && gulp build",
+    "release": "bash scripts/build-release.sh",
     "dev": "webpack --mode development --watch",
     "watch": "concurrently -k -n js,css \"npm run dev\" \"gulp\"",
     "analyze": "ANALYZE=true webpack --mode production"

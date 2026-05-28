@@ -79,11 +79,7 @@
 					<li class="js-gutter-sizer"></li>
 				</ul>
 
-                <?php $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-
-                if($paged * 6 + 6 <= $caseCount = wp_count_posts('case')->publish) {
-	                next_posts_link(__('Next page', 'visia'));
-                } ?>
+                <?php next_posts_link(__('Next page', 'visia')); ?>
 			</div>
 		</section>
 

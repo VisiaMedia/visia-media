@@ -398,16 +398,22 @@
 			$query->set('orderby', 'menu_order');
 
 			$offset = 6;
-            if(!$query->is_paged()) {
-	            $query->set('offset', $offset);
-            } else {
-	            $paged = 0 == $query->get( 'paged' ) ? 1 : $query->get( 'paged' );
-	            $query->set('offset', $paged * $offset);
-            }
+			$paged = max(1, (int) $query->get('paged'));
+
+			// Archive pages are the static Infinite Scroll source after the first 6 cases shown in the page module.
+			$query->set('offset', $offset + (($paged - 1) * (int) $query->get('posts_per_page')));
 		}
 
 		return $query;
 	} add_filter('pre_get_posts', 'visia_cases_archive_custom_query');
+
+	function visia_cases_archive_found_posts($found_posts, $query) {
+		if ($query->is_post_type_archive('case') && !is_admin() && $query->is_main_query()) {
+			$found_posts = max(0, $found_posts - 6);
+		}
+
+		return $found_posts;
+	} add_filter('found_posts', 'visia_cases_archive_found_posts', 10, 2);
 
 
 	/* Custom post types - Reviews */
@@ -505,22 +511,26 @@ add_filter('ssp_github_tree_chunk_size', function( $chunk_size ) {
 
 
 
+/* Minify inline styles */
+function visia_minify_inline_css($data) {
+	$data = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $data);
+	$data = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $data);
+	return $data;
+}
+
 /* Enqueue styles */
 function visia_inject_inline_css() {
-	function minify($data) {
-		$data = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $data);
-		$data = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $data);
-		return $data;
-	}
+	$resetStylesPath = get_template_directory() . '/dist/reset.min.css';
+	$awesomeStylesPath = get_template_directory() . '/assets/fontawesome-subset/css/all.min.css';
 
-    if($resetStyles = minify(file_get_contents(get_template_directory() . '/dist/reset.min.css'))) {
-        $resetStyles = str_replace('../assets/fonts/', get_template_directory_uri() . '/assets/fonts/', $resetStyles);
-        echo '<style id="inline-visia-reset" type="text/css">' . $resetStyles . '</style>';
-    }
+	    if(file_exists($resetStylesPath) && is_readable($resetStylesPath) && $resetStyles = visia_minify_inline_css(file_get_contents($resetStylesPath))) {
+	        $resetStyles = str_replace('../assets/fonts/', get_template_directory_uri() . '/assets/fonts/', $resetStyles);
+	        echo '<style id="inline-visia-reset" type="text/css">' . $resetStyles . '</style>';
+	    }
 
-    if($awesomeStyles = minify(file_get_contents('wp-content/themes/visia/assets/fontawesome-subset/css/all.min.css'))) {
-        echo '<style id="inline-font-awesome" type="text/css">'.str_replace("../", get_template_directory_uri() . '/assets/fontawesome-subset/', $awesomeStyles).'</style>';
-    }
+	    if(file_exists($awesomeStylesPath) && is_readable($awesomeStylesPath) && $awesomeStyles = visia_minify_inline_css(file_get_contents($awesomeStylesPath))) {
+	        echo '<style id="inline-font-awesome" type="text/css">'.str_replace("../", get_template_directory_uri() . '/assets/fontawesome-subset/', $awesomeStyles).'</style>';
+	    }
 
 	echo '<link rel="stylesheet" id="bundle-css" href="'.site_url('/wp-content/themes/visia/dist/bundle.min.css').'" type="text/css" media="all" />';
 } add_action('wp_head', 'visia_inject_inline_css');

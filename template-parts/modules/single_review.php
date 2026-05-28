@@ -2,7 +2,7 @@
 	global $scrollTriggerCount;
 
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
-	<aside class="single-review js-single-review" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>" aria-label="<?php esc_attr_e('Review', 'visia'); ?>">
+		<aside class="single-review" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>" aria-label="<?php esc_attr_e('Review', 'visia'); ?>">
 		<div class="css-max-text-width js-section-reveal">
 			<?php $post = get_sub_field('review'); setup_postdata($post);
 
@@ -10,13 +10,13 @@
 				echo '<div class="single-review__author">';
 
 				if(has_post_thumbnail()) { ?>
-					<div class="single-review__author__thumbnail js-single-review-thumbnail">
+						<div class="single-review__author__thumbnail">
 						<?php echo wp_get_attachment_image(get_post_thumbnail_id(), 'review-portrait-use-retina', null, array('class' => 'single-review__author__thumbnail__img')); ?>
 					</div>
 				<?php }
 
 				if(get_field('naam') || get_field('bedrijfsnaam')) { ?>
-					<div class="single-review__author__details js-single-review-details">
+						<div class="single-review__author__details">
 						<?php if($name = get_field('naam')) {
 							echo '<div class="single-review__author__details__name">'.$name.'</div>';
 						}
@@ -31,7 +31,7 @@
 			}
 
 			if($review = get_field('review')) { ?>
-				<div class="single-review__text css-normal-text js-single-review-text"><?php echo $review; ?></div>
+					<div class="single-review__text css-normal-text"><?php echo $review; ?></div>
 			<?php }
 
 			wp_reset_postdata(); ?>

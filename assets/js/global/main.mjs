@@ -1,15 +1,49 @@
 let mainMenuButton, mainMenu, middleMenu, middleMenuBg, mainMenuRevealTl, mainMenuButtonQuakeTl;
+let eventListeners = [];
+let mainMenuItemSizeTimer = null;
+let topBarScrollInterval = null;
+
+function addTrackedEventListener(target, type, listener) {
+    target.addEventListener(type, listener);
+    eventListeners.push({ target, type, listener });
+}
+
+function clearTrackedEventListeners() {
+    eventListeners.forEach(({ target, type, listener }) => {
+        target.removeEventListener(type, listener);
+    });
+
+    eventListeners = [];
+}
+
+function clearTimers() {
+    if (mainMenuItemSizeTimer) {
+        clearTimeout(mainMenuItemSizeTimer);
+        mainMenuItemSizeTimer = null;
+    }
+
+    if (topBarScrollInterval) {
+        clearInterval(topBarScrollInterval);
+        topBarScrollInterval = null;
+    }
+}
 
 /* Initialize */
 export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll) {
+    clearTrackedEventListeners();
+    clearTimers();
+
     /* Set Blobity z-index */
     if (blobity) blobity.updateOptions({ zIndex: 50 });
 
     /* Remove Blobity on logo hover */
     const topBarLogo = document.querySelector('.js-top-bar-logo');
     if (topBarLogo && blobity) {
-        topBarLogo.addEventListener("mouseenter", () => blobity.updateOptions({ opacity: 0 }));
-        topBarLogo.addEventListener("mouseleave", () => blobity.updateOptions({ opacity: 0.1 }));
+        const hideBlobity = () => blobity.updateOptions({ opacity: 0 });
+        const showBlobity = () => blobity.updateOptions({ opacity: 0.1 });
+
+        addTrackedEventListener(topBarLogo, "mouseenter", hideBlobity);
+        addTrackedEventListener(topBarLogo, "mouseleave", showBlobity);
     }
 
     middleMenu = document.querySelector('.js-middle-menu');
@@ -66,17 +100,20 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
         callAfterResize(setBlobityRadius);
 
         gsap.utils.toArray(".js-middle-menu a").forEach(menuItem => {
-            menuItem.addEventListener("mouseenter", () => {
+            const handleMouseEnter = () => {
                 if (window.matchMedia("(pointer: fine)").matches && blobity && mainMenu.classList.contains("js-is-inactive")) {
                     blobity.updateOptions({ zIndex: 750 });
                 }
-            });
+            };
 
-            menuItem.addEventListener("mouseleave", () => {
+            const handleMouseLeave = () => {
                 if (window.matchMedia("(pointer: fine)").matches && blobity && mainMenu.classList.contains("js-is-inactive")) {
                     blobity.updateOptions({ zIndex: 50 });
                 }
-            });
+            };
+
+            addTrackedEventListener(menuItem, "mouseenter", handleMouseEnter);
+            addTrackedEventListener(menuItem, "mouseleave", handleMouseLeave);
         });
 
         /* Set menu font-size */
@@ -96,11 +133,11 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
         };
 
         setMenuItemSize();
-        let menuItemSizeTimer;
-        window.onresize = () => {
-            clearTimeout(menuItemSizeTimer);
-            menuItemSizeTimer = setTimeout(setMenuItemSize, 100);
+        const handleResize = () => {
+            clearTimeout(mainMenuItemSizeTimer);
+            mainMenuItemSizeTimer = setTimeout(setMenuItemSize, 100);
         };
+        addTrackedEventListener(window, "resize", handleResize);
 
         let middleMenuClosedColor, middleMenuBgClosedColor;
         const getMiddleMenuColorTargets = () => [middleMenu, middleMenuBg].filter(Boolean);
@@ -154,8 +191,9 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
         const getTopBarHiddenY = (index, target) => -target.getBoundingClientRect().bottom;
         let lastScrollTop = 0, didScroll, delta = 15;
 
-        window.onscroll = () => didScroll = true;
-        setInterval(() => { if (didScroll) hasScrolled(); didScroll = false; }, 250);
+        const handleScroll = () => didScroll = true;
+        addTrackedEventListener(window, "scroll", handleScroll);
+        topBarScrollInterval = setInterval(() => { if (didScroll) hasScrolled(); didScroll = false; }, 250);
 
         const hasScrolled = () => {
             if (window.matchMedia("(pointer: coarse)").matches) {
@@ -255,7 +293,7 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
         });
 
         /* Menu button click event */
-        mainMenuButton.addEventListener("click", (event) => {
+        const handleMenuButtonClick = (event) => {
             event.preventDefault();
             mainMenuButtonQuakeTl.play();
             if (mainMenu.classList.contains("js-is-inactive")) {
@@ -265,30 +303,34 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                 mainMenuRevealTl.timeScale(1.5).tweenTo("startHovered");
                 mainMenu.classList.add("js-is-inactive");
             }
-        });
+        };
+        addTrackedEventListener(mainMenuButton, "click", handleMenuButtonClick);
 
         /* Menu button hover event */
-        mainMenuButton.addEventListener("mouseenter", () => {
+        const handleMenuButtonMouseEnter = () => {
             if (mainMenu.classList.contains("js-is-inactive")) {
                 mainMenuRevealTl.tweenTo("startHovered");
             }
-        });
+        };
+        addTrackedEventListener(mainMenuButton, "mouseenter", handleMenuButtonMouseEnter);
 
-        mainMenuButton.addEventListener("mouseleave", () => {
+        const handleMenuButtonMouseLeave = () => {
             if (mainMenu.classList.contains("js-is-inactive")) {
                 mainMenuRevealTl.tweenTo("start");
             }
-        });
+        };
+        addTrackedEventListener(mainMenuButton, "mouseleave", handleMenuButtonMouseLeave);
 
         /* Close menu on 'Escape' key */
-        document.addEventListener("keydown", (event) => {
+        const handleDocumentKeydown = (event) => {
             if (!mainMenu.classList.contains("js-is-inactive") && event.key === "Escape") {
                 mainMenuRevealTl.timeScale(1.5).tweenTo("startHovered", {
                     onComplete: () => mainMenuRevealTl.timeScale(1).tweenTo("start")
                 });
                 mainMenu.classList.add("js-is-inactive");
             }
-        });
+        };
+        addTrackedEventListener(document, "keydown", handleDocumentKeydown);
 
         /* Menu item hover animation */
         gsap.utils.toArray(".js-main-menu-item").forEach(mainMenuItem => {
@@ -299,8 +341,11 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
             gsap.set(mainMenuItemMasker, { width: "0" });
             mainMenuItemHoverTl.to(mainMenuItemMasker, { width: "auto" });
 
-            mainMenuItemLink.addEventListener("mouseenter", () => mainMenuItemHoverTl.play(0));
-            mainMenuItemLink.addEventListener("mouseleave", () => mainMenuItemHoverTl.reverse(0));
+            const handleMouseEnter = () => mainMenuItemHoverTl.play(0);
+            const handleMouseLeave = () => mainMenuItemHoverTl.reverse(0);
+
+            addTrackedEventListener(mainMenuItemLink, "mouseenter", handleMouseEnter);
+            addTrackedEventListener(mainMenuItemLink, "mouseleave", handleMouseLeave);
         });
     }
 
@@ -341,30 +386,9 @@ export function unload(gsap, enableScroll) {
     /* Clear middle-menu colors */
     gsap.set(".js-middle-menu, .js-middle-menu-bg", { clearProps: "color" });
 
-    /* Remove topbar logo event listeners */
-    const topBarLogo = document.querySelector('.js-top-bar-logo');
-    if (topBarLogo) {
-        const newTopBarLogo = topBarLogo.cloneNode(true);
-        topBarLogo.parentNode.replaceChild(newTopBarLogo, topBarLogo);
-    }
-
-    /* Remove menu-button event listeners */
-    if (mainMenuButton) {
-        const newMainMenuButton = mainMenuButton.cloneNode(true);
-        mainMenuButton.parentNode.replaceChild(newMainMenuButton, mainMenuButton);
-    }
-
-    /* Remove middle-menu event listeners */
-    gsap.utils.toArray(".js-middle-menu a").forEach(menuItem => {
-        const newMenuItem = menuItem.cloneNode(true);
-        menuItem.parentNode.replaceChild(newMenuItem, menuItem);
-    });
-
-    /* Remove event listeners from menu items */
-    gsap.utils.toArray(".js-main-menu-item").forEach(mainMenuItem => {
-        const newMainMenuItem = mainMenuItem.cloneNode(true);
-        mainMenuItem.parentNode.replaceChild(newMainMenuItem, mainMenuItem);
-    });
+    /* Remove persistent event listeners and timers */
+    clearTrackedEventListeners();
+    clearTimers();
 
     /* Enable scrolling */
     enableScroll();

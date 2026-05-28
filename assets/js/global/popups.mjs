@@ -1,5 +1,22 @@
+let eventListeners = [];
+
+function addTrackedEventListener(target, type, listener) {
+    target.addEventListener(type, listener);
+    eventListeners.push({ target, type, listener });
+}
+
+export function unload() {
+    eventListeners.forEach(({ target, type, listener }) => {
+        target.removeEventListener(type, listener);
+    });
+
+    eventListeners = [];
+}
+
 /* Initialize */
 export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll) {
+    unload();
+
     if (document.querySelector('.js-popup-container')) {
         const popupContainers = document.querySelectorAll('.js-popup-container');
         const focusableSelectors = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]';
@@ -105,31 +122,33 @@ export function init(gsap, blobity, callAfterResize, disableScroll, enableScroll
                         popupTL.time(0).play();
                     };
 
-                    popupTrigger.addEventListener("click", openPopup);
+                    addTrackedEventListener(popupTrigger, "click", openPopup);
 
-                    popupTrigger.addEventListener("keydown", event => {
+                    const handleTriggerKeydown = event => {
                         if (event.key === 'Enter' || event.key === ' ') {
                             openPopup(event);
                         }
-                    });
+                    };
+                    addTrackedEventListener(popupTrigger, "keydown", handleTriggerKeydown);
 
                     /* Close popup on close button click */
-                    closeButton.addEventListener("click", closePopup);
+                    addTrackedEventListener(closeButton, "click", closePopup);
                 });
             }
 
             /* Add event listener to overlay */
-            overlay.addEventListener("click", closePopup);
+            addTrackedEventListener(overlay, "click", closePopup);
 
             /* Add event listener to escape key */
-            document.addEventListener("keydown", event => {
+            const handleDocumentKeydown = event => {
                 if (event.key === "Escape") {
                     closePopup();
                 }
-            });
+            };
+            addTrackedEventListener(document, "keydown", handleDocumentKeydown);
         });
     }
 }
 
 /* Export init and unload functions */
-export default { init };
+export default { init, unload };

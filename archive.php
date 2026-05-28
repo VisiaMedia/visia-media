@@ -12,7 +12,8 @@ if(have_posts()) {
 
     <div class="blog-home--archive blog-home js-blog-home" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>">
         <?php if(is_archive() && get_the_archive_title()) {
-	        $headline = get_the_archive_title(); ?>
+	        $headline = get_the_archive_title();
+	        $title = null; ?>
 
             <header class="blog-home__archive-header">
                 <div class="css-max-text-width js-section-reveal">

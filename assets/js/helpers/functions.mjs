@@ -1,7 +1,9 @@
 import { gsap } from "gsap";
 
+const resizeHandlers = new Set();
+
 /* Registering GSAP resize function (called when resizing stops) */
-function callAfterResize(func, delay) {
+function callAfterResize(func, delay, persist) {
     let currentWidth = window.innerWidth,
         dc = gsap.delayedCall(delay || 0.2, func).pause(),
         handler = () => {
@@ -12,13 +14,36 @@ function callAfterResize(func, delay) {
             }
         }
 
+    handler.cleanup = () => {
+        window.removeEventListener("resize", handler);
+
+        if (screen.orientation) {
+            screen.orientation.removeEventListener("change", handler);
+        }
+
+        dc.kill();
+        resizeHandlers.delete(handler);
+    };
+
     window.addEventListener("resize", handler);
 
     if (screen.orientation) {
         screen.orientation.addEventListener("change", handler);
     }
 
+    if (!persist) {
+        resizeHandlers.add(handler);
+    }
+
     return handler;
+}
+
+function clearAfterResizeHandlers() {
+    Array.from(resizeHandlers).forEach(handler => {
+        if (handler.cleanup) {
+            handler.cleanup();
+        }
+    });
 }
 
 
@@ -276,4 +301,4 @@ function enableScroll() {
     window.removeEventListener('keydown', preventDefaultForScrollKeys, false);
 }
 
-export {callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn, tlSectionReveal, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll};
+export {callAfterResize, clearAfterResizeHandlers, buildTlAfterResize, tlSetup, tlFadeIn, tlSectionReveal, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll};

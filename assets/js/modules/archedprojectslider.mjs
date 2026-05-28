@@ -269,10 +269,14 @@ export function unload() {
         }
 
         if (instance.resizeHandler) {
-            window.removeEventListener('resize', instance.resizeHandler);
+            if (instance.resizeHandler.cleanup) {
+                instance.resizeHandler.cleanup();
+            } else {
+                window.removeEventListener('resize', instance.resizeHandler);
 
-            if (screen.orientation) {
-                screen.orientation.removeEventListener('change', instance.resizeHandler);
+                if (screen.orientation) {
+                    screen.orientation.removeEventListener('change', instance.resizeHandler);
+                }
             }
 
             instance.resizeHandler = null;

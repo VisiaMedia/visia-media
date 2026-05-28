@@ -12,9 +12,8 @@ import SwupGtmPlugin from '@swup/gtm-plugin';
 /* GSAP */
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger.js";
-import { TextPlugin } from "gsap/TextPlugin.js";
 
-gsap.registerPlugin(ScrollTrigger, TextPlugin);
+gsap.registerPlugin(ScrollTrigger);
 
 /* Set GSAP defaults */
 gsap.defaults({
@@ -96,6 +95,18 @@ async function loadPanoramaSliderDeps() {
 }
 
 
+/* Swiper async function */
+async function loadSwiperDeps() {
+    const SwiperModule = await import(/* webpackChunkName: "swiper" */ 'swiper');
+    const SwiperModules = await import(/* webpackChunkName: "swiper" */ 'swiper/modules');
+
+    return {
+        Swiper: SwiperModule.default || SwiperModule,
+        Autoplay: SwiperModules.Autoplay
+    };
+}
+
+
 /* Masonry async function */
 async function loadMasonry() {
     const MasonryModule = await import(/* webpackChunkName: "masonry" */ 'masonry-layout');
@@ -121,7 +132,7 @@ async function loadImagesLoaded() {
 /* Importing helper functions */
 import overscroll from './helpers/overscroll.mjs';
 import imageLoader from './helpers/imageloader.mjs';
-import { callAfterResize, buildTlAfterResize, tlSetup, tlFadeIn, tlSectionReveal, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll } from './helpers/functions.mjs';
+import { callAfterResize, clearAfterResizeHandlers, buildTlAfterResize, tlSetup, tlFadeIn, tlSectionReveal, stFadeIn, getCookie, getSiblings, getNextSibling, getPreviousSibling, createValidHtmlId, disableScroll, enableScroll } from './helpers/functions.mjs';
 
 /* Importing global / site-wide modules */
 import main from './global/main.mjs';
@@ -189,7 +200,7 @@ const swup = new Swup({
     plugins: [
         new SwupA11yPlugin({
             announcementTemplate: 'Genavigeerd naar: {title}',
-            urlTemplate: 'Nieuwe pagina op {url}}'
+            urlTemplate: 'Nieuwe pagina op {url}'
         }),
         new SwupBodyClassPlugin(),
         new SwupJsPlugin([
@@ -284,6 +295,7 @@ const swup = new Swup({
 
 /* Cache loaded modules */
 const loadedModules = {};
+let overscrollCleanup = null;
 
 /* Initialize functions on load */
 async function swupInit() {
@@ -293,7 +305,10 @@ async function swupInit() {
     const asyncPromises = [];
 
     /* Helpers */
-    overscroll.stopOverscroll(gsap);
+    if (overscrollCleanup) {
+        overscrollCleanup();
+    }
+    overscrollCleanup = overscroll.stopOverscroll(gsap);
     imageLoader.loadImages(ScrollTrigger);
 
     /* Blobity */
@@ -436,6 +451,20 @@ async function swupInit() {
             })
         );
     }
+    if (document.querySelector('.js-logo-slider')) { // Logo slider
+        asyncPromises.push(
+            Promise.all([
+                import('./modules/logoslider.mjs'),
+                loadSwiperDeps()
+            ]).then(([{ default: logoslider }, { Swiper, Autoplay }]) => {
+                logoslider.init(Swiper, Autoplay);
+
+                loadedModules.logoslider = {
+                    unload: () => logoslider.unload()
+                };
+            })
+        );
+    }
     if (document.querySelector('.js-project-grid')) { // Project grid
         asyncPromises.push(
             Promise.all([
@@ -465,7 +494,7 @@ async function swupInit() {
     }
     if (document.querySelector('.js-presentation-form')) { // Presentation form
         asyncPromises.push(import('./modules/presentationform.mjs').then(({ default: presentationform }) => {
-            presentationform.init();
+            presentationform.init(gsap);
         }));
     }
     if (document.querySelector('.js-popunder')) { // Popunder
@@ -521,6 +550,9 @@ async function swupInit() {
     Promise.all(asyncPromises).then(() => {
         modulesLoaded = true;
         activateRevealListenerIfReady();
+    }).catch(() => {
+        modulesLoaded = true;
+        activateRevealListenerIfReady();
     });
 }
 swup.hooks.on('content:replace', swupInit);
@@ -565,6 +597,12 @@ function swupUnload() {
 
     /* Main template unload */
     main.unload(gsap, enableScroll);
+    popups.unload();
+
+    if (overscrollCleanup) {
+        overscrollCleanup();
+        overscrollCleanup = null;
+    }
 
     /* Other templates unload */
     for (const moduleName in loadedModules) {
@@ -577,6 +615,9 @@ function swupUnload() {
     for (const key in loadedModules) {
         delete loadedModules[key];
     }
+
+    /* Clear page-specific resize listeners */
+    clearAfterResizeHandlers();
 }
 swup.hooks.before('content:replace', swupUnload);
 
@@ -585,7 +626,7 @@ swup.hooks.before('content:replace', swupUnload);
 callAfterResize(() => {
     if (blobity) blobity.bounce();
     ScrollTrigger.refresh(true);
-});
+}, null, true);
 
 
 /* Initial loader reveal */

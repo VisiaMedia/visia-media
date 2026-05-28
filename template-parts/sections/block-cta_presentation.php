@@ -9,17 +9,17 @@
     $popupTitle = get_field('optie_cta_prijslijst_popup_titel', 'option');
     $popupTitleID = $popupID.'-title'; ?>
 
-    <section class="cta-presentation js-cta-presentation" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo get_sub_field('titel') ? ' aria-labelledby="'.esc_attr($titleID).'"' : ''; ?>>
-        <div class="css-max-text-width js-section-reveal">
-            <?php if($title = get_sub_field('titel')) {
-                echo '<h1 id="'.esc_attr($titleID).'" class="cta-presentation__title css-title js-cta-presentation-title">'.$title.'</h1>';
-            }
+	    <section class="cta-presentation" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo get_sub_field('titel') ? ' aria-labelledby="'.esc_attr($titleID).'"' : ''; ?>>
+	        <div class="css-max-text-width js-section-reveal">
+	            <?php if($title = get_sub_field('titel')) {
+	                echo '<h1 id="'.esc_attr($titleID).'" class="cta-presentation__title css-title">'.$title.'</h1>';
+	            }
 
-            if($contactPageID = get_field('optie_paginalink_contact', 'option')) {
-                global_button(__('Schedule a no-obligation conversation', 'visia'), get_permalink($contactPageID), 'internal', 'cta-presentation__button-wrapper js-cta-presentation-button-wrapper', 'js-cta-presentation-button');
-            } ?>
+	            if($contactPageID = get_field('optie_paginalink_contact', 'option')) {
+	                global_button(__('Schedule a no-obligation conversation', 'visia'), get_permalink($contactPageID), 'internal', 'cta-presentation__button-wrapper');
+	            } ?>
 
-            <div class="cta-presentation__links js-cta-presentation-links">
+	            <div class="cta-presentation__links">
                 <h2 class="cta-presentation__links__title css-title"><?php _e('All information summarized', 'visia'); ?></h2>
 
                 <ul class="cta-presentation__links__list">

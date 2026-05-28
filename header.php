@@ -56,12 +56,10 @@
                             var c = i[a],
                                 c = r ? o(c, r) : o(c);
                             if (c) return c;
-                        } else console.warn("invalid uid source", e);
+                        }
                     }(E, I, v) : void 0;
                 g = g && (!!f || A);
-            } catch (e) {
-                console.error(e);
-            }
+            } catch (e) {}
 
             var m = e,
                 E = (m[n] = m[n] || [], m[n].push({ "gtm.start": (new Date).getTime(), event: "gtm.js" }), t.getElementsByTagName(r)[0]),
@@ -93,6 +91,8 @@
 </head>
 
 <body <?php body_class(); ?>>
+
+<?php wp_body_open(); ?>
 
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://load.gtm.visia.media/ns.html?id=GTM-MCTK73C9" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -171,7 +171,7 @@
 	                )
                 );
 
-                if($contactLocationName || $contactLocationName2 || $contactAddress1 || $contactAddress2 || $contactDetailArr || $contactSocialArr || $contactPhonePretty && $contactPhoneFormat || $contactEmail) {
+                if($contactLocationName || $contactLocationName2 || $contactAddress1 || $contactAddress2 || $contactSocialArr || $contactPhonePretty && $contactPhoneFormat || $contactEmail) {
                     echo '<aside class="main-menu__container__side">';
 
                     /* Location details */

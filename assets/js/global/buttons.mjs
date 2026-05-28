@@ -9,6 +9,9 @@ export function init(gsap, blobity, callAfterResize) {
             const globalButtonIcon = globalButton.querySelector('.js-global-button-icon');
             const globalButtonFill = globalButton.querySelector('.js-global-button-fill');
             const isBoxedContent = globalButton.classList.contains('js-boxed-content-button');
+            const activePopupContainer = () => globalButton.closest('.js-popup-container.js-active');
+            const getBlobityHoverZIndex = () => activePopupContainer() ? 815 : (isBoxedContent ? 25 : 1);
+            const getBlobityResetZIndex = () => activePopupContainer() ? 815 : 50;
 
             /* Set Blobity data-attribute on buttons */
             const setBlobityRadius = () => {
@@ -27,18 +30,18 @@ export function init(gsap, blobity, callAfterResize) {
                 onStart: () => {
                     if(blobity) {
                         blobity.focusElement(globalButtonFill);
-                        blobity.updateOptions({zIndex: isBoxedContent ? 25 : 1});
+                        blobity.updateOptions({zIndex: getBlobityHoverZIndex()});
                     }
                 },
                 onComplete: () => {
                     if(blobity) {
                         blobity.focusElement(globalButtonFill);
-                        blobity.updateOptions({zIndex: isBoxedContent ? 25 : 1});
+                        blobity.updateOptions({zIndex: getBlobityHoverZIndex()});
                     }
                 },
                 onReverseComplete: () => {
                     gsap.set([globalButtonIcon, globalButtonFill], { clearProps: "all" });
-                    if (blobity) blobity.updateOptions({ zIndex: 50 });
+                    if (blobity) blobity.updateOptions({ zIndex: getBlobityResetZIndex() });
                 }
             });
 

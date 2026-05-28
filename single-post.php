@@ -86,8 +86,10 @@ if(have_posts()) {
 	            }
 
 	            $tagArray = array();
-	            foreach($tags as $key2 => $tag) {
-		            $tagArray[$key2] = $tag->slug;
+	            if($tags) {
+		            foreach($tags as $key2 => $tag) {
+			            $tagArray[$key2] = $tag->slug;
+		            }
 	            }
 
 	            $relatedPosts = new WP_Query(array(
@@ -141,7 +143,7 @@ if(have_posts()) {
                                             <h2 class="related-posts__list__item__title css-title js-related-posts-item-title"><?php the_title(); ?></h2>
                                         </a>
                                     </li>
-					            <?php } wp_reset_query(); ?>
+					            <?php } wp_reset_postdata(); ?>
                             </ul>
                         </div>
                     </aside>

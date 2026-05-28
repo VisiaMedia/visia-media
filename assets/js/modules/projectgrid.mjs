@@ -9,6 +9,8 @@ export function init(gsap, ScrollTrigger, stFadeIn, Masonry, InfiniteScroll, ima
             const buttonWrapper = projectGrid.querySelector('.js-project-grid-button-wrapper');
             const initialItems = projectGridList.querySelectorAll('.js-project-grid-item');
             const mediaQueryFinePointer = window.matchMedia("(pointer: fine)");
+            const caseArchiveUrl = projectGrid.dataset.caseArchiveUrl || '/case-archive/';
+            const caseArchiveBaseUrl = caseArchiveUrl.endsWith('/') ? caseArchiveUrl : `${caseArchiveUrl}/`;
 
             /* Setup Masonry for grid layout */
             const masonry = new Masonry(projectGridList, {
@@ -37,7 +39,7 @@ export function init(gsap, ScrollTrigger, stFadeIn, Masonry, InfiniteScroll, ima
             const infScroll = new InfiniteScroll(projectGridList, {
                 path: function() {
                     let pageNumber = this.loadCount + 1; // Correct use of 'this'
-                    return pageNumber === 1 ? '/case-archive/' : `/case-archive/page/${pageNumber}`;
+                    return pageNumber === 1 ? caseArchiveBaseUrl : `${caseArchiveBaseUrl}page/${pageNumber}/`;
                 },
                 checkLastPage: '.js-nav-next',
                 append: '.js-project-grid-item',
@@ -63,8 +65,7 @@ export function init(gsap, ScrollTrigger, stFadeIn, Masonry, InfiniteScroll, ima
                 gsap.to(item, {
                     scrollTrigger: {
                         trigger: item,
-                        start: "top center",
-                        end: "top top",
+                        start: "top 75%",
                         once: true,
                         refreshPriority: projectGrid.dataset.stCount
                     },

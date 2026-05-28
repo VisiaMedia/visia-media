@@ -6,23 +6,23 @@
 	$titleID = $sectionID.'-title';
 
 	global_color_change_trigger(get_sub_field('kleurschema'), get_sub_field('achtergrond'), get_sub_field('tekst')); ?>
-    <aside class="cta-leadform js-cta-leadform" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo ($fieldSectionID = get_sub_field('formulier_ID')) ? ' id="'.$fieldSectionID.'"' : ''; ?><?php echo $title ? ' aria-labelledby="'.esc_attr($titleID).'"' : ''; ?>>
-        <div class="cta-leadform__inner js-cta-leadform-inner js-section-reveal">
-            <div class="css-max-text-width">
-                <?php if($title) {
-                    echo '<h1 id="'.esc_attr($titleID).'" class="cta-leadform__title css-title--normal-size css-title js-cta-leadform-title">'.$title.'</h1>';
-                }
+	    <aside class="cta-leadform" data-st-count="<?php $scrollTriggerCount--; echo $scrollTriggerCount; ?>"<?php echo ($fieldSectionID = get_sub_field('formulier_ID')) ? ' id="'.$fieldSectionID.'"' : ''; ?><?php echo $title ? ' aria-labelledby="'.esc_attr($titleID).'"' : ''; ?>>
+	        <div class="cta-leadform__inner js-section-reveal">
+	            <div class="css-max-text-width">
+	                <?php if($title) {
+	                    echo '<h1 id="'.esc_attr($titleID).'" class="cta-leadform__title css-title--normal-size css-title">'.$title.'</h1>';
+	                }
 
-                if($content = get_sub_field('content')) {
-                    echo '<div class="cta-leadform__text css-normal-text js-cta-leadform-text">'.$content.'</div>';
-                }
+	                if($content = get_sub_field('content')) {
+	                    echo '<div class="cta-leadform__text css-normal-text">'.$content.'</div>';
+	                }
 
                 /* Form */
                 $thankyouPage = substr(get_permalink(get_sub_field('bedanktpagina')), strlen(home_url()));
                 $formName = sanitize_title_with_dashes(get_sub_field('formulier_naam'));
                 $formID = wp_unique_id($formName.'-'); ?>
 
-                <div class="cta-leadform__form js-cta-leadform-form">
+	                <div class="cta-leadform__form">
                     <form class="css-form--simple css-form js-form" name="<?php esc_attr_e($formName); ?>" method="POST" data-netlify="true" data-swup-form="true" action="<?php echo $thankyouPage; ?>">
                         <div class="css-form-columns">
                             <p class="css-form-row--half css-form-row">

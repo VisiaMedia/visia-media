@@ -110,7 +110,7 @@
                         )
                     );
 
-                    if($contactLocationName || $contactLocationName2 || $contactAddress1 || $contactAddress2 || $contactDetailArr || $contactSocialArr || $contactPhonePretty && $contactPhoneFormat || $contactEmail) { ?>
+                    if($contactLocationName || $contactLocationName2 || $contactAddress1 || $contactAddress2 || $contactSocialArr || $contactPhonePretty && $contactPhoneFormat || $contactEmail) { ?>
                         <aside class="contact-form__content__details js-contact-form-sidebar">
                             <?php if($contactLocationName || $contactLocationName2 || $contactAddress1 || $contactAddress2) { ?>
                                 <div class="contact-form__content__details__block">
